@@ -1090,18 +1090,6 @@
             white-space: nowrap;
         }
 
-        .btn-print {
-            background-color: var(--bg-input);
-            color: var(--gold);
-            border: 1px solid var(--border);
-            padding: 5px 9px;
-            font-size: 11px;
-        }
-
-        .btn-print:hover {
-            border-color: var(--gold);
-        }
-
         /* Modals */
         .modal-backdrop {
             display: none;
@@ -1157,60 +1145,6 @@
             gap: 8px;
             flex-wrap: wrap;
         }
-
-        /* Print Receipt Area */
-        #print-area {
-            display: none;
-        }
-
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            #print-area, #print-area * {
-                visibility: visible;
-            }
-            #print-area {
-                display: block;
-                position: fixed;
-                top: 0;
-                right: 0;
-                width: 100%;
-                background: #fff;
-                color: #000;
-                padding: 20px;
-            }
-            .receipt-box {
-                border: 2px solid #000;
-                border-radius: 10px;
-                padding: 18px;
-                max-width: 420px;
-                margin: 0 auto;
-                direction: rtl;
-            }
-            .receipt-header {
-                text-align: center;
-                border-bottom: 2px dashed #000;
-                padding-bottom: 10px;
-                margin-bottom: 12px;
-            }
-            .receipt-row {
-                display: flex;
-                justify-content: space-between;
-                margin-bottom: 8px;
-                font-size: 14px;
-                border-bottom: 1px dotted #ccc;
-                padding-bottom: 4px;
-            }
-            .receipt-footer {
-                text-align: center;
-                margin-top: 14px;
-                padding-top: 10px;
-                border-top: 2px dashed #000;
-                font-weight: bold;
-                font-size: 13px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -1225,17 +1159,17 @@
     </div>
     <div class="header-actions">
         <div class="status-badges">
-            <span class="sync-pill online" id="netStatusPill">🌐 أونلاين</span>
-            <span class="sync-pill syncing" id="cloudSyncStatus">☁️ جاري المزامنة...</span>
+            <span class="sync-pill online" id="netStatusPill">أونلاين</span>
+            <span class="sync-pill syncing" id="cloudSyncStatus">جاري المزامنة...</span>
         </div>
-        <button type="button" class="btn-wa" onclick="openQuickWaSummaryModal()">💬 ملخص واتساب</button>
-        <button type="button" class="btn-gold" onclick="openClosingModal()">📊 تقفيل اليوم</button>
-        <button type="button" class="btn-outline" onclick="pullFromCloud(true)">🔄 تحديث</button>
-        <button type="button" class="btn-outline" id="privacyBtn" onclick="togglePrivacyMode()">🙈 إخفاء</button>
-        <button type="button" class="btn-outline active-toggle" id="autoSyncBtn" onclick="toggleAutoSync()">⏱️ تلقائي</button>
-        <button type="button" class="btn-outline active-toggle" id="soundAlertBtn" onclick="toggleSoundAlert()">🔔 صوت</button>
-        <button type="button" class="btn-outline" onclick="exportData()">⬇ نسخة</button>
-        <button type="button" class="btn-outline" onclick="document.getElementById('importFile').click()">⬆ استعادة</button>
+        <button type="button" class="btn-wa" onclick="openQuickWaSummaryModal()">ملخص واتساب</button>
+        <button type="button" class="btn-gold" onclick="openClosingModal()">تقفيل اليوم</button>
+        <button type="button" class="btn-outline" onclick="pullFromCloud(true)">تحديث</button>
+        <button type="button" class="btn-outline" id="privacyBtn" onclick="togglePrivacyMode()">إخفاء</button>
+        <button type="button" class="btn-outline active-toggle" id="autoSyncBtn" onclick="toggleAutoSync()">تلقائي</button>
+        <button type="button" class="btn-outline active-toggle" id="soundAlertBtn" onclick="toggleSoundAlert()">صوت</button>
+        <button type="button" class="btn-outline" onclick="exportData()">نسخة</button>
+        <button type="button" class="btn-outline" onclick="document.getElementById('importFile').click()">استعادة</button>
         <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
     </div>
 </header>
@@ -1243,9 +1177,9 @@
 <div class="container">
     <!-- Top Section Navigation -->
     <div class="view-nav">
-        <button type="button" class="view-btn active" onclick="switchMainView('operationsView', this)">📱 العمليات والحسابات</button>
-        <button type="button" class="view-btn" onclick="switchMainView('toolsView', this)" id="toolsNavBtn">🧰 Tools (البوكسات والأدوات والأكونتات)</button>
-        <button type="button" class="view-btn" onclick="switchMainView('expensesView', this)" id="expensesNavBtn">💸 مصاريف اليوم (العمال)</button>
+        <button type="button" class="view-btn active" onclick="switchMainView('operationsView', this)">العمليات والحسابات</button>
+        <button type="button" class="view-btn" onclick="switchMainView('toolsView', this)" id="toolsNavBtn">Tools (البوكسات والأدوات والأكونتات)</button>
+        <button type="button" class="view-btn" onclick="switchMainView('expensesView', this)" id="expensesNavBtn">مصاريف اليوم (العمال)</button>
     </div>
 
     <!-- Save Duration Toast -->
@@ -1259,7 +1193,7 @@
         <!-- Quick Profit Plan Card -->
         <div class="profit-plan-card" id="quickProfitPlan">
             <div class="profit-plan-top">
-                <div class="profit-plan-title">🚀 خطة الربح السريع وتزويد الدخل</div>
+                <div class="profit-plan-title">خطة الربح السريع وتزويد الدخل</div>
                 <div class="target-control">
                     <span>هدف صافي اليوم:</span>
                     <input type="number" id="dailyProfitTargetInput" min="0" step="50" onchange="updateDailyProfitTarget(this.value)">
@@ -1281,16 +1215,16 @@
 
         <!-- Smart Warranty & Return Radar Strip -->
         <div class="radar-strip" id="warrantyRadarStrip">
-            <div id="warrantyRadarSummary">🛡️ رادار الضمان والمرتجع: جاري التحليل...</div>
+            <div id="warrantyRadarSummary">رادار الضمان والمرتجع: جاري التحليل...</div>
             <button type="button" class="btn-outline" onclick="filterWarrantyScope()">عرض الضمان والمرتجع</button>
         </div>
 
         <!-- Day Switcher Bar -->
         <div class="day-bar">
             <div class="day-controls">
-                <button type="button" class="btn-outline" onclick="changeDay(-1)">◀ أمس</button>
+                <button type="button" class="btn-outline" onclick="changeDay(-1)">أمس</button>
                 <input type="date" id="selectedDate" onchange="onDateChange()">
-                <button type="button" class="btn-outline" onclick="changeDay(1)">غداً ▶</button>
+                <button type="button" class="btn-outline" onclick="changeDay(1)">غداً</button>
                 <button type="button" class="btn-gold" onclick="goToday()">اليوم</button>
             </div>
             <div class="day-badge">
@@ -1338,7 +1272,7 @@
                 <div class="panel">
                     <div class="panel-title">
                         <span>+ استلام جهاز (<span id="formDayLabel">اليوم</span>)</span>
-                        <button type="button" class="btn-outline" id="expressModeBtn" onclick="toggleExpressMode()" style="padding: 4px 9px; font-size: 11px;">⚡ وردية سريعة</button>
+                        <button type="button" class="btn-outline" id="expressModeBtn" onclick="toggleExpressMode()" style="padding: 4px 9px; font-size: 11px;">وردية سريعة</button>
                     </div>
 
                     <!-- Duplicate Serial / Phone / Warranty Alert -->
@@ -1380,13 +1314,11 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>وسيلة الدفع / المحفظة</label>
-                                <select id="paymentMethod" onchange="markFormDirty()">
-                                    <option value="كاش الدرج">كاش الدرج</option>
-                                    <option value="فودافون كاش">فودافون كاش</option>
-                                    <option value="إنستا باي">إنستا باي</option>
-                                    <option value="تحويل بنكي">تحويل بنكي</option>
-                                    <option value="عند الاستلام / آجل">عند الاستلام / آجل</option>
+                                <label>وسيلة الدفع</label>
+                                <select id="paymentMethod" onchange="onPaymentMethodChange('paymentStatus', 'paymentMethod'); markFormDirty()">
+                                    <option value="نقدي">نقدي</option>
+                                    <option value="محفظة إلكترونية">محفظة إلكترونية</option>
+                                    <option value="لم يتم الدفع">لم يتم الدفع</option>
                                 </select>
                             </div>
                         </div>
@@ -1436,7 +1368,7 @@
                             </div>
                         </div>
                         <div class="form-group express-optional">
-                            <label>ملاحظات فنية سرية / رمز القفل — لا تُطبع</label>
+                            <label>ملاحظات فنية سرية / رمز القفل — لا تُرسل للعميل</label>
                             <input type="text" id="secretNote" oninput="markFormDirty()" placeholder="PIN 1234 / نقش حرف Z">
                         </div>
                         <button type="submit" class="btn-gold" style="width: 100%; justify-content: center; margin-top: 4px; padding: 10px;">
@@ -1447,7 +1379,7 @@
 
                 <!-- Built-in Calculator -->
                 <div class="panel">
-                    <div class="panel-title">🧮 آلة حاسبة سريعة</div>
+                    <div class="panel-title">آلة حاسبة سريعة</div>
                     <div class="calc-screen">
                         <div class="calc-expr" id="calcExpr">0</div>
                         <div class="calc-val" id="calcDisplay">0</div>
@@ -1481,8 +1413,8 @@
                         <button type="button" class="calc-btn eq" style="width: 100%; padding: 9px;" onclick="calcEvaluate()">=</button>
                     </div>
                     <div class="calc-actions">
-                        <button type="button" class="btn-outline" style="justify-content: center;" onclick="calcCopyResult()">📋 نسخ الناتج</button>
-                        <button type="button" class="btn-edit" style="justify-content: center;" onclick="calcApplyToPrice()">💰 وضعه في السعر</button>
+                        <button type="button" class="btn-outline" style="justify-content: center;" onclick="calcCopyResult()">نسخ الناتج</button>
+                        <button type="button" class="btn-edit" style="justify-content: center;" onclick="calcApplyToPrice()">وضعه في السعر</button>
                     </div>
                 </div>
             </div>
@@ -1493,21 +1425,21 @@
                 <div class="quick-recognition-grid" id="quickRecognitionBar">
                     <div class="recog-card missing-box" id="recogMissingCard">
                         <div>
-                            <strong style="color: var(--warning);">🔎 إيه اللي ناقص</strong><br>
+                            <strong style="color: var(--warning);">إيه اللي ناقص</strong><br>
                             <span id="recogMissingText" style="color: var(--text-muted);">جاري الفحص...</span>
                         </div>
                         <button type="button" class="btn-outline" onclick="setScope('missing', null)">عرض</button>
                     </div>
                     <div class="recog-card paid-box" id="recogPaidCard">
                         <div>
-                            <strong style="color: var(--success);">✓ إيه اللي اتدفع</strong><br>
+                            <strong style="color: var(--success);">إيه اللي اتدفع</strong><br>
                             <span id="recogPaidText" style="color: var(--text-muted);">0 جهاز (0 ج.م)</span>
                         </div>
                         <button type="button" class="btn-settle" onclick="setScope('paid', null)">عرض</button>
                     </div>
                     <div class="recog-card unpaid-box" id="recogUnpaidCard">
                         <div>
-                            <strong style="color: var(--danger);">⚠️ إيه اللي مادفعش</strong><br>
+                            <strong style="color: var(--danger);">إيه اللي مادفعش</strong><br>
                             <span id="recogUnpaidText" style="color: #fecaca;">0 جهاز (0 ج.م)</span>
                         </div>
                         <button type="button" class="btn-danger" onclick="setScope('unpaid', null)">عرض</button>
@@ -1521,7 +1453,7 @@
 
                 <div class="toolbar">
                     <div class="search-box">
-                        <input type="text" id="searchInput" onkeyup="renderTable()" placeholder="🔍 ابحث بالكود (#101)، السيريال / IMEI، الاسم، المحل، المكان الخارجي، الموديل، أو الهاتف...">
+                        <input type="text" id="searchInput" onkeyup="renderTable()" placeholder="ابحث بالكود (#101)، السيريال / IMEI، الاسم، المحل، المكان الخارجي، الموديل، أو الهاتف...">
                     </div>
                     <div class="filter-tabs">
                         <button type="button" class="tab-btn active" onclick="setScope('day', this)">أجهزة اليوم</button>
@@ -1650,7 +1582,7 @@
 
             <div class="panel">
                 <div class="panel-title">
-                    <span>🧰 سجل البوكسات والأدوات والأكونتات (Tools)</span>
+                    <span>سجل البوكسات والأدوات والأكونتات (Tools)</span>
                     <span id="toolsAlertSummary" style="font-size: 12px; color: var(--warning);"></span>
                 </div>
                 <div class="table-wrapper">
@@ -1678,7 +1610,7 @@
         <div class="main-grid">
             <div class="left-stack">
                 <div class="panel">
-                    <div class="panel-title">💸 إضافة مصروف عمال (<span id="expenseDayLabel">اليوم</span>)</div>
+                    <div class="panel-title">إضافة مصروف عمال (<span id="expenseDayLabel">اليوم</span>)</div>
                     <form id="expenseForm" onsubmit="addExpense(event)">
                         <div class="form-group">
                             <label>تاريخ المصروف *</label>
@@ -1700,7 +1632,7 @@
 
                 <!-- Deficit Checker & Source Analyzer -->
                 <div class="panel">
-                    <div class="panel-title">⚖️ كاشف العجز ومصدر العجز</div>
+                    <div class="panel-title">كاشف العجز ومصدر العجز</div>
                     <div class="form-group">
                         <label>الكاش الفعلي الموجود في يدك / الدرج (ج.م)</label>
                         <input type="number" id="actualCashForDeficit" oninput="renderDeficitAnalysis()" placeholder="أدخل المبلغ الفعلي لحساب العجز">
@@ -1717,7 +1649,7 @@
 
             <div class="panel">
                 <div class="panel-title">
-                    <span>💸 مصاريف اليوم (العمال فقط — مستقل عن الشغل)</span>
+                    <span>مصاريف اليوم (العمال فقط — مستقل عن الشغل)</span>
                     <span id="workersExpenseSummary" style="font-size: 12px; color: var(--warning);"></span>
                 </div>
                 <div id="expensesList"></div>
@@ -1730,7 +1662,7 @@
 <div class="modal-backdrop" id="waModal">
     <div class="modal-box">
         <div class="modal-header">
-            <h3>💬 رسالة واتساب</h3>
+            <h3>رسالة واتساب للعميل</h3>
             <button type="button" class="btn-outline" style="padding: 4px 10px;" onclick="closeWaModal()">✕</button>
         </div>
         <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">
@@ -1738,9 +1670,9 @@
         </p>
         <textarea id="waMessageText" class="modal-textarea"></textarea>
         <div class="modal-footer">
-            <button type="button" class="btn-outline" onclick="copyWaMessage()">📋 نسخ</button>
+            <button type="button" class="btn-outline" onclick="copyWaMessage()">نسخ الرسالة</button>
             <button type="button" class="btn-outline" onclick="closeWaModal()">إلغاء</button>
-            <button type="button" class="btn-gold" onclick="sendWaMessage()">إرسال ↗</button>
+            <button type="button" class="btn-gold" onclick="sendWaMessage()">إرسال على واتساب</button>
         </div>
     </div>
 </div>
@@ -1749,13 +1681,13 @@
 <div class="modal-backdrop" id="waSummaryModal">
     <div class="modal-box">
         <div class="modal-header">
-            <h3>💬 ملخص سريع جاهز للواتساب</h3>
+            <h3>ملخص سريع جاهز للواتساب</h3>
             <button type="button" class="btn-outline" style="padding: 4px 10px;" onclick="closeQuickWaSummaryModal()">✕</button>
         </div>
         <textarea id="quickWaSummaryText" class="modal-textarea"></textarea>
         <div class="modal-footer">
-            <button type="button" class="btn-outline" onclick="copyQuickWaSummary()">📋 نسخ الملخص</button>
-            <button type="button" class="btn-wa" onclick="sendQuickWaSummary()">إرسال عبر واتساب ↗</button>
+            <button type="button" class="btn-outline" onclick="copyQuickWaSummary()">نسخ الملخص</button>
+            <button type="button" class="btn-wa" onclick="sendQuickWaSummary()">إرسال عبر واتساب</button>
             <button type="button" class="btn-gold" onclick="closeQuickWaSummaryModal()">إغلاق</button>
         </div>
     </div>
@@ -1765,7 +1697,7 @@
 <div class="modal-backdrop" id="editModal">
     <div class="modal-box">
         <div class="modal-header">
-            <h3>✏️ تعديل السجل <span id="editTicketBadge" style="color: var(--text-main);"></span></h3>
+            <h3>تعديل السجل <span id="editTicketBadge" style="color: var(--text-main);"></span></h3>
             <button type="button" class="btn-outline" style="padding: 4px 10px;" onclick="closeEditModal()">✕</button>
         </div>
         <form id="editForm" onsubmit="saveEditedRecord(event)">
@@ -1803,13 +1735,11 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>وسيلة الدفع / المحفظة</label>
-                    <select id="editPaymentMethod">
-                        <option value="كاش الدرج">كاش الدرج</option>
-                        <option value="فودافون كاش">فودافون كاش</option>
-                        <option value="إنستا باي">إنستا باي</option>
-                        <option value="تحويل بنكي">تحويل بنكي</option>
-                        <option value="عند الاستلام / آجل">عند الاستلام / آجل</option>
+                    <label>وسيلة الدفع</label>
+                    <select id="editPaymentMethod" onchange="onPaymentMethodChange('editPaymentStatus', 'editPaymentMethod')">
+                        <option value="نقدي">نقدي</option>
+                        <option value="محفظة إلكترونية">محفظة إلكترونية</option>
+                        <option value="لم يتم الدفع">لم يتم الدفع</option>
                     </select>
                 </div>
             </div>
@@ -1892,20 +1822,17 @@
 <div class="modal-backdrop" id="closingModal">
     <div class="modal-box">
         <div class="modal-header">
-            <h3>📊 تقرير تقفيل اليوم</h3>
+            <h3>تقرير تقفيل اليوم</h3>
             <button type="button" class="btn-outline" style="padding: 4px 10px;" onclick="closeClosingModal()">✕</button>
         </div>
         <textarea id="closingReportText" class="modal-textarea" readonly></textarea>
         <div class="modal-footer">
-            <button type="button" class="btn-outline" onclick="copyClosingReport()">📋 نسخ</button>
-            <button type="button" class="btn-wa" onclick="sendClosingToWa()">💬 واتساب</button>
+            <button type="button" class="btn-outline" onclick="copyClosingReport()">نسخ</button>
+            <button type="button" class="btn-wa" onclick="sendClosingToWa()">واتساب</button>
             <button type="button" class="btn-gold" onclick="closeClosingModal()">إغلاق</button>
         </div>
     </div>
 </div>
-
-<!-- Printable Receipt Template -->
-<div id="print-area"></div>
 
 <script>
     const SUPABASE_URL = 'https://gzxbycwsditjnxjhwouo.supabase.co';
@@ -1927,8 +1854,30 @@
     let hasUnsavedFormChanges = false;
     let isCloudSyncing = false;
 
+    function normalizePaymentMethodLabel(rawMethod, isUnpaid) {
+        if (isUnpaid) return 'لم يتم الدفع';
+        const val = String(rawMethod || '').trim();
+        if (!val || val === 'كاش الدرج' || val === 'نقدي') return 'نقدي';
+        if (val === 'محفظة إلكترونية' || val === 'فودافون كاش' || val === 'إنستا باي' || val === 'تحويل بنكي') {
+            return 'محفظة إلكترونية';
+        }
+        if (val === 'لم يتم الدفع' || val === 'عند الاستلام / آجل' || val === 'آجل') {
+            return 'نقدي';
+        }
+        return val;
+    }
+
+    function getPaymentStatusTextForMessage(r) {
+        const unpaid = isUnpaidStatus(r);
+        if (unpaid) {
+            return 'لم يتم الدفع (الدفع عند الاستلام)';
+        }
+        const methodText = normalizePaymentMethodLabel(r.paymentMethod, false);
+        return `تم الدفع (${methodText})`;
+    }
+
     function isUnpaidStatus(r) {
-        return r.paymentStatus === 'credit' || r.paymentStatus === 'unpaid';
+        return r.paymentStatus === 'credit' || r.paymentStatus === 'unpaid' || r.paymentMethod === 'لم يتم الدفع';
     }
 
     function isRecordMissingInfo(r) {
@@ -1989,19 +1938,30 @@
         const payStatus = document.getElementById('paymentStatus').value;
         const payMethod = document.getElementById('paymentMethod');
         if (payStatus === 'credit') {
-            payMethod.value = 'عند الاستلام / آجل';
-        } else if (payMethod.value === 'عند الاستلام / آجل' || payMethod.value === 'آجل') {
-            payMethod.value = 'كاش الدرج';
+            payMethod.value = 'لم يتم الدفع';
+        } else if (payMethod.value === 'لم يتم الدفع') {
+            payMethod.value = 'نقدي';
+        }
+    }
+
+    function onPaymentMethodChange(statusId, methodId) {
+        const stEl = document.getElementById(statusId);
+        const mEl = document.getElementById(methodId);
+        if (!stEl || !mEl) return;
+        if (mEl.value === 'لم يتم الدفع') {
+            stEl.value = 'credit';
+        } else {
+            stEl.value = 'paid';
         }
     }
 
     function onEditPaymentStatusChange() {
         const st = document.getElementById('editPaymentStatus').value;
         const methodSel = document.getElementById('editPaymentMethod');
-        if (st === 'paid' && (methodSel.value === 'عند الاستلام / آجل' || methodSel.value === 'آجل')) {
-            methodSel.value = 'كاش الدرج';
+        if (st === 'paid' && methodSel.value === 'لم يتم الدفع') {
+            methodSel.value = 'نقدي';
         } else if (st === 'credit') {
-            methodSel.value = 'عند الاستلام / آجل';
+            methodSel.value = 'لم يتم الدفع';
         }
     }
 
@@ -2069,7 +2029,7 @@
         if (calcResultValue === 'خطأ') return;
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(calcResultValue).then(() => {
-                showSaveToast(`📋 تم نسخ ناتج الآلة الحاسبة: ${calcResultValue}`);
+                showSaveToast(`تم نسخ ناتج الآلة الحاسبة: ${calcResultValue}`);
             }).catch(() => {});
         }
     }
@@ -2080,7 +2040,7 @@
         if (!Number.isNaN(num) && Number.isFinite(num) && priceInput) {
             priceInput.value = Math.max(0, num);
             markFormDirty();
-            showSaveToast(`💰 تم وضع القيمة (${Math.max(0, num)} ج.م) في خانة السعر`);
+            showSaveToast(`تم وضع القيمة (${Math.max(0, num)} ج.م) في خانة السعر`);
         }
     }
 
@@ -2109,7 +2069,7 @@
         const targetBox = document.getElementById('planTargetStatusBox');
         if (targetBox) {
             if (target === 0 || dayProfit >= target) {
-                targetBox.innerHTML = `✅ تم تحقيق هدف اليوم! صافي اليوم: <strong style="color: var(--success);">${maskNum(dayProfit)} ج.م</strong>`;
+                targetBox.innerHTML = `تم تحقيق هدف اليوم. صافي اليوم: <strong style="color: var(--success);">${maskNum(dayProfit)} ج.م</strong>`;
             } else {
                 targetBox.innerHTML = `المتبقي لتحقيق هدف اليوم: <strong style="color: var(--gold);">${maskNum(remaining)} ج.م</strong>`;
             }
@@ -2138,7 +2098,7 @@
         const topBox = document.getElementById('planTopServicesBox');
         if (topBox) {
             if (topServices.length === 0) {
-                topBox.innerHTML = `أعلى الخدمات ربحاً: <strong>سجّل أجهزة لظهور التحليل</strong>`;
+                topBox.innerHTML = `أعلى الخدمات ربحاً: <strong>لا توجد بيانات كافية</strong>`;
             } else {
                 const text = topServices.map(s => `${s.name} (${maskNum(s.net)} ج.م)`).join(' • ');
                 topBox.innerHTML = `أعلى الخدمات ربحاً: <strong style="color: var(--gold);">${text}</strong>`;
@@ -2181,8 +2141,8 @@
             0
         );
         textEl.innerHTML =
-            `🚨 <strong>تنبيه تحصيل:</strong> يوجد <strong>${unpaidRecords.length}</strong> جهاز بحالة ` +
-            `<span class="tag-unpaid">لم يتم الدفع</span> بإجمالي <strong>${maskNum(totalUnpaid)} ج.م</strong> — راجعها قبل التسليم أو التقفيل حتى لا تنساها.`;
+            `تنبيه تحصيل: يوجد <strong>${unpaidRecords.length}</strong> جهاز بحالة ` +
+            `<span class="tag-unpaid">لم يتم الدفع</span> بإجمالي <strong>${maskNum(totalUnpaid)} ج.م</strong> — راجعها قبل التسليم أو التقفيل.`;
         banner.classList.add('show');
     }
 
@@ -2190,29 +2150,32 @@
         const strip = document.getElementById('walletsStrip');
         if (!strip) return;
         const dayRecords = records.filter(r => r.dayKey === selectedDateISO);
-        const methods = ['كاش الدرج', 'فودافون كاش', 'إنستا باي', 'تحويل بنكي'];
-
-        const cardsHtml = methods.map(m => {
-            const rawSum = dayRecords
-                .filter(r => !isUnpaidStatus(r) && (r.paymentMethod || 'كاش الدرج') === m)
-                .reduce((s, r) => s + Math.max(0, (parseFloat(r.price) || 0) - (parseFloat(r.refund) || 0)), 0);
-            const displaySum = m === 'كاش الدرج' ? calcDayDrawerCash(selectedDateISO) : rawSum;
-            return `
-                <div class="wallet-card">
-                    <span>💳 ${m} (اليوم)</span>
-                    <strong>${maskNum(displaySum)} ج.م</strong>
-                </div>
-            `;
-        }).join('');
+        const cashSum = calcDayDrawerCash(selectedDateISO);
+        const walletSum = dayRecords
+            .filter(r => !isUnpaidStatus(r) && normalizePaymentMethodLabel(r.paymentMethod, false) === 'محفظة إلكترونية')
+            .reduce((s, r) => s + Math.max(0, (parseFloat(r.price) || 0) - (parseFloat(r.refund) || 0)), 0);
+        const unpaidSum = calcDayCreditTotal(selectedDateISO);
 
         const externalDayCount = dayRecords.filter(r => r.workLocation === 'external').length;
         const externalDayNet = dayRecords
             .filter(r => r.workLocation === 'external')
             .reduce((s, r) => s + calcRecordNet(r), 0);
 
-        strip.innerHTML = cardsHtml + `
+        strip.innerHTML = `
             <div class="wallet-card">
-                <span>🛵 شغل خارجي / بره (اليوم)</span>
+                <span>نقدي (الدرج اليوم)</span>
+                <strong>${maskNum(cashSum)} ج.م</strong>
+            </div>
+            <div class="wallet-card">
+                <span>محفظة إلكترونية (اليوم)</span>
+                <strong>${maskNum(walletSum)} ج.م</strong>
+            </div>
+            <div class="wallet-card">
+                <span>لم يتم الدفع (اليوم)</span>
+                <strong style="color: var(--danger);">${maskNum(unpaidSum)} ج.م</strong>
+            </div>
+            <div class="wallet-card">
+                <span>شغل خارجي / بره (اليوم)</span>
                 <strong>${externalDayCount} جهاز (${maskNum(externalDayNet)} ج.م)</strong>
             </div>
         `;
@@ -2223,7 +2186,7 @@
         if (!pill) return;
         const isOnline = navigator.onLine !== false;
         pill.className = `sync-pill ${isOnline ? 'online' : 'offline'}`;
-        pill.innerText = isOnline ? '🌐 أونلاين' : '📴 أوفلاين';
+        pill.innerText = isOnline ? 'أونلاين' : 'أوفلاين';
     }
 
     function applyExpressModeUI() {
@@ -2236,7 +2199,7 @@
 
         if (expressMode) {
             if (btn) {
-                btn.innerText = '⚡ وردية سريعة: مفعّل';
+                btn.innerText = 'وردية سريعة: مفعّل';
                 btn.classList.add('active-toggle');
             }
             optionals.forEach(el => el.classList.add('express-hidden'));
@@ -2246,7 +2209,7 @@
             }
         } else {
             if (btn) {
-                btn.innerText = '⚡ وردية سريعة';
+                btn.innerText = 'وردية سريعة';
                 btn.classList.remove('active-toggle');
             }
             optionals.forEach(el => el.classList.remove('express-hidden'));
@@ -2310,7 +2273,7 @@
         const returnRate = total > 0 ? Math.round((returnedCount / total) * 100) : 0;
 
         summaryEl.innerHTML =
-            `🛡️ <strong>رادار الضمان والمرتجع:</strong> ` +
+            `<strong>رادار الضمان والمرتجع:</strong> ` +
             `ضمان (${WARRANTY_DAYS} أيام): <strong style="color: var(--success);">${warrantyCount}</strong> • ` +
             `مرتجع: <strong style="color: var(--danger);">${returnedCount} (${returnRate}%)</strong> • ` +
             `النجاح: <strong style="color: var(--gold);">${successRate}%</strong>`;
@@ -2344,15 +2307,15 @@
             if (matches.length > 0) {
                 const latest = matches[0];
                 const age = getRecordAgeInfo(latest);
-                const wText = age.isUnderWarranty ? ` — ⚠️ تحت الضمان (${age.warrantyLeftDays}ي متبقي)` : '';
-                dupMessages.push(`🔁 السيريال مسجل ${matches.length} مرة سابقاً (آخرها #${latest.ticketNo} بتاريخ ${latest.date} - ${latest.serviceType})${wText}`);
+                const wText = age.isUnderWarranty ? ` — تحت الضمان (${age.warrantyLeftDays}ي متبقي)` : '';
+                dupMessages.push(`السيريال مسجل ${matches.length} مرة سابقاً (آخرها #${latest.ticketNo} بتاريخ ${latest.date} - ${latest.serviceType})${wText}`);
             }
         }
         if (phoneVal && phoneVal.length >= 8) {
             const phoneMatches = records.filter(r => (r.clientPhone || '').replace(/\D/g, '') === phoneVal);
             if (phoneMatches.length > 0) {
                 const latestP = phoneMatches[0];
-                dupMessages.push(`📱 رقم الهاتف مسجل ${phoneMatches.length} مرة سابقاً باسم "${latestP.clientName}" (${latestP.deviceModel} - ${latestP.date})`);
+                dupMessages.push(`رقم الهاتف مسجل ${phoneMatches.length} مرة سابقاً باسم "${latestP.clientName}" (${latestP.deviceModel} - ${latestP.date})`);
             }
         }
 
@@ -2366,20 +2329,20 @@
 
         const riskMessages = [];
         if (condVal === 'فاصل باور') {
-            riskMessages.push('⚠️ خطر مرتجع/عطل: الجهاز "فاصل باور" — يُنصح بتوضيح شرط الفحص بدون ضمان التشغيل.');
+            riskMessages.push('تنبيه مرتجع/عطل: الجهاز "فاصل باور" — يُنصح بتوضيح شرط الفحص بدون ضمان التشغيل.');
         }
         if (modelVal && modelVal.length >= 2) {
             const sameModel = records.filter(r => (r.deviceModel || '').toLowerCase().includes(modelVal));
             const modelReturns = sameModel.filter(r => getRecordAgeInfo(r).isReturnedItem);
             if (modelReturns.length > 0) {
-                riskMessages.push(`⚡ تنبيه مخاطر الموديل (${modelVal}): سُجل ${modelReturns.length} مرتجع سابق من أصل ${sameModel.length} عملية.`);
+                riskMessages.push(`تنبيه مخاطر الموديل (${modelVal}): سُجل ${modelReturns.length} مرتجع سابق من أصل ${sameModel.length} عملية.`);
             }
         }
         if (serviceVal && serviceVal.length >= 3) {
             const sameService = records.filter(r => (r.serviceType || '').toLowerCase().includes(serviceVal));
             const srvReturns = sameService.filter(r => getRecordAgeInfo(r).isReturnedItem);
             if (srvReturns.length > 0) {
-                riskMessages.push(`⚡ تنبيه مخاطر الخدمة: يوجد ${srvReturns.length} مرتجع سابق في خدمات مشابهة لـ "${serviceVal}".`);
+                riskMessages.push(`تنبيه مخاطر الخدمة: يوجد ${srvReturns.length} مرتجع سابق في خدمات مشابهة لـ "${serviceVal}".`);
             }
         }
 
@@ -2404,8 +2367,8 @@
 
     function maskSecret(note) {
         if (!note) return '';
-        if (privacyHidden) return '🔒 ••••••';
-        return `🔒 ${note}`;
+        if (privacyHidden) return '••••••';
+        return note;
     }
 
     function pulseSyncBadge(type) {
@@ -2452,19 +2415,19 @@
     function updateHeaderTogglesUI() {
         const privBtn = document.getElementById('privacyBtn');
         if (privBtn) {
-            privBtn.innerText = privacyHidden ? '👁️ إظهار' : '🙈 إخفاء';
+            privBtn.innerText = privacyHidden ? 'إظهار' : 'إخفاء';
             privBtn.classList.toggle('active-toggle', privacyHidden);
         }
 
         const syncBtn = document.getElementById('autoSyncBtn');
         if (syncBtn) {
-            syncBtn.innerText = autoSyncEnabled ? '⏱️ تلقائي' : '⏱️ متوقف';
+            syncBtn.innerText = autoSyncEnabled ? 'تلقائي' : 'متوقف';
             syncBtn.classList.toggle('active-toggle', autoSyncEnabled);
         }
 
         const sndBtn = document.getElementById('soundAlertBtn');
         if (sndBtn) {
-            sndBtn.innerText = soundAlertEnabled ? '🔔 صوت' : '🔕 مكتوم';
+            sndBtn.innerText = soundAlertEnabled ? 'صوت' : 'مكتوم';
             sndBtn.classList.toggle('active-toggle', soundAlertEnabled);
         }
     }
@@ -2552,10 +2515,10 @@
     function calcDayDrawerCash(dayISO) {
         const dayRecords = records.filter(r => r.dayKey === dayISO);
         const paidCashRevenue = dayRecords
-            .filter(r => !isUnpaidStatus(r) && (r.paymentMethod || 'كاش الدرج') === 'كاش الدرج')
+            .filter(r => !isUnpaidStatus(r) && normalizePaymentMethodLabel(r.paymentMethod, false) === 'نقدي')
             .reduce((s, r) => s + (parseFloat(r.price) || 0), 0);
         const dayRefund = dayRecords
-            .filter(r => (r.paymentMethod || 'كاش الدرج') === 'كاش الدرج')
+            .filter(r => normalizePaymentMethodLabel(r.paymentMethod, false) === 'نقدي')
             .reduce((s, r) => s + (parseFloat(r.refund) || 0), 0);
         const dayPetty = getDayExpensesTotal(dayISO);
         return Math.max(0, paidCashRevenue - dayRefund - dayPetty);
@@ -2629,11 +2592,8 @@
                 }
             }
             const payStatus = r.paymentStatus || 'paid';
-            const unpaid = payStatus === 'credit' || payStatus === 'unpaid';
-            let payMethod = r.paymentMethod || (unpaid ? 'عند الاستلام / آجل' : 'كاش الدرج');
-            if (!unpaid && (payMethod === 'آجل' || payMethod === 'عند الاستلام / آجل')) {
-                payMethod = 'كاش الدرج';
-            }
+            const unpaid = payStatus === 'credit' || payStatus === 'unpaid' || r.paymentMethod === 'لم يتم الدفع';
+            const payMethod = normalizePaymentMethodLabel(r.paymentMethod, unpaid);
             return {
                 ...r,
                 ticketNo: ticketNo,
@@ -2644,7 +2604,7 @@
                 clientType: r.clientType || 'cash',
                 workLocation: r.workLocation || 'shop',
                 externalPlace: r.externalPlace || '',
-                paymentStatus: payStatus,
+                paymentStatus: unpaid ? 'credit' : 'paid',
                 paymentMethod: payMethod,
                 refund: parseFloat(r.refund) || 0,
                 returnReason: r.returnReason || '',
@@ -2682,7 +2642,7 @@
     async function pushToCloud() {
         isCloudSyncing = true;
         updateNetworkStatusUI();
-        setSyncStatus('syncing', '☁️ جاري الحفظ...');
+        setSyncStatus('syncing', 'جاري الحفظ...');
         const stamp = Date.now();
         lastUpdatedAt = stamp;
         try {
@@ -2709,9 +2669,9 @@
             if (!res.ok) {
                 throw new Error(`HTTP ${res.status}`);
             }
-            notifySyncResult(true, '☁️ متزامن مع السحابة');
+            notifySyncResult(true, 'متزامن مع السحابة');
         } catch (err) {
-            notifySyncResult(false, '⚠️ محفوظ محلياً');
+            notifySyncResult(false, 'محفوظ محلياً');
         } finally {
             isCloudSyncing = false;
         }
@@ -2720,7 +2680,7 @@
     async function pullFromCloud(showAlertOnSuccess = false, silent = false) {
         updateNetworkStatusUI();
         if (!silent) {
-            setSyncStatus('syncing', '☁️ جاري الجلب...');
+            setSyncStatus('syncing', 'جاري الجلب...');
         }
         try {
             const res = await fetch(
@@ -2754,24 +2714,24 @@
                     refreshUI();
                 }
                 if (!silent) {
-                    notifySyncResult(true, '☁️ متزامن مع السحابة');
+                    notifySyncResult(true, 'متزامن مع السحابة');
                 } else {
-                    setSyncStatus('online', '☁️ متزامن مع السحابة');
+                    setSyncStatus('online', 'متزامن مع السحابة');
                 }
                 if (showAlertOnSuccess) {
-                    alert('تم تحديث البيانات من السحابة بنجاح!');
+                    alert('تم تحديث البيانات من السحابة بنجاح.');
                 }
             } else {
                 await pushToCloud();
                 if (showAlertOnSuccess) {
-                    alert('تم ربط السحابة وتهيئة الحالة بنجاح!');
+                    alert('تم ربط السحابة وتهيئة الحالة بنجاح.');
                 }
             }
         } catch (err) {
             if (!silent) {
-                notifySyncResult(false, '⚠️ محفوظ محلياً');
+                notifySyncResult(false, 'محفوظ محلياً');
             } else {
-                setSyncStatus('offline', '⚠️ محفوظ محلياً');
+                setSyncStatus('offline', 'محفوظ محلياً');
             }
             if (showAlertOnSuccess) {
                 alert('تعذر الاتصال بالسحابة حالياً، البيانات المحلية متاحة.');
@@ -2832,12 +2792,12 @@
         const overdueCount = records.filter(r => getRecordAgeInfo(r).isOverdue).length;
         const tabBtn = document.getElementById('overdueTabBtn');
         if (tabBtn) {
-            tabBtn.innerText = overdueCount > 0 ? `⚠️ متأخر (${overdueCount})` : 'متأخر (+2 يوم)';
+            tabBtn.innerText = overdueCount > 0 ? `متأخر (${overdueCount})` : 'متأخر (+2 يوم)';
         }
         const unpaidCount = records.filter(r => isUnpaidStatus(r)).length;
         const unpaidBtn = document.getElementById('unpaidTabBtn');
         if (unpaidBtn) {
-            unpaidBtn.innerText = unpaidCount > 0 ? `🚨 لم يتم الدفع (${unpaidCount})` : 'لم يتم الدفع';
+            unpaidBtn.innerText = unpaidCount > 0 ? `لم يتم الدفع (${unpaidCount})` : 'لم يتم الدفع';
         }
     }
 
@@ -2877,9 +2837,9 @@
 
         const rawService = document.getElementById('serviceType').value.trim();
         const finalService = rawService || (expressMode ? `سوفت وير (${condition})` : '');
-        const payStatus = document.getElementById('paymentStatus').value;
         const payMethod = document.getElementById('paymentMethod').value;
-        const unpaid = payStatus === 'credit' || payStatus === 'unpaid';
+        const unpaid = payMethod === 'لم يتم الدفع' || document.getElementById('paymentStatus').value === 'credit';
+        const cleanMethod = normalizePaymentMethodLabel(payMethod, unpaid);
 
         const newRecord = {
             id: nowMs,
@@ -2891,8 +2851,8 @@
             clientType: document.getElementById('clientType').value,
             workLocation: document.getElementById('workLocation').value,
             externalPlace: document.getElementById('externalPlace').value.trim(),
-            paymentStatus: payStatus,
-            paymentMethod: unpaid ? 'عند الاستلام / آجل' : ((payMethod === 'آجل' || payMethod === 'عند الاستلام / آجل') ? 'كاش الدرج' : payMethod),
+            paymentStatus: unpaid ? 'credit' : 'paid',
+            paymentMethod: cleanMethod,
             clientPhone: document.getElementById('clientPhone').value.trim(),
             deviceModel: document.getElementById('deviceModel').value.trim(),
             serialNumber: document.getElementById('serialNumber').value.trim(),
@@ -2912,7 +2872,7 @@
         saveToStorage();
         const ageInfo = getRecordAgeInfo(newRecord);
         const serialPart = newRecord.serialNumber ? ` | سيريال: ${newRecord.serialNumber}` : '';
-        showSaveToast(`✅ تم حفظ الجهاز #${newRecord.ticketNo} (${newRecord.deviceModel}${serialPart}) — ${ageInfo.label} (${newRecord.date})`);
+        showSaveToast(`تم حفظ الجهاز #${newRecord.ticketNo} (${newRecord.deviceModel}${serialPart}) — ${ageInfo.label} (${newRecord.date})`);
         document.getElementById('deviceForm').reset();
         toggleExternalPlaceInput();
         applyExpressModeUI();
@@ -2935,7 +2895,7 @@
         saveToStorage();
         document.getElementById('expenseForm').reset();
         document.getElementById('expenseDateInput').value = selectedDateISO;
-        showSaveToast(`💸 تم تسجيل مصروف عمال بتاريخ ${formatDisplayDate(expDayKey)} (${title}: ${amount} ج.م)`);
+        showSaveToast(`تم تسجيل مصروف عمال بتاريخ ${formatDisplayDate(expDayKey)} (${title}: ${amount} ج.م)`);
     }
 
     function deleteExpense(id) {
@@ -2991,17 +2951,17 @@
 
             box.className = 'deficit-result-box has-deficit';
             box.innerHTML =
-                `🚨 <strong>يوجد عجز بقيمة: ${maskNum(deficitAmt)} ج.م</strong> (الفعلي: ${maskNum(actualCash)} ج.م مقابل المفروض: ${maskNum(expectedCash)} ج.م)<br>` +
+                `يوجد عجز بقيمة: <strong>${maskNum(deficitAmt)} ج.م</strong> (الفعلي: ${maskNum(actualCash)} ج.م مقابل المفروض: ${maskNum(expectedCash)} ج.م)<br>` +
                 `<strong>مصدر العجز المحتمل:</strong> ${sources.join(' • ')}`;
         } else if (diff > 0) {
             box.className = 'deficit-result-box balanced';
             box.innerHTML =
-                `➕ <strong>زيادة في الدرج بقيمة: ${maskNum(diff)} ج.م</strong> (الفعلي: ${maskNum(actualCash)} ج.م مقابل المفروض: ${maskNum(expectedCash)} ج.م)` +
+                `زيادة في الدرج بقيمة: <strong>${maskNum(diff)} ج.م</strong> (الفعلي: ${maskNum(actualCash)} ج.م مقابل المفروض: ${maskNum(expectedCash)} ج.م)` +
                 (savedNote ? `<br>ملاحظة: <strong>${savedNote}</strong>` : '');
         } else {
             box.className = 'deficit-result-box balanced';
             box.innerHTML =
-                `✅ <strong>لا يوجد عجز — الدرج مطابق (${maskNum(actualCash)} ج.م)</strong>` +
+                `لا يوجد عجز — الدرج مطابق (${maskNum(actualCash)} ج.م)` +
                 (savedNote ? `<br>ملاحظة: <strong>${savedNote}</strong>` : '');
         }
     }
@@ -3017,7 +2977,7 @@
             summaryEl.innerText = `إجمالي مصاريف العمال (${formatDisplayDate(selectedDateISO)}): ${maskNum(dayTotal)} ج.م`;
         }
         if (navBtn) {
-            navBtn.innerText = dayTotal > 0 ? `💸 مصاريف اليوم (${maskNum(dayTotal)} ج.م)` : '💸 مصاريف اليوم (العمال)';
+            navBtn.innerText = dayTotal > 0 ? `مصاريف اليوم (${maskNum(dayTotal)} ج.م)` : 'مصاريف اليوم (العمال)';
         }
 
         if (!container) return;
@@ -3028,8 +2988,8 @@
         container.innerHTML = dayItems.map(item => `
             <div class="expense-item">
                 <div>
-                    <span>👷 <strong>${item.title}</strong></span><br>
-                    <small style="color:var(--text-muted);">📅 التاريخ: ${formatDisplayDate(item.dayKey)}</small>
+                    <span><strong>${item.title}</strong></span><br>
+                    <small style="color:var(--text-muted);">التاريخ: ${formatDisplayDate(item.dayKey)}</small>
                 </div>
                 <div style="display:flex; align-items:center;">
                     <span class="expense-amount">${maskNum(item.amount)} ج.م</span>
@@ -3053,7 +3013,7 @@
         toolsList.unshift(tool);
         saveToStorage();
         document.getElementById('toolForm').reset();
-        showSaveToast(`🧰 تم إضافة الأداة "${tool.name}" إلى قائمة Tools`);
+        showSaveToast(`تم إضافة الأداة "${tool.name}" إلى قائمة Tools`);
     }
 
     function updateToolCredits(id, delta) {
@@ -3089,10 +3049,10 @@
         });
 
         if (navBtn) {
-            navBtn.innerText = warnCount > 0 ? `🧰 Tools (⚠️ ${warnCount})` : '🧰 Tools (البوكسات والأدوات والأكونتات)';
+            navBtn.innerText = warnCount > 0 ? `Tools (${warnCount} تنبيه)` : 'Tools (البوكسات والأدوات والأكونتات)';
         }
         if (alertEl) {
-            alertEl.innerText = warnCount > 0 ? `⚠️ يوجد ${warnCount} أداة تحتاج متابعة أو شحن/تجديد` : '✅ جميع الأدوات نشطة';
+            alertEl.innerText = warnCount > 0 ? `يوجد ${warnCount} أداة تحتاج متابعة أو شحن/تجديد` : 'جميع الأدوات نشطة';
         }
 
         if (toolsList.length === 0) {
@@ -3175,8 +3135,8 @@
             const nameKey = r.clientName.trim();
             if (nameKey === merchantKey && (r.clientType === 'merchant' || isUnpaidStatus(r))) {
                 r.paymentStatus = 'paid';
-                if (r.paymentMethod === 'عند الاستلام / آجل' || r.paymentMethod === 'آجل') {
-                    r.paymentMethod = 'كاش الدرج';
+                if (r.paymentMethod === 'لم يتم الدفع' || r.paymentMethod === 'عند الاستلام / آجل' || r.paymentMethod === 'آجل') {
+                    r.paymentMethod = 'نقدي';
                 }
                 r.updatedAt = now;
             }
@@ -3240,7 +3200,7 @@
                 <td style="color: var(--danger); font-weight: 800;">${maskNum(m.credit)} ج.م</td>
                 <td>
                     ${m.credit > 0
-                        ? `<button type="button" class="btn-settle" onclick="settleMerchantBalance('${m.name.replace(/'/g, "\\'")}')">✓ تم الدفع</button>`
+                        ? `<button type="button" class="btn-settle" onclick="settleMerchantBalance('${m.name.replace(/'/g, "\\'")}')">تم الدفع</button>`
                         : `<span style="font-size:11px; color:var(--success);">تم الدفع</span>`}
                 </td>
             </tr>
@@ -3298,7 +3258,7 @@
                 متكرر: <strong style="color: var(--success);">${repeatCount}</strong>
             </div>
             ${document.getElementById('searchInput').value.trim()
-                ? `<button type="button" class="btn-outline" onclick="clearSearchFilter()">✕ مسح البحث</button>`
+                ? `<button type="button" class="btn-outline" onclick="clearSearchFilter()">مسح البحث</button>`
                 : ''}
         `;
 
@@ -3319,7 +3279,7 @@
                 <td style="color: var(--success); font-weight: 700;">${maskNum(c.paid)} ج.م</td>
                 <td style="color: var(--danger); font-weight: 800;">${maskNum(c.credit)} ج.م</td>
                 <td>
-                    <button type="button" class="btn-edit" onclick="filterByClientName('${c.name.replace(/'/g, "\\'")}')">🔍 عرض</button>
+                    <button type="button" class="btn-edit" onclick="filterByClientName('${c.name.replace(/'/g, "\\'")}')">عرض</button>
                 </td>
             </tr>
         `).join('');
@@ -3356,9 +3316,9 @@
             if (privacyHidden) {
                 diffEl.innerHTML = 'مقارنة بأمس: ••••';
             } else if (diff > 0) {
-                diffEl.innerHTML = `مقارنة بأمس: <span class="diff-pos">▲ +${diff.toLocaleString()} ج.م</span>`;
+                diffEl.innerHTML = `مقارنة بأمس: <span class="diff-pos">+${diff.toLocaleString()} ج.م</span>`;
             } else if (diff < 0) {
-                diffEl.innerHTML = `مقارنة بأمس: <span class="diff-neg">▼ ${diff.toLocaleString()} ج.م</span>`;
+                diffEl.innerHTML = `مقارنة بأمس: <span class="diff-neg">${diff.toLocaleString()} ج.م</span>`;
             } else {
                 diffEl.innerHTML = `مقارنة بأمس: متساوي (0 ج.م)`;
             }
@@ -3423,6 +3383,7 @@
             const net = calcRecordNet(r);
             const ageInfo = getRecordAgeInfo(r);
             const unpaid = isUnpaidStatus(r);
+            const methodLabel = normalizePaymentMethodLabel(r.paymentMethod, unpaid);
             const missReasons = getMissingReasons(r);
             const hasPhone = Boolean(normalizeEgyptPhone(r.clientPhone));
             const statusClass =
@@ -3432,21 +3393,21 @@
 
             const merchantBadge = r.clientType === 'merchant' ? `<span class="tag-merchant">تاجر</span>` : '';
             const externalBadge = r.workLocation === 'external'
-                ? `<span class="tag-external">🛵 خارجي${r.externalPlace ? ': ' + r.externalPlace : ''}</span>`
+                ? `<span class="tag-external">خارجي${r.externalPlace ? ': ' + r.externalPlace : ''}</span>`
                 : '';
             const payBadge = unpaid
-                ? `<span class="tag-unpaid">⚠️ لم يتم الدفع</span>`
-                : `<span class="tag-paid">✓ تم الدفع</span>`;
+                ? `<span class="tag-unpaid">لم يتم الدفع</span>`
+                : `<span class="tag-paid">تم الدفع</span>`;
             const missingBadge = missReasons.length > 0
                 ? `<br><span class="tag-unpaid">ناقص: ${missReasons.join(' • ')}</span>`
                 : '';
             const serialBadge = r.serialNumber ? `<br><span class="serial-badge">SN: ${r.serialNumber}</span>` : '';
-            const returnReasonBadge = r.returnReason ? `<br><span class="tag-return-reason">↩ سبب المرتجع: ${r.returnReason}</span>` : '';
-            const overdueBadge = ageInfo.isOverdue ? `<br><span class="tag-overdue">⚠️ متأخر (${ageInfo.days} يوم)</span>` : '';
-            const warrantyBadge = ageInfo.isUnderWarranty ? `<br><span class="tag-warranty">🛡️ ضمان (${ageInfo.warrantyLeftDays}ي)</span>` : '';
+            const returnReasonBadge = r.returnReason ? `<br><span class="tag-return-reason">سبب المرتجع: ${r.returnReason}</span>` : '';
+            const overdueBadge = ageInfo.isOverdue ? `<br><span class="tag-overdue">متأخر (${ageInfo.days} يوم)</span>` : '';
+            const warrantyBadge = ageInfo.isUnderWarranty ? `<br><span class="tag-warranty">ضمان (${ageInfo.warrantyLeftDays}ي)</span>` : '';
             const noteBadge = r.secretNote ? `<br><span class="secret-note">${maskSecret(r.secretNote)}</span>` : '';
             const jumpDayBtn = (currentScope !== 'day' && r.dayKey && r.dayKey !== selectedDateISO)
-                ? `<br><button type="button" class="btn-jump-day" onclick="jumpToRecordDay('${r.dayKey}')">📅 ليومه</button>`
+                ? `<br><button type="button" class="btn-jump-day" onclick="jumpToRecordDay('${r.dayKey}')">ليومه</button>`
                 : '';
 
             const tr = document.createElement('tr');
@@ -3468,7 +3429,7 @@
                 <td>${r.serviceType}${returnReasonBadge}${noteBadge}</td>
                 <td style="white-space:nowrap; font-size:12px;">
                     ${r.date}<br>
-                    <span class="age-text">⏱️ ${ageInfo.label}</span>
+                    <span class="age-text">${ageInfo.label}</span>
                     ${overdueBadge}
                     ${warrantyBadge}
                     ${jumpDayBtn}
@@ -3477,7 +3438,7 @@
                     <span style="color:var(--text-muted); font-size:11px;">سعر: ${maskRaw(r.price)} • تكلفة: ${maskRaw(r.cost)}</span><br>
                     ${(parseFloat(r.refund) || 0) > 0 ? `<span style="color:var(--danger); font-size:11px;">مرتجع: ${maskRaw(r.refund)} ج.م</span><br>` : ''}
                     <strong style="color:${net >= 0 ? 'var(--gold)' : 'var(--danger)'};">صافي: ${maskRaw(net)} ج.م</strong><br>
-                    <span class="tag-wallet">💳 ${r.paymentMethod || (unpaid ? 'عند الاستلام / آجل' : 'كاش الدرج')}</span>
+                    <span class="tag-wallet">${methodLabel}</span>
                 </td>
                 <td>
                     <select class="status-select ${statusClass}" onchange="updateStatus(${r.id}, this.value)">
@@ -3488,9 +3449,8 @@
                     </select>
                 </td>
                 <td class="actions-cell">
-                    <button type="button" class="btn-edit" onclick="openEditModal(${r.id})">✏️</button>
-                    <button type="button" class="btn-wa" ${hasPhone ? `onclick="openWaModal(${r.id})"` : `onclick="alert('برجاء إدخال رقم هاتف صحيح للعميل أولاً.')"`}>💬</button>
-                    <button type="button" class="btn-print" onclick="printReceipt(${r.id})">🖨️</button>
+                    <button type="button" class="btn-edit" onclick="openEditModal(${r.id})">تعديل</button>
+                    <button type="button" class="btn-wa" ${hasPhone ? `onclick="openWaModal(${r.id})"` : `onclick="alert('برجاء إدخال رقم هاتف صحيح للعميل أولاً.')"`}>واتساب</button>
                     <button type="button" class="btn-danger" onclick="deleteRecord(${r.id})">حذف</button>
                 </td>
             `;
@@ -3506,21 +3466,26 @@
         const returned = dayRecords.filter(r => r.status === 'returned').length;
         const externalCount = dayRecords.filter(r => r.workLocation === 'external').length;
         const drawerCash = calcDayDrawerCash(selectedDateISO);
+        const walletDay = dayRecords
+            .filter(r => !isUnpaidStatus(r) && normalizePaymentMethodLabel(r.paymentMethod, false) === 'محفظة إلكترونية')
+            .reduce((s, r) => s + Math.max(0, (parseFloat(r.price) || 0) - (parseFloat(r.refund) || 0)), 0);
         const dayProfit = calcDayRealProfit(selectedDateISO);
         const dayWorkersExp = getDayExpensesTotal(selectedDateISO);
         const totalUnpaid = records
             .filter(r => isUnpaidStatus(r))
             .reduce((s, r) => s + Math.max(0, (parseFloat(r.price) || 0) - (parseFloat(r.refund) || 0)), 0);
 
-        return `ملخص حركة العمل — ${formatDisplayDate(selectedDateISO)}\n` +
-               `المدينة المنورة - محمد أمين\n` +
-               `------------------------\n` +
-               `• إجمالي أجهزة اليوم: ${dayRecords.length} (خارجي: ${externalCount})\n` +
-               `• جاري العمل: ${working} | جاهز: ${ready} | تم التسليم: ${done} | مرتجع: ${returned}\n` +
-               `• كاش الدرج الفعلي: ${drawerCash} ج.م\n` +
-               `• مصاريف العمال اليوم: ${dayWorkersExp} ج.م\n` +
-               `• صافي ربح اليوم: ${dayProfit} ج.م\n` +
-               `• إجمالي لم يتم دفعه: ${totalUnpaid} ج.م`;
+        return [
+            `ملخص حركة العمل — ${formatDisplayDate(selectedDateISO)}`,
+            `المدينة المنورة - محمد أمين`,
+            `------------------------`,
+            `إجمالي أجهزة اليوم: ${dayRecords.length} (خارجي: ${externalCount})`,
+            `جاري العمل: ${working} | جاهز: ${ready} | تم التسليم: ${done} | مرتجع: ${returned}`,
+            `نقدي (الدرج): ${drawerCash} ج.م | محفظة إلكترونية: ${walletDay} ج.م`,
+            `مصاريف العمال اليوم: ${dayWorkersExp} ج.م`,
+            `صافي ربح اليوم: ${dayProfit} ج.م`,
+            `إجمالي لم يتم دفعه: ${totalUnpaid} ج.م`
+        ].join('\n');
     }
 
     function openQuickWaSummaryModal() {
@@ -3534,7 +3499,7 @@
 
     function copyQuickWaSummary() {
         const txt = document.getElementById('quickWaSummaryText').value;
-        navigator.clipboard.writeText(txt).then(() => alert('تم نسخ الملخص!'));
+        navigator.clipboard.writeText(txt).then(() => alert('تم نسخ الملخص.'));
     }
 
     function sendQuickWaSummary() {
@@ -3554,9 +3519,7 @@
         document.getElementById('editWorkLocation').value = r.workLocation || 'shop';
         document.getElementById('editExternalPlace').value = r.externalPlace || '';
         document.getElementById('editPaymentStatus').value = unpaid ? 'credit' : 'paid';
-        document.getElementById('editPaymentMethod').value = unpaid
-            ? 'عند الاستلام / آجل'
-            : ((r.paymentMethod && r.paymentMethod !== 'آجل' && r.paymentMethod !== 'عند الاستلام / آجل') ? r.paymentMethod : 'كاش الدرج');
+        document.getElementById('editPaymentMethod').value = normalizePaymentMethodLabel(r.paymentMethod, unpaid);
         document.getElementById('editClientPhone').value = r.clientPhone || '';
         document.getElementById('editDeviceModel').value = r.deviceModel;
         document.getElementById('editSerialNumber').value = r.serialNumber || '';
@@ -3582,20 +3545,15 @@
         const item = records.find(r => r.id === id);
         if (!item) return;
 
-        const nextPayStatus = document.getElementById('editPaymentStatus').value;
-        const unpaid = nextPayStatus === 'credit' || nextPayStatus === 'unpaid';
-        let nextPayMethod = document.getElementById('editPaymentMethod').value;
-        if (!unpaid && (nextPayMethod === 'عند الاستلام / آجل' || nextPayMethod === 'آجل')) {
-            nextPayMethod = 'كاش الدرج';
-        } else if (unpaid) {
-            nextPayMethod = 'عند الاستلام / آجل';
-        }
+        const nextPayMethodRaw = document.getElementById('editPaymentMethod').value;
+        const unpaid = nextPayMethodRaw === 'لم يتم الدفع' || document.getElementById('editPaymentStatus').value === 'credit';
+        const nextPayMethod = normalizePaymentMethodLabel(nextPayMethodRaw, unpaid);
 
         item.clientName = document.getElementById('editClientName').value.trim();
         item.clientType = document.getElementById('editClientType').value;
         item.workLocation = document.getElementById('editWorkLocation').value;
         item.externalPlace = document.getElementById('editExternalPlace').value.trim();
-        item.paymentStatus = nextPayStatus;
+        item.paymentStatus = unpaid ? 'credit' : 'paid';
         item.paymentMethod = nextPayMethod;
         item.clientPhone = document.getElementById('editClientPhone').value.trim();
         item.deviceModel = document.getElementById('editDeviceModel').value.trim();
@@ -3612,26 +3570,36 @@
 
         saveToStorage();
         const ageInfo = getRecordAgeInfo(item);
-        showSaveToast(`✅ تم تحديث الجهاز #${item.ticketNo} (${unpaid ? 'لم يتم الدفع' : 'تم الدفع'}) — ${ageInfo.label}`);
+        showSaveToast(`تم تحديث الجهاز #${item.ticketNo} (${getPaymentStatusTextForMessage(item)}) — ${ageInfo.label}`);
         closeEditModal();
     }
 
     function buildDefaultWaMessage(r) {
-        const header = `المدينة المنورة - محمد أمين\nالعتبة - 7 شارع العطار\n`;
-        const ticketLine = `كود المتابعة: #${r.ticketNo}\n`;
-        const serialLine = r.serialNumber ? `الرقم التسلسلي: ${r.serialNumber}\n` : '';
-        const payText = isUnpaidStatus(r) ? 'لم يتم الدفع (عند الاستلام)' : 'تم الدفع';
+        const paySummary = getPaymentStatusTextForMessage(r);
+        const lines = [`أهلاً بك يا ${r.clientName}`];
         if (r.status === 'ready') {
-            return `أهلاً بك يا ${r.clientName} 👋\nنحيطك علماً بأن جهازك (${r.deviceModel}) جاهز للاستلام.\n${ticketLine}${serialLine}التكلفة: ${r.price} ج.م (${payText})\n${header}`;
+            lines.push(`نحيطك علماً بأن جهازك (${r.deviceModel}) جاهز للاستلام.`);
+            lines.push(`التكلفة: ${r.price} ج.م — ${paySummary}`);
+        } else if (r.status === 'done') {
+            lines.push(`تم تسليم جهازك (${r.deviceModel}) بنجاح.`);
+            lines.push(`الحساب: ${r.price} ج.م — ${paySummary}`);
+            lines.push(`نسعد دائماً بخدمتك.`);
+        } else if (r.status === 'returned') {
+            lines.push(`بخصوص جهازك (${r.deviceModel})، تم تسجيل مرتجع بقيمة (${r.refund || r.price} ج.م).`);
+            if (r.returnReason) {
+                lines.push(`سبب المرتجع: ${r.returnReason}`);
+            }
+        } else {
+            lines.push(`تم استلام جهازك (${r.deviceModel}) بخصوص (${r.serviceType}).`);
+            lines.push(`التكلفة: ${r.price} ج.م — ${paySummary}`);
         }
-        if (r.status === 'done') {
-            return `أهلاً بك يا ${r.clientName} 👋\nتم تسليم جهازك (${r.deviceModel}) بنجاح.\n${ticketLine}${serialLine}نسعد دائماً بخدمتك في:\n${header}`;
+        lines.push(`كود المتابعة: #${r.ticketNo}`);
+        if (r.serialNumber) {
+            lines.push(`الرقم التسلسلي: ${r.serialNumber}`);
         }
-        if (r.status === 'returned') {
-            const reasonLine = r.returnReason ? `السبب: ${r.returnReason}\n` : '';
-            return `أهلاً بك يا ${r.clientName} 👋\nبخصوص جهازك (${r.deviceModel})، تم تسجيل مرتجع بقيمة (${r.refund || r.price} ج.م).\n${reasonLine}${ticketLine}${serialLine}${header}`;
-        }
-        return `أهلاً بك يا ${r.clientName} 👋\nجهازك (${r.deviceModel}) بخصوص (${r.serviceType}) قيد العمل حالياً.\n${ticketLine}${serialLine}${header}`;
+        lines.push(`المدينة المنورة - محمد أمين`);
+        lines.push(`العتبة - 7 شارع العطار • 01119943360`);
+        return lines.join('\n');
     }
 
     function openWaModal(id) {
@@ -3659,7 +3627,7 @@
         if (!text) return;
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text).then(() => {
-                alert('تم نسخ نص الرسالة!');
+                alert('تم نسخ نص الرسالة.');
             }).catch(() => {});
         }
     }
@@ -3696,18 +3664,20 @@
         const netProfit = calcDayRealProfit(selectedDateISO);
         const unpaidTotal = calcDayCreditTotal(selectedDateISO);
 
-        return `تقفيل يوم: ${formatDisplayDate(selectedDateISO)}\n` +
-               `المدينة المنورة - محمد أمين\n` +
-               `------------------------\n` +
-               `عدد الأجهزة: ${totalCount} (منها خارجي: ${externalCount})\n` +
-               `جاري العمل: ${workingCount} | تم التسليم: ${doneCount}\n` +
-               `إجمالي الإيرادات: ${revenue} ج.م\n` +
-               `كاش الدرج الفعلي: ${drawerCash} ج.م\n` +
-               `تكلفة كريدت/سيرفر: ${cost} ج.م\n` +
-               `مصاريف العمال: ${petty} ج.م\n` +
-               `المرتجع: ${refund} ج.م\n` +
-               `لم يتم الدفع: ${unpaidTotal} ج.م\n` +
-               `صافي الربح الحقيقي: ${netProfit} ج.م`;
+        return [
+            `تقفيل يوم: ${formatDisplayDate(selectedDateISO)}`,
+            `المدينة المنورة - محمد أمين`,
+            `------------------------`,
+            `عدد الأجهزة: ${totalCount} (منها خارجي: ${externalCount})`,
+            `جاري العمل: ${workingCount} | تم التسليم: ${doneCount}`,
+            `إجمالي الإيرادات: ${revenue} ج.م`,
+            `نقدي (الدرج): ${drawerCash} ج.م`,
+            `تكلفة كريدت/سيرفر: ${cost} ج.م`,
+            `مصاريف العمال: ${petty} ج.م`,
+            `المرتجع: ${refund} ج.م`,
+            `لم يتم الدفع: ${unpaidTotal} ج.م`,
+            `صافي الربح الحقيقي: ${netProfit} ج.م`
+        ].join('\n');
     }
 
     function openClosingModal() {
@@ -3722,7 +3692,7 @@
     function copyClosingReport() {
         const txt = document.getElementById('closingReportText').value;
         navigator.clipboard.writeText(txt).then(() => {
-            alert('تم نسخ تقرير تقفيل اليوم!');
+            alert('تم نسخ تقرير تقفيل اليوم.');
         });
     }
 
@@ -3734,40 +3704,6 @@
         if (!opened) {
             window.location.href = url;
         }
-    }
-
-    function printReceipt(id) {
-        const r = records.find(item => item.id === id);
-        if (!r) return;
-
-        const unpaid = isUnpaidStatus(r);
-        const payLabel = unpaid ? 'لم يتم الدفع (عند الاستلام)' : `تم الدفع (${r.paymentMethod || 'كاش الدرج'})`;
-
-        const printArea = document.getElementById('print-area');
-        printArea.innerHTML = `
-            <div class="receipt-box">
-                <div class="receipt-header">
-                    <h2 style="margin:0; font-size:18px;">المدينة المنورة - محمد أمين</h2>
-                    <p style="margin:4px 0; font-size:12px;">لخدمات السوفت وير والبرمجة | 01119943360</p>
-                    <p style="margin:2px 0; font-size:11px;">العتبة - 7 شارع العطار</p>
-                </div>
-                <div class="receipt-row"><span>كود المتابعة:</span><strong>#${r.ticketNo}</strong></div>
-                <div class="receipt-row"><span>اسم العميل:</span><strong>${r.clientName}</strong></div>
-                <div class="receipt-row"><span>التاريخ:</span><strong>${r.date}</strong></div>
-                <div class="receipt-row"><span>نوع الجهاز:</span><strong>${r.deviceModel}</strong></div>
-                ${r.serialNumber ? `<div class="receipt-row"><span>الرقم التسلسلي / IMEI:</span><strong style="direction:ltr;">${r.serialNumber}</strong></div>` : ''}
-                <div class="receipt-row"><span>حالة الجهاز:</span><strong>${r.condition}</strong></div>
-                <div class="receipt-row"><span>الخدمة المطلوبة:</span><strong>${r.serviceType}</strong></div>
-                <div class="receipt-row"><span>التكلفة المتفق عليها:</span><strong>${r.price} ج.م (${payLabel})</strong></div>
-                ${(parseFloat(r.refund) || 0) > 0 ? `<div class="receipt-row"><span>مبلغ مرتجع:</span><strong>${r.refund} ج.م</strong></div>` : ''}
-                <p style="font-size:11px; margin-top:10px; line-height:1.5;">
-                    * المركز غير مسؤول عن فقدان البيانات أثناء عمليات السوفت وير أو فك الشفرات.<br>
-                    * الأجهزة الفاصلة باور تُستلم للفحص بدون ضمان التشغيل.
-                </p>
-                <div class="receipt-footer">يُرجى إحضار الكارت عند الاستلام</div>
-            </div>
-        `;
-        window.print();
     }
 
     function exportData() {
@@ -3810,7 +3746,7 @@
                 toolsList = normalized.toolsList;
                 nextTicketNo = normalized.nextTicketNo;
                 saveToStorage();
-                alert('تم استعادة النسخة الاحتياطية ومزامنتها بنجاح!');
+                alert('تم استعادة النسخة الاحتياطية ومزامنتها بنجاح.');
             } catch (err) {
                 alert('ملف النسخة الاحتياطية غير صالح.');
             }
@@ -3824,7 +3760,7 @@
     });
     window.addEventListener('offline', () => {
         updateNetworkStatusUI();
-        setSyncStatus('offline', '⚠️ محفوظ محلياً');
+        setSyncStatus('offline', 'محفوظ محلياً');
     });
 
     // Initialize
