@@ -79,6 +79,13 @@
             color: var(--text-muted);
         }
 
+        .status-badges {
+            display: inline-flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
         .sync-pill {
             display: inline-flex;
             align-items: center;
@@ -262,6 +269,74 @@
             display: flex;
         }
 
+        /* Radar Banner */
+        .radar-strip {
+            background: rgba(212, 175, 55, 0.06);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            padding: 12px 18px;
+            margin-bottom: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 12px;
+        }
+
+        /* Form Alerts (Duplicate / Risk / Warranty) */
+        .smart-alert {
+            display: none;
+            border-radius: 8px;
+            padding: 9px 11px;
+            margin-bottom: 10px;
+            font-size: 11px;
+            line-height: 1.6;
+            font-weight: 700;
+        }
+
+        .smart-alert.show {
+            display: block;
+        }
+
+        .smart-alert.warn {
+            background: rgba(245, 158, 11, 0.14);
+            border: 1px solid rgba(245, 158, 11, 0.5);
+            color: #fde68a;
+        }
+
+        .smart-alert.danger {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.55);
+            color: #fca5a5;
+        }
+
+        .smart-alert.info {
+            background: rgba(56, 189, 248, 0.14);
+            border: 1px solid rgba(56, 189, 248, 0.45);
+            color: #bae6fd;
+        }
+
+        /* Express Mode */
+        .express-hidden {
+            display: none !important;
+        }
+
+        /* ADB Box */
+        .adb-cmd-box {
+            background: #07090d;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-family: Consolas, monospace;
+            font-size: 12px;
+            color: #93c5fd;
+            direction: ltr;
+            text-align: left;
+            margin-top: 8px;
+            word-break: break-all;
+        }
+
         /* Day Bar */
         .day-bar {
             background-color: var(--bg-card);
@@ -409,6 +484,11 @@
             margin-bottom: 16px;
             padding-bottom: 10px;
             border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
         .form-group {
@@ -663,6 +743,18 @@
             margin-right: 4px;
         }
 
+        .tag-warranty {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.16);
+            color: #6ee7b7;
+            border: 1px solid rgba(16, 185, 129, 0.45);
+            border-radius: 5px;
+            padding: 1px 6px;
+            font-size: 10px;
+            font-weight: 800;
+            margin-top: 3px;
+        }
+
         .tag-overdue {
             display: inline-block;
             background: rgba(239, 68, 68, 0.18);
@@ -846,7 +938,10 @@
         </div>
     </div>
     <div class="header-actions">
-        <span class="sync-pill syncing" id="cloudSyncStatus">☁️ جاري المزامنة...</span>
+        <div class="status-badges">
+            <span class="sync-pill online" id="netStatusPill">🌐 أونلاين</span>
+            <span class="sync-pill syncing" id="cloudSyncStatus">☁️ جاري المزامنة...</span>
+        </div>
         <button type="button" class="btn-outline active-toggle" id="autoSyncBtn" onclick="toggleAutoSync()">⏱️ مزامنة تلقائية: تشغيل</button>
         <button type="button" class="btn-outline active-toggle" id="soundAlertBtn" onclick="toggleSoundAlert()">🔔 صوت التنبيه: تشغيل</button>
         <button type="button" class="btn-outline" id="privacyBtn" onclick="togglePrivacyMode()">🙈 إخفاء الأرقام والرموز</button>
@@ -863,6 +958,12 @@
     <div class="toast-banner" id="saveToast">
         <span id="saveToastText"></span>
         <button type="button" class="btn-outline" style="padding: 3px 9px; font-size: 11px;" onclick="hideSaveToast()">✕</button>
+    </div>
+
+    <!-- Smart Warranty & Return Radar Strip -->
+    <div class="radar-strip" id="warrantyRadarStrip">
+        <div id="warrantyRadarSummary">🛡️ رادار الضمان والمرتجع: جاري التحليل...</div>
+        <button type="button" class="btn-outline" onclick="filterWarrantyScope()">عرض الأجهزة تحت الضمان / المرتجع</button>
     </div>
 
     <!-- Day Switcher Bar -->
@@ -911,13 +1012,22 @@
         <div class="left-stack">
             <!-- New Device Form -->
             <div class="panel">
-                <div class="panel-title">+ استلام جهاز جديد (<span id="formDayLabel">اليوم</span>)</div>
+                <div class="panel-title">
+                    <span>+ استلام جهاز جديد (<span id="formDayLabel">اليوم</span>)</span>
+                    <button type="button" class="btn-outline" id="expressModeBtn" onclick="toggleExpressMode()" style="padding: 4px 9px; font-size: 11px;">⚡ الوردية السريعة</button>
+                </div>
+
+                <!-- Duplicate Serial / Phone / Warranty Alert -->
+                <div class="smart-alert warn" id="duplicateAlertBox"></div>
+                <!-- Return Risk Detector Alert -->
+                <div class="smart-alert danger" id="riskAlertBox"></div>
+
                 <form id="deviceForm" onsubmit="addRecord(event)">
                     <div class="form-group">
                         <label>اسم العميل أو المحل / التاجر *</label>
-                        <input type="text" id="clientName" required placeholder="مثال: أحمد محمود أو محل النور">
+                        <input type="text" id="clientName" required oninput="checkSmartAlerts()" placeholder="مثال: أحمد محمود أو محل النور">
                     </div>
-                    <div class="row-2">
+                    <div class="row-2 express-optional">
                         <div class="form-group">
                             <label>نوع الحساب</label>
                             <select id="clientType">
@@ -934,31 +1044,31 @@
                         </div>
                     </div>
                     <div class="row-2">
-                        <div class="form-group">
+                        <div class="form-group express-optional">
                             <label>رقم الهاتف / واتساب</label>
-                            <input type="text" id="clientPhone" placeholder="01xxxxxxxxx">
+                            <input type="text" id="clientPhone" oninput="checkSmartAlerts()" placeholder="01xxxxxxxxx">
                         </div>
                         <div class="form-group">
                             <label>نوع الجهاز / الموديل *</label>
-                            <input type="text" id="deviceModel" required placeholder="مثال: Samsung A13">
+                            <input type="text" id="deviceModel" required oninput="checkSmartAlerts()" placeholder="مثال: Samsung A13">
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group express-optional">
                         <label>الرقم التسلسلي / IMEI (اختياري — يظهر في الإيصال والبحث)</label>
-                        <input type="text" id="serialNumber" placeholder="مثال: 356938035643809 أو R58N123ABCD">
+                        <input type="text" id="serialNumber" oninput="checkSmartAlerts()" placeholder="مثال: 356938035643809 أو R58N123ABCD">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group express-optional">
                         <label>حالة الجهاز الظاهرية</label>
                         <div class="checkbox-group">
-                            <label class="checkbox-item"><input type="radio" name="condition" value="سليم" checked> سليم</label>
-                            <label class="checkbox-item"><input type="radio" name="condition" value="كسر بالشاشة"> كسر بالشاشة</label>
-                            <label class="checkbox-item"><input type="radio" name="condition" value="كسر بالضهر"> كسر بالضهر</label>
-                            <label class="checkbox-item"><input type="radio" name="condition" value="فاصل باور"> فاصل باور</label>
+                            <label class="checkbox-item"><input type="radio" name="condition" value="سليم" onchange="checkSmartAlerts()" checked> سليم</label>
+                            <label class="checkbox-item"><input type="radio" name="condition" value="كسر بالشاشة" onchange="checkSmartAlerts()"> كسر بالشاشة</label>
+                            <label class="checkbox-item"><input type="radio" name="condition" value="كسر بالضهر" onchange="checkSmartAlerts()"> كسر بالضهر</label>
+                            <label class="checkbox-item"><input type="radio" name="condition" value="فاصل باور" onchange="checkSmartAlerts()"> فاصل باور</label>
                         </div>
                     </div>
                     <div class="form-group">
                         <label>الخدمة المطلوبة / المشكلة *</label>
-                        <input type="text" id="serviceType" required placeholder="مثال: تخطي حساب FRP / سوفت رسمي">
+                        <input type="text" id="serviceType" required oninput="checkSmartAlerts()" placeholder="مثال: تخطي حساب FRP / سوفت رسمي">
                         <div class="quick-services">
                             <button type="button" class="chip-btn" onclick="applyQuickService('FRP Bypass')">FRP Bypass</button>
                             <button type="button" class="chip-btn" onclick="applyQuickService('سوفت رسمي')">سوفت رسمي</button>
@@ -973,12 +1083,12 @@
                             <label>السعر (ج.م) *</label>
                             <input type="number" id="price" required min="0" value="0">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group express-optional">
                             <label>تكلفة كريدت / سيرفر (ج.م)</label>
                             <input type="number" id="cost" min="0" value="0">
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group express-optional">
                         <label>ملاحظات فنية سرية / رمز القفل (Pattern / PIN) — لا تُطبع</label>
                         <input type="text" id="secretNote" placeholder="مثال: PIN 1234 / نقش حرف Z / بوتلودر مقفول">
                     </div>
@@ -986,6 +1096,26 @@
                         حفظ في حسابات اليوم
                     </button>
                 </form>
+            </div>
+
+            <!-- ADB Command Builder -->
+            <div class="panel">
+                <div class="panel-title">💻 قالب أمر سحب معلومات الجهاز (ADB)</div>
+                <div class="form-group">
+                    <label>اختر الأمر المطلوب</label>
+                    <select id="adbCommandSelect" onchange="updateAdbPreview()">
+                        <option value="adb devices -l">فحص الأجهزة المتصلة (adb devices -l)</option>
+                        <option value="adb shell getprop ro.serialno">سحب الرقم التسلسلي (Serial No)</option>
+                        <option value="adb shell getprop ro.product.model">سحب موديل الجهاز (Product Model)</option>
+                        <option value="adb shell getprop ro.build.version.release">سحب إصدار أندرويد (Android Version)</option>
+                        <option value="adb shell getprop ro.boot.flash.locked">فحص حالة البوتلودر (Bootloader Lock)</option>
+                        <option value="adb shell service call iphonesubinfo 1">قراءة بيانات الشريحة / IMEI (حسب صلاحيات الجهاز)</option>
+                    </select>
+                </div>
+                <div class="adb-cmd-box" id="adbCmdPreview">adb devices -l</div>
+                <button type="button" class="btn-outline" style="width: 100%; justify-content: center; margin-top: 10px;" onclick="copyAdbCommand()">
+                    📋 نسخ أمر ADB
+                </button>
             </div>
 
             <!-- Daily Petty Cash / Expenses -->
@@ -1020,6 +1150,7 @@
                     <button type="button" class="tab-btn active" onclick="setScope('day', this)">أجهزة اليوم</button>
                     <button type="button" class="tab-btn" onclick="setScope('all', this)">كل الأيام</button>
                     <button type="button" class="tab-btn" onclick="setScope('overdue', this)" id="overdueTabBtn">متأخر (+2 يوم)</button>
+                    <button type="button" class="tab-btn" onclick="setScope('warranty', this)">الضمان والمرتجع</button>
                     <button type="button" class="tab-btn" onclick="setScope('merchants', this)">حسابات التجار</button>
                     <button type="button" class="tab-btn" onclick="setScope('clients', this)">العملاء والمحلات المتكررة</button>
                     <button type="button" class="tab-btn" onclick="setScope('working', this)">جاري العمل</button>
@@ -1226,14 +1357,78 @@
     const SUPABASE_KEY = 'sb_publishable_KtvuB96Z7p2igoqK5fHEsA_cLJXYHC2';
     const STATE_ROW_ID = 'main_shop_state';
     const AUTO_SYNC_INTERVAL_MS = 60000;
+    const WARRANTY_DAYS = 7;
 
     let activeWaPhone = '';
     let lastUpdatedAt = 0;
     let privacyHidden = localStorage.getItem('amin_privacy_hidden') === 'true';
     let autoSyncEnabled = localStorage.getItem('amin_auto_sync') !== 'false';
     let soundAlertEnabled = localStorage.getItem('amin_sound_alert') !== 'false';
+    let expressMode = localStorage.getItem('amin_express_mode') === 'true';
     let autoSyncTimer = null;
     let toastTimer = null;
+
+    /* Instant Online / Offline Indicator */
+    function updateNetworkStatusUI() {
+        const pill = document.getElementById('netStatusPill');
+        if (!pill) return;
+        const isOnline = navigator.onLine !== false;
+        pill.className = `sync-pill ${isOnline ? 'online' : 'offline'}`;
+        pill.innerText = isOnline ? '🌐 أونلاين' : '📴 أوفلاين (لا يوجد نت)';
+    }
+
+    /* Express Counter Mode */
+    function applyExpressModeUI() {
+        const btn = document.getElementById('expressModeBtn');
+        const optionals = document.querySelectorAll('.express-optional');
+        const phoneInput = document.getElementById('clientPhone');
+        const serviceInput = document.getElementById('serviceType');
+        const condChecked = document.querySelector('input[name="condition"]:checked');
+        const condValue = condChecked ? condChecked.value : 'سليم';
+
+        if (expressMode) {
+            if (btn) {
+                btn.innerText = '⚡ الوردية السريعة: مفعّل';
+                btn.classList.add('active-toggle');
+            }
+            optionals.forEach(el => el.classList.add('express-hidden'));
+            if (phoneInput) phoneInput.removeAttribute('required');
+            if (serviceInput && !serviceInput.value.trim()) {
+                serviceInput.value = `سوفت وير (${condValue})`;
+            }
+        } else {
+            if (btn) {
+                btn.innerText = '⚡ الوردية السريعة';
+                btn.classList.remove('active-toggle');
+            }
+            optionals.forEach(el => el.classList.remove('express-hidden'));
+        }
+    }
+
+    function toggleExpressMode() {
+        expressMode = !expressMode;
+        localStorage.setItem('amin_express_mode', String(expressMode));
+        applyExpressModeUI();
+    }
+
+    /* ADB Command Builder */
+    function updateAdbPreview() {
+        const sel = document.getElementById('adbCommandSelect');
+        const box = document.getElementById('adbCmdPreview');
+        if (sel && box) {
+            box.innerText = sel.value;
+        }
+    }
+
+    function copyAdbCommand() {
+        const box = document.getElementById('adbCmdPreview');
+        if (!box || !box.innerText) return;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(box.innerText).then(() => {
+                showSaveToast(`📋 تم نسخ أمر ADB: ${box.innerText}`);
+            }).catch(() => {});
+        }
+    }
 
     function showSaveToast(message) {
         const banner = document.getElementById('saveToast');
@@ -1268,7 +1463,105 @@
 
         const isActiveWork = r.status === 'working' || r.status === 'ready';
         const isOverdue = isActiveWork && days >= 2;
-        return { days, totalHours, label, isOverdue };
+        const warrantyLeftDays = r.status === 'done' ? Math.max(0, WARRANTY_DAYS - days) : 0;
+        const isUnderWarranty = r.status === 'done' && warrantyLeftDays > 0;
+        const isReturnedItem = r.status === 'returned' || (parseFloat(r.refund) || 0) > 0;
+
+        return { days, totalHours, label, isOverdue, isUnderWarranty, warrantyLeftDays, isReturnedItem };
+    }
+
+    function renderWarrantyRadar() {
+        const summaryEl = document.getElementById('warrantyRadarSummary');
+        if (!summaryEl) return;
+
+        const total = records.length;
+        const returnedCount = records.filter(r => getRecordAgeInfo(r).isReturnedItem).length;
+        const warrantyCount = records.filter(r => getRecordAgeInfo(r).isUnderWarranty).length;
+        const successRate = total > 0 ? Math.max(0, Math.round(((total - returnedCount) / total) * 100)) : 100;
+        const returnRate = total > 0 ? Math.round((returnedCount / total) * 100) : 0;
+
+        summaryEl.innerHTML =
+            `🛡️ <strong>رادار الضمان والمرتجع:</strong> ` +
+            `أجهزة تحت الضمان (${WARRANTY_DAYS} أيام): <strong style="color: var(--success);">${warrantyCount}</strong> | ` +
+            `المرتجع: <strong style="color: var(--danger);">${returnedCount} (${returnRate}%)</strong> | ` +
+            `معدل النجاح: <strong style="color: var(--gold);">${successRate}%</strong>`;
+    }
+
+    function filterWarrantyScope() {
+        currentScope = 'warranty';
+        document.querySelectorAll('.tab-btn').forEach(b => {
+            b.classList.toggle('active', b.textContent.includes('الضمان والمرتجع'));
+        });
+        renderMerchantSection();
+        renderClientsSection();
+        renderTable();
+    }
+
+    /* Duplicate Serial/Phone & Return Risk Detector */
+    function checkSmartAlerts() {
+        const dupBox = document.getElementById('duplicateAlertBox');
+        const riskBox = document.getElementById('riskAlertBox');
+        if (!dupBox || !riskBox) return;
+
+        const serialVal = (document.getElementById('serialNumber')?.value || '').trim().toLowerCase();
+        const phoneVal = (document.getElementById('clientPhone')?.value || '').replace(/\D/g, '');
+        const modelVal = (document.getElementById('deviceModel')?.value || '').trim().toLowerCase();
+        const serviceVal = (document.getElementById('serviceType')?.value || '').trim().toLowerCase();
+        const condEl = document.querySelector('input[name="condition"]:checked');
+        const condVal = condEl ? condEl.value : '';
+
+        const dupMessages = [];
+        if (serialVal && serialVal.length >= 4) {
+            const matches = records.filter(r => (r.serialNumber || '').trim().toLowerCase() === serialVal);
+            if (matches.length > 0) {
+                const latest = matches[0];
+                const age = getRecordAgeInfo(latest);
+                const wText = age.isUnderWarranty ? ` — ⚠️ تحت الضمان (متبقي ${age.warrantyLeftDays} يوم)` : '';
+                dupMessages.push(`🔁 السيريال مسجل ${matches.length} مرة سابقاً (آخرها #${latest.ticketNo} بتاريخ ${latest.date} - ${latest.serviceType})${wText}`);
+            }
+        }
+        if (phoneVal && phoneVal.length >= 8) {
+            const phoneMatches = records.filter(r => (r.clientPhone || '').replace(/\D/g, '') === phoneVal);
+            if (phoneMatches.length > 0) {
+                const latestP = phoneMatches[0];
+                dupMessages.push(`📱 رقم الهاتف مسجل ${phoneMatches.length} مرة سابقاً باسم "${latestP.clientName}" (آخر جهاز: ${latestP.deviceModel} بتاريخ ${latestP.date})`);
+            }
+        }
+
+        if (dupMessages.length > 0) {
+            dupBox.innerHTML = dupMessages.join('<br>');
+            dupBox.classList.add('show');
+        } else {
+            dupBox.innerHTML = '';
+            dupBox.classList.remove('show');
+        }
+
+        const riskMessages = [];
+        if (condVal === 'فاصل باور') {
+            riskMessages.push('⚠️ خطر مرتجع/عطل: الجهاز "فاصل باور" — يُنصح بتوضيح شرط الفحص بدون ضمان التشغيل.');
+        }
+        if (modelVal && modelVal.length >= 2) {
+            const sameModel = records.filter(r => (r.deviceModel || '').toLowerCase().includes(modelVal));
+            const modelReturns = sameModel.filter(r => getRecordAgeInfo(r).isReturnedItem);
+            if (modelReturns.length > 0) {
+                riskMessages.push(`⚡ تنبيه مخاطر الموديل (${modelVal}): سُجل ${modelReturns.length} مرتجع سابق على هذا الموديل من أصل ${sameModel.length} عملية.`);
+            }
+        }
+        if (serviceVal && serviceVal.length >= 3) {
+            const sameService = records.filter(r => (r.serviceType || '').toLowerCase().includes(serviceVal));
+            const srvReturns = sameService.filter(r => getRecordAgeInfo(r).isReturnedItem);
+            if (srvReturns.length > 0) {
+                riskMessages.push(`⚡ تنبيه مخاطر الخدمة: يوجد ${srvReturns.length} مرتجع سابق في خدمات مشابهة لـ "${serviceVal}".`);
+            }
+        }
+
+        if (riskMessages.length > 0) {
+            riskBox.innerHTML = riskMessages.join('<br>');
+            riskBox.classList.add('show');
+        } else {
+            riskBox.innerHTML = '';
+            riskBox.classList.remove('show');
+        }
     }
 
     function maskNum(val) {
@@ -1475,6 +1768,7 @@
             input.value = `${current} + ${serviceName}`;
         }
         input.focus();
+        checkSmartAlerts();
     }
 
     let records = JSON.parse(localStorage.getItem('amin_software_db')) || [];
@@ -1535,6 +1829,7 @@
     }
 
     async function pushToCloud() {
+        updateNetworkStatusUI();
         setSyncStatus('syncing', '☁️ جاري الحفظ...');
         const stamp = Date.now();
         lastUpdatedAt = stamp;
@@ -1568,6 +1863,7 @@
     }
 
     async function pullFromCloud(showAlertOnSuccess = false, silent = false) {
+        updateNetworkStatusUI();
         if (!silent) {
             setSyncStatus('syncing', '☁️ جاري الجلب...');
         }
@@ -1678,12 +1974,15 @@
     }
 
     function refreshUI() {
+        updateNetworkStatusUI();
         updateOverdueTabBadge();
+        renderWarrantyRadar();
         updateStats();
         renderExpenses();
         renderMerchantSection();
         renderClientsSection();
         renderTable();
+        checkSmartAlerts();
     }
 
     function addRecord(e) {
@@ -1702,6 +2001,9 @@
             createdAt = new Date(yy, mm - 1, dd, 12, 0, 0).getTime();
         }
 
+        const rawService = document.getElementById('serviceType').value.trim();
+        const finalService = rawService || (expressMode ? `سوفت وير (${condition})` : '');
+
         const newRecord = {
             id: nowMs,
             createdAt: createdAt,
@@ -1714,7 +2016,7 @@
             deviceModel: document.getElementById('deviceModel').value.trim(),
             serialNumber: document.getElementById('serialNumber').value.trim(),
             condition: condition,
-            serviceType: document.getElementById('serviceType').value.trim(),
+            serviceType: finalService,
             price: price,
             cost: cost,
             refund: 0,
@@ -1729,6 +2031,7 @@
         const serialPart = newRecord.serialNumber ? ` | سيريال: ${newRecord.serialNumber}` : '';
         showSaveToast(`✅ تم حفظ الجهاز #${newRecord.ticketNo} (${newRecord.deviceModel}${serialPart}) — ${ageInfo.label} (تاريخ الاستلام: ${newRecord.date})`);
         document.getElementById('deviceForm').reset();
+        applyExpressModeUI();
     }
 
     function addExpense(e) {
@@ -1990,6 +2293,8 @@
                 matchesScope = r.dayKey === selectedDateISO;
             } else if (currentScope === 'overdue') {
                 matchesScope = ageInfo.isOverdue;
+            } else if (currentScope === 'warranty') {
+                matchesScope = ageInfo.isUnderWarranty || ageInfo.isReturnedItem;
             } else if (currentScope === 'merchants') {
                 matchesScope = r.clientType === 'merchant' || r.paymentStatus === 'credit';
             } else if (currentScope === 'clients') {
@@ -2030,6 +2335,7 @@
             const creditBadge = r.paymentStatus === 'credit' ? `<span class="tag-credit">آجل</span>` : '';
             const serialBadge = r.serialNumber ? `<br><span class="serial-badge">SN: ${r.serialNumber}</span>` : '';
             const overdueBadge = ageInfo.isOverdue ? `<br><span class="tag-overdue">⚠️ متأخر (${ageInfo.days} يوم)</span>` : '';
+            const warrantyBadge = ageInfo.isUnderWarranty ? `<br><span class="tag-warranty">🛡️ ضمان (${ageInfo.warrantyLeftDays}ي متبقي)</span>` : '';
             const noteBadge = r.secretNote ? `<br><span class="secret-note">${maskSecret(r.secretNote)}</span>` : '';
             const jumpDayBtn = (currentScope !== 'day' && r.dayKey && r.dayKey !== selectedDateISO)
                 ? `<br><button type="button" class="btn-jump-day" onclick="jumpToRecordDay('${r.dayKey}')">📅 انتقال ليومه</button>`
@@ -2055,6 +2361,7 @@
                     ${r.date}<br>
                     <span class="age-text">⏱️ ${ageInfo.label}</span>
                     ${overdueBadge}
+                    ${warrantyBadge}
                     ${jumpDayBtn}
                 </td>
                 <td style="white-space:nowrap;">
@@ -2330,8 +2637,20 @@
         reader.readAsText(file);
     }
 
+    window.addEventListener('online', () => {
+        updateNetworkStatusUI();
+        pullFromCloud(false, true);
+    });
+    window.addEventListener('offline', () => {
+        updateNetworkStatusUI();
+        setSyncStatus('offline', '⚠️ محفوظ محلياً (أوفلاين)');
+    });
+
     // Initialize
+    updateNetworkStatusUI();
     updateHeaderTogglesUI();
+    applyExpressModeUI();
+    updateAdbPreview();
     initDateInput();
     refreshUI();
     pullFromCloud(false, false);
