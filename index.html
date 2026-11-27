@@ -90,6 +90,7 @@
             background: var(--bg-input);
             border: 1px solid var(--border);
             color: var(--text-muted);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
         .sync-pill.online {
@@ -107,9 +108,19 @@
             color: var(--danger);
         }
 
+        .sync-pill.pulse-success {
+            transform: scale(1.06);
+            box-shadow: 0 0 14px rgba(16, 185, 129, 0.55);
+        }
+
+        .sync-pill.pulse-error {
+            transform: scale(1.06);
+            box-shadow: 0 0 14px rgba(239, 68, 68, 0.65);
+        }
+
         .header-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
             align-items: center;
         }
@@ -118,8 +129,8 @@
             cursor: pointer;
             border: none;
             border-radius: 8px;
-            padding: 9px 15px;
-            font-size: 13px;
+            padding: 9px 14px;
+            font-size: 12px;
             font-weight: 700;
             transition: 0.2s;
             display: inline-flex;
@@ -145,6 +156,12 @@
         .btn-outline:hover {
             border-color: var(--gold);
             color: var(--gold);
+        }
+
+        .btn-outline.active-toggle {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: var(--gold-dim);
         }
 
         .btn-danger {
@@ -202,6 +219,20 @@
         .btn-settle:hover {
             background-color: var(--success);
             color: #04130d;
+        }
+
+        .btn-jump-day {
+            background-color: rgba(56, 189, 248, 0.12);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            padding: 2px 7px;
+            font-size: 10px;
+            margin-top: 4px;
+        }
+
+        .btn-jump-day:hover {
+            background-color: #38bdf8;
+            color: #06131c;
         }
 
         /* Container */
@@ -450,7 +481,7 @@
             margin-left: 8px;
         }
 
-        /* Merchant Section */
+        /* Merchant & Repeat Client Sections */
         .merchant-section {
             display: none;
             margin-bottom: 16px;
@@ -469,6 +500,11 @@
             font-size: 12px;
             color: var(--text-main);
             line-height: 1.7;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         /* Table & Filters */
@@ -563,6 +599,18 @@
             background: rgba(245, 158, 11, 0.16);
             color: var(--warning);
             border: 1px solid rgba(245, 158, 11, 0.4);
+            border-radius: 5px;
+            padding: 1px 6px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-right: 4px;
+        }
+
+        .tag-repeat {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.14);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.35);
             border-radius: 5px;
             padding: 1px 6px;
             font-size: 10px;
@@ -735,10 +783,13 @@
     </div>
     <div class="header-actions">
         <span class="sync-pill syncing" id="cloudSyncStatus">☁️ جاري المزامنة...</span>
-        <button class="btn-outline" onclick="pullFromCloud(true)">🔄 تحديث من السحابة</button>
-        <button class="btn-gold" onclick="openClosingModal()">📊 تقفيل اليوم</button>
-        <button class="btn-outline" onclick="exportData()">⬇ حفظ نسخة احتياطية</button>
-        <button class="btn-outline" onclick="document.getElementById('importFile').click()">⬆ استعادة نسخة</button>
+        <button type="button" class="btn-outline active-toggle" id="autoSyncBtn" onclick="toggleAutoSync()">⏱️ مزامنة تلقائية: تشغيل</button>
+        <button type="button" class="btn-outline active-toggle" id="soundAlertBtn" onclick="toggleSoundAlert()">🔔 صوت التنبيه: تشغيل</button>
+        <button type="button" class="btn-outline" id="privacyBtn" onclick="togglePrivacyMode()">🙈 إخفاء الأرقام والرموز</button>
+        <button type="button" class="btn-outline" onclick="pullFromCloud(true)">🔄 تحديث من السحابة</button>
+        <button type="button" class="btn-gold" onclick="openClosingModal()">📊 تقفيل اليوم</button>
+        <button type="button" class="btn-outline" onclick="exportData()">⬇ حفظ نسخة احتياطية</button>
+        <button type="button" class="btn-outline" onclick="document.getElementById('importFile').click()">⬆ استعادة نسخة</button>
         <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
     </div>
 </header>
@@ -747,10 +798,10 @@
     <!-- Day Switcher Bar -->
     <div class="day-bar">
         <div class="day-controls">
-            <button class="btn-outline" onclick="changeDay(-1)">◀ أمس</button>
+            <button type="button" class="btn-outline" onclick="changeDay(-1)">◀ أمس</button>
             <input type="date" id="selectedDate" onchange="onDateChange()">
-            <button class="btn-outline" onclick="changeDay(1)">غداً ▶</button>
-            <button class="btn-gold" onclick="goToday()">اليوم</button>
+            <button type="button" class="btn-outline" onclick="changeDay(1)">غداً ▶</button>
+            <button type="button" class="btn-gold" onclick="goToday()">اليوم</button>
         </div>
         <div class="day-badge">
             عرض حسابات وشغل يوم: <strong id="activeDayLabel">-</strong>
@@ -887,12 +938,13 @@
                     <input type="text" id="searchInput" onkeyup="renderTable()" placeholder="🔍 ابحث بكود المتابعة (#101)، الاسم، المحل، الموديل، أو الهاتف...">
                 </div>
                 <div class="filter-tabs">
-                    <button class="tab-btn active" onclick="setScope('day', this)">أجهزة اليوم</button>
-                    <button class="tab-btn" onclick="setScope('all', this)">كل الأيام</button>
-                    <button class="tab-btn" onclick="setScope('merchants', this)">حسابات التجار</button>
-                    <button class="tab-btn" onclick="setScope('working', this)">جاري العمل</button>
-                    <button class="tab-btn" onclick="setScope('done', this)">تم التسليم</button>
-                    <button class="tab-btn" onclick="setScope('returned', this)">المرتجع</button>
+                    <button type="button" class="tab-btn active" onclick="setScope('day', this)">أجهزة اليوم</button>
+                    <button type="button" class="tab-btn" onclick="setScope('all', this)">كل الأيام</button>
+                    <button type="button" class="tab-btn" onclick="setScope('merchants', this)">حسابات التجار</button>
+                    <button type="button" class="tab-btn" onclick="setScope('clients', this)">العملاء والمحلات المتكررة</button>
+                    <button type="button" class="tab-btn" onclick="setScope('working', this)">جاري العمل</button>
+                    <button type="button" class="tab-btn" onclick="setScope('done', this)">تم التسليم</button>
+                    <button type="button" class="tab-btn" onclick="setScope('returned', this)">المرتجع</button>
                 </div>
             </div>
 
@@ -912,6 +964,26 @@
                             </tr>
                         </thead>
                         <tbody id="merchantLedgerBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Aggregated Repeat Clients & Shops -->
+            <div class="merchant-section" id="clientsSection">
+                <div class="merchant-summary" id="clientsSummaryBox"></div>
+                <div class="table-wrapper" style="margin-bottom: 18px;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>العميل / المحل</th>
+                                <th>عدد مرات التعامل</th>
+                                <th>إجمالي الإيراد</th>
+                                <th>المدفوع</th>
+                                <th>الآجل المتبقي</th>
+                                <th>عرض السجلات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clientsLedgerBody"></tbody>
                     </table>
                 </div>
             </div>
@@ -943,15 +1015,16 @@
     <div class="modal-box">
         <div class="modal-header">
             <h3>💬 رد جاهز على واتساب</h3>
-            <button class="btn-outline" style="padding: 4px 10px;" onclick="closeWaModal()">✕</button>
+            <button type="button" class="btn-outline" style="padding: 4px 10px;" onclick="closeWaModal()">✕</button>
         </div>
         <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">
             العميل: <strong id="waClientLabel" style="color: var(--text-main);"></strong> | الرقم: <strong id="waPhoneLabel" style="color: var(--whatsapp);"></strong>
         </p>
         <textarea id="waMessageText" class="modal-textarea"></textarea>
         <div class="modal-footer">
-            <button class="btn-outline" onclick="closeWaModal()">إلغاء</button>
-            <button class="btn-gold" onclick="sendWaMessage()">إرسال عبر واتساب ↗</button>
+            <button type="button" class="btn-outline" onclick="copyWaMessage()">📋 نسخ الرسالة</button>
+            <button type="button" class="btn-outline" onclick="closeWaModal()">إلغاء</button>
+            <button type="button" class="btn-gold" onclick="sendWaMessage()">إرسال عبر واتساب ↗</button>
         </div>
     </div>
 </div>
@@ -961,7 +1034,7 @@
     <div class="modal-box">
         <div class="modal-header">
             <h3>✏️ تعديل السجل <span id="editTicketBadge" style="color: var(--text-main);"></span></h3>
-            <button class="btn-outline" style="padding: 4px 10px;" onclick="closeEditModal()">✕</button>
+            <button type="button" class="btn-outline" style="padding: 4px 10px;" onclick="closeEditModal()">✕</button>
         </div>
         <form id="editForm" onsubmit="saveEditedRecord(event)">
             <input type="hidden" id="editId">
@@ -1050,13 +1123,13 @@
     <div class="modal-box">
         <div class="modal-header">
             <h3>📊 تقرير تقفيل اليوم</h3>
-            <button class="btn-outline" style="padding: 4px 10px;" onclick="closeClosingModal()">✕</button>
+            <button type="button" class="btn-outline" style="padding: 4px 10px;" onclick="closeClosingModal()">✕</button>
         </div>
         <textarea id="closingReportText" class="modal-textarea" readonly></textarea>
         <div class="modal-footer">
-            <button class="btn-outline" onclick="copyClosingReport()">📋 نسخ التقرير</button>
-            <button class="btn-wa" onclick="sendClosingToWa()">💬 إرسال لواتساب</button>
-            <button class="btn-gold" onclick="closeClosingModal()">إغلاق</button>
+            <button type="button" class="btn-outline" onclick="copyClosingReport()">📋 نسخ التقرير</button>
+            <button type="button" class="btn-wa" onclick="sendClosingToWa()">💬 إرسال لواتساب</button>
+            <button type="button" class="btn-gold" onclick="closeClosingModal()">إغلاق</button>
         </div>
     </div>
 </div>
@@ -1068,14 +1141,137 @@
     const SUPABASE_URL = 'https://gzxbycwsditjnxjhwouo.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_KtvuB96Z7p2igoqK5fHEsA_cLJXYHC2';
     const STATE_ROW_ID = 'main_shop_state';
+    const AUTO_SYNC_INTERVAL_MS = 60000;
 
     let activeWaPhone = '';
     let lastUpdatedAt = 0;
+    let privacyHidden = localStorage.getItem('amin_privacy_hidden') === 'true';
+    let autoSyncEnabled = localStorage.getItem('amin_auto_sync') !== 'false';
+    let soundAlertEnabled = localStorage.getItem('amin_sound_alert') !== 'false';
+    let autoSyncTimer = null;
+
+    function maskNum(val) {
+        if (privacyHidden) return '••••';
+        return Number(val || 0).toLocaleString();
+    }
+
+    function maskRaw(val) {
+        if (privacyHidden) return '••••';
+        return String(val ?? 0);
+    }
+
+    function maskSecret(note) {
+        if (!note) return '';
+        if (privacyHidden) return '🔒 ••••••';
+        return `🔒 ${note}`;
+    }
+
+    function pulseSyncBadge(type) {
+        const el = document.getElementById('cloudSyncStatus');
+        if (!el) return;
+        const cls = type === 'success' ? 'pulse-success' : 'pulse-error';
+        el.classList.remove('pulse-success', 'pulse-error');
+        void el.offsetWidth;
+        el.classList.add(cls);
+        setTimeout(() => el.classList.remove(cls), 900);
+    }
+
+    function playSyncTone(success) {
+        if (!soundAlertEnabled) return;
+        try {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtx) return;
+            const ctx = new AudioCtx();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            if (success) {
+                osc.frequency.setValueAtTime(740, ctx.currentTime);
+                osc.frequency.setValueAtTime(980, ctx.currentTime + 0.08);
+            } else {
+                osc.frequency.setValueAtTime(320, ctx.currentTime);
+                osc.frequency.setValueAtTime(220, ctx.currentTime + 0.1);
+            }
+            gain.gain.setValueAtTime(0.06, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.24);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.25);
+        } catch (e) {
+            // Audio blocked before user interaction
+        }
+    }
+
+    function notifySyncResult(success, text) {
+        setSyncStatus(success ? 'online' : 'offline', text);
+        pulseSyncBadge(success ? 'success' : 'error');
+        playSyncTone(success);
+    }
+
+    function updateHeaderTogglesUI() {
+        const privBtn = document.getElementById('privacyBtn');
+        if (privBtn) {
+            privBtn.innerText = privacyHidden ? '👁️ إظهار الأرقام والرموز' : '🙈 إخفاء الأرقام والرموز';
+            privBtn.classList.toggle('active-toggle', privacyHidden);
+        }
+
+        const syncBtn = document.getElementById('autoSyncBtn');
+        if (syncBtn) {
+            syncBtn.innerText = autoSyncEnabled ? '⏱️ مزامنة تلقائية: تشغيل' : '⏱️ مزامنة تلقائية: إيقاف';
+            syncBtn.classList.toggle('active-toggle', autoSyncEnabled);
+        }
+
+        const sndBtn = document.getElementById('soundAlertBtn');
+        if (sndBtn) {
+            sndBtn.innerText = soundAlertEnabled ? '🔔 صوت التنبيه: تشغيل' : '🔕 صوت التنبيه: كتم';
+            sndBtn.classList.toggle('active-toggle', soundAlertEnabled);
+        }
+    }
+
+    function togglePrivacyMode() {
+        privacyHidden = !privacyHidden;
+        localStorage.setItem('amin_privacy_hidden', String(privacyHidden));
+        updateHeaderTogglesUI();
+        refreshUI();
+    }
+
+    function restartAutoSyncLoop() {
+        if (autoSyncTimer) {
+            clearInterval(autoSyncTimer);
+            autoSyncTimer = null;
+        }
+        if (autoSyncEnabled) {
+            autoSyncTimer = setInterval(() => {
+                if (!document.hidden && navigator.onLine) {
+                    pullFromCloud(false, true);
+                }
+            }, AUTO_SYNC_INTERVAL_MS);
+        }
+    }
+
+    function toggleAutoSync() {
+        autoSyncEnabled = !autoSyncEnabled;
+        localStorage.setItem('amin_auto_sync', String(autoSyncEnabled));
+        updateHeaderTogglesUI();
+        restartAutoSyncLoop();
+    }
+
+    function toggleSoundAlert() {
+        soundAlertEnabled = !soundAlertEnabled;
+        localStorage.setItem('amin_sound_alert', String(soundAlertEnabled));
+        updateHeaderTogglesUI();
+        if (soundAlertEnabled) {
+            playSyncTone(true);
+        }
+    }
 
     function setSyncStatus(mode, text) {
         const el = document.getElementById('cloudSyncStatus');
         if (!el) return;
-        el.className = `sync-pill ${mode}`;
+        const hasSuccess = el.classList.contains('pulse-success');
+        const hasError = el.classList.contains('pulse-error');
+        el.className = `sync-pill ${mode}` + (hasSuccess ? ' pulse-success' : '') + (hasError ? ' pulse-error' : '');
         el.innerText = text;
     }
 
@@ -1119,12 +1315,18 @@
     }
 
     function normalizeEgyptPhone(phone) {
-        let cleaned = (phone || '').replace(/\D/g, '');
+        let cleaned = String(phone || '').replace(/\D/g, '');
         if (!cleaned) return '';
-        if (cleaned.startsWith('01') && cleaned.length === 11) {
-            return '20' + cleaned;
+        if (cleaned.startsWith('0020')) {
+            cleaned = cleaned.slice(2);
         }
-        return cleaned;
+        if (cleaned.startsWith('01') && cleaned.length === 11) {
+            return '20' + cleaned.slice(1);
+        }
+        if (cleaned.startsWith('201') && cleaned.length === 12) {
+            return cleaned;
+        }
+        return cleaned.length >= 8 ? cleaned : '';
     }
 
     function applyQuickService(serviceName) {
@@ -1212,14 +1414,16 @@
             if (!res.ok) {
                 throw new Error(`HTTP ${res.status}`);
             }
-            setSyncStatus('online', '☁️ متزامن مع السحابة');
+            notifySyncResult(true, '☁️ متزامن مع السحابة');
         } catch (err) {
-            setSyncStatus('offline', '⚠️ محفوظ محلياً (أوفلاين)');
+            notifySyncResult(false, '⚠️ محفوظ محلياً (أوفلاين)');
         }
     }
 
-    async function pullFromCloud(showAlertOnSuccess = false) {
-        setSyncStatus('syncing', '☁️ جاري الجلب...');
+    async function pullFromCloud(showAlertOnSuccess = false, silent = false) {
+        if (!silent) {
+            setSyncStatus('syncing', '☁️ جاري الجلب...');
+        }
         try {
             const res = await fetch(
                 `${SUPABASE_URL}/rest/v1/app_state?id=eq.${encodeURIComponent(STATE_ROW_ID)}&select=payload,updated_at`,
@@ -1245,7 +1449,11 @@
                     writeLocalOnly();
                     refreshUI();
                 }
-                setSyncStatus('online', '☁️ متزامن مع السحابة');
+                if (!silent) {
+                    notifySyncResult(true, '☁️ متزامن مع السحابة');
+                } else {
+                    setSyncStatus('online', '☁️ متزامن مع السحابة');
+                }
                 if (showAlertOnSuccess) {
                     alert('تم تحديث البيانات من السحابة بنجاح!');
                 }
@@ -1256,7 +1464,11 @@
                 }
             }
         } catch (err) {
-            setSyncStatus('offline', '⚠️ محفوظ محلياً (أوفلاين)');
+            if (!silent) {
+                notifySyncResult(false, '⚠️ محفوظ محلياً (أوفلاين)');
+            } else {
+                setSyncStatus('offline', '⚠️ محفوظ محلياً (أوفلاين)');
+            }
             if (showAlertOnSuccess) {
                 alert('تعذر الاتصال بالسحابة حالياً، البيانات المحلية متاحة.');
             }
@@ -1286,6 +1498,16 @@
         }
     }
 
+    function jumpToRecordDay(dayKey) {
+        if (!dayKey) return;
+        selectedDateISO = dayKey;
+        initDateInput();
+        currentScope = 'day';
+        const tabs = document.querySelectorAll('.tab-btn');
+        tabs.forEach((b, idx) => b.classList.toggle('active', idx === 0));
+        refreshUI();
+    }
+
     function changeDay(deltaDays) {
         const [y, m, d] = selectedDateISO.split('-').map(Number);
         const dt = new Date(y, m - 1, d + deltaDays);
@@ -1304,6 +1526,7 @@
         updateStats();
         renderExpenses();
         renderMerchantSection();
+        renderClientsSection();
         renderTable();
     }
 
@@ -1371,7 +1594,7 @@
             <div class="expense-item">
                 <span>${item.title}</span>
                 <div style="display:flex; align-items:center;">
-                    <span class="expense-amount">${item.amount} ج.م</span>
+                    <span class="expense-amount">${maskNum(item.amount)} ج.م</span>
                     <button type="button" class="btn-danger" style="padding:2px 7px; font-size:11px;" onclick="deleteExpense(${item.id})">✕</button>
                 </div>
             </div>
@@ -1399,8 +1622,9 @@
     function setScope(scope, btn) {
         currentScope = scope;
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+        if (btn) btn.classList.add('active');
         renderMerchantSection();
+        renderClientsSection();
         renderTable();
     }
 
@@ -1447,11 +1671,13 @@
         const creditAll = list.reduce((s, m) => s + m.credit, 0);
 
         document.getElementById('merchantSummaryBox').innerHTML = `
-            <strong>ملخص حسابات التجار والآجل:</strong><br>
-            عدد التجار/المحلات: <strong>${list.length}</strong> |
-            إجمالي المستحق: <strong>${totalAll.toLocaleString()} ج.م</strong> |
-            المدفوع: <strong style="color: var(--success);">${paidAll.toLocaleString()} ج.م</strong> |
-            المتبقي آجل: <strong style="color: var(--warning);">${creditAll.toLocaleString()} ج.م</strong>
+            <div>
+                <strong>ملخص حسابات التجار والآجل:</strong><br>
+                عدد التجار/المحلات: <strong>${list.length}</strong> |
+                إجمالي المستحق: <strong>${maskNum(totalAll)} ج.م</strong> |
+                المدفوع: <strong style="color: var(--success);">${maskNum(paidAll)} ج.م</strong> |
+                المتبقي آجل: <strong style="color: var(--warning);">${maskNum(creditAll)} ج.م</strong>
+            </div>
         `;
 
         const tbody = document.getElementById('merchantLedgerBody');
@@ -1464,13 +1690,91 @@
             <tr>
                 <td><strong>${m.name}</strong></td>
                 <td>${m.count}</td>
-                <td>${m.total.toLocaleString()} ج.م</td>
-                <td style="color: var(--success); font-weight: 700;">${m.paid.toLocaleString()} ج.م</td>
-                <td style="color: var(--warning); font-weight: 800;">${m.credit.toLocaleString()} ج.م</td>
+                <td>${maskNum(m.total)} ج.م</td>
+                <td style="color: var(--success); font-weight: 700;">${maskNum(m.paid)} ج.م</td>
+                <td style="color: var(--warning); font-weight: 800;">${maskNum(m.credit)} ج.م</td>
                 <td>
                     ${m.credit > 0
                         ? `<button type="button" class="btn-settle" onclick="settleMerchantBalance('${m.name.replace(/'/g, "\\'")}')">✓ تسوية الحساب</button>`
                         : `<span style="font-size:11px; color:var(--success);">خالص</span>`}
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function filterByClientName(name) {
+        const input = document.getElementById('searchInput');
+        input.value = name;
+        currentScope = 'all';
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        const allTab = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.textContent.includes('كل الأيام'));
+        if (allTab) allTab.classList.add('active');
+        renderMerchantSection();
+        renderClientsSection();
+        renderTable();
+    }
+
+    function clearSearchFilter() {
+        document.getElementById('searchInput').value = '';
+        renderTable();
+    }
+
+    function renderClientsSection() {
+        const section = document.getElementById('clientsSection');
+        if (currentScope !== 'clients') {
+            section.classList.remove('show');
+            return;
+        }
+        section.classList.add('show');
+
+        const grouped = {};
+        records.forEach(r => {
+            const key = (r.clientName || '').trim() || 'بدون اسم';
+            if (!grouped[key]) {
+                grouped[key] = { name: key, count: 0, total: 0, paid: 0, credit: 0 };
+            }
+            const netCharge = Math.max(0, (parseFloat(r.price) || 0) - (parseFloat(r.refund) || 0));
+            grouped[key].count += 1;
+            grouped[key].total += netCharge;
+            if (r.paymentStatus === 'credit') {
+                grouped[key].credit += netCharge;
+            } else {
+                grouped[key].paid += netCharge;
+            }
+        });
+
+        const sorted = Object.values(grouped).sort((a, b) => b.count - a.count || b.total - a.total);
+        const repeatCount = sorted.filter(c => c.count > 1).length;
+
+        document.getElementById('clientsSummaryBox').innerHTML = `
+            <div>
+                <strong>تجميع حسب العميل أو المحل:</strong><br>
+                إجمالي العملاء والمحلات: <strong>${sorted.length}</strong> |
+                عملاء ومحلات متكررة (أكثر من جهاز): <strong style="color: var(--success);">${repeatCount}</strong>
+            </div>
+            ${document.getElementById('searchInput').value.trim()
+                ? `<button type="button" class="btn-outline" onclick="clearSearchFilter()">✕ مسح تصفية البحث</button>`
+                : ''}
+        `;
+
+        const tbody = document.getElementById('clientsLedgerBody');
+        if (sorted.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:16px;">لا توجد بيانات عملاء بعد</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = sorted.map(c => `
+            <tr>
+                <td>
+                    <strong>${c.name}</strong>
+                    ${c.count > 1 ? `<span class="tag-repeat">متكرر (${c.count})</span>` : ''}
+                </td>
+                <td><strong>${c.count}</strong></td>
+                <td>${maskNum(c.total)} ج.م</td>
+                <td style="color: var(--success); font-weight: 700;">${maskNum(c.paid)} ج.م</td>
+                <td style="color: var(--warning); font-weight: 800;">${maskNum(c.credit)} ج.م</td>
+                <td>
+                    <button type="button" class="btn-edit" onclick="filterByClientName('${c.name.replace(/'/g, "\\'")}')">🔍 عرض أجهزته</button>
                 </td>
             </tr>
         `).join('');
@@ -1489,16 +1793,16 @@
         const allProfit = calcAllRealProfit();
 
         document.getElementById('stat-day-total').innerText = dayRecords.length;
-        document.getElementById('stat-day-revenue').innerText = dayRevenue.toLocaleString();
-        document.getElementById('stat-day-expenses-total').innerText = (dayCost + dayPetty).toLocaleString();
-        document.getElementById('stat-day-cost').innerText = dayCost.toLocaleString();
-        document.getElementById('stat-day-petty').innerText = dayPetty.toLocaleString();
-        document.getElementById('stat-day-refund').innerText = dayRefund.toLocaleString();
-        document.getElementById('stat-day-profit').innerText = dayProfit.toLocaleString();
+        document.getElementById('stat-day-revenue').innerText = maskNum(dayRevenue);
+        document.getElementById('stat-day-expenses-total').innerText = maskNum(dayCost + dayPetty);
+        document.getElementById('stat-day-cost').innerText = maskNum(dayCost);
+        document.getElementById('stat-day-petty').innerText = maskNum(dayPetty);
+        document.getElementById('stat-day-refund').innerText = maskNum(dayRefund);
+        document.getElementById('stat-day-profit').innerText = maskNum(dayProfit);
 
         document.getElementById('stat-all-total').innerText = allTotal;
-        document.getElementById('stat-all-refund').innerText = allRefund.toLocaleString();
-        document.getElementById('stat-all-profit').innerText = allProfit.toLocaleString();
+        document.getElementById('stat-all-refund').innerText = maskNum(allRefund);
+        document.getElementById('stat-all-profit').innerText = maskNum(allProfit);
     }
 
     function renderTable() {
@@ -1512,6 +1816,8 @@
                 matchesScope = r.dayKey === selectedDateISO;
             } else if (currentScope === 'merchants') {
                 matchesScope = r.clientType === 'merchant' || r.paymentStatus === 'credit';
+            } else if (currentScope === 'clients') {
+                matchesScope = true;
             } else if (currentScope === 'working') {
                 matchesScope = r.status === 'working';
             } else if (currentScope === 'done') {
@@ -1544,7 +1850,10 @@
 
             const merchantBadge = r.clientType === 'merchant' ? `<span class="tag-merchant">تاجر</span>` : '';
             const creditBadge = r.paymentStatus === 'credit' ? `<span class="tag-credit">آجل</span>` : '';
-            const noteBadge = r.secretNote ? `<br><span class="secret-note">🔒 ${r.secretNote}</span>` : '';
+            const noteBadge = r.secretNote ? `<br><span class="secret-note">${maskSecret(r.secretNote)}</span>` : '';
+            const jumpDayBtn = (currentScope === 'all' && r.dayKey && r.dayKey !== selectedDateISO)
+                ? `<br><button type="button" class="btn-jump-day" onclick="jumpToRecordDay('${r.dayKey}')">📅 انتقال ليومه</button>`
+                : '';
 
             const tr = document.createElement('tr');
             tr.innerHTML = `
@@ -1558,11 +1867,11 @@
                     <span style="font-size:11px; color:var(--gold);">${r.condition}</span>
                 </td>
                 <td>${r.serviceType}${noteBadge}</td>
-                <td style="white-space:nowrap; font-size:12px;">${r.date}</td>
+                <td style="white-space:nowrap; font-size:12px;">${r.date}${jumpDayBtn}</td>
                 <td style="white-space:nowrap;">
-                    <span style="color:var(--text-muted); font-size:11px;">سعر: ${r.price} | تكلفة: ${r.cost}</span><br>
-                    ${(parseFloat(r.refund) || 0) > 0 ? `<span style="color:var(--danger); font-size:11px;">مرتجع: ${r.refund} ج.م</span><br>` : ''}
-                    <strong style="color:${net >= 0 ? 'var(--gold)' : 'var(--danger)'};">صافي: ${net} ج.م</strong>
+                    <span style="color:var(--text-muted); font-size:11px;">سعر: ${maskRaw(r.price)} | تكلفة: ${maskRaw(r.cost)}</span><br>
+                    ${(parseFloat(r.refund) || 0) > 0 ? `<span style="color:var(--danger); font-size:11px;">مرتجع: ${maskRaw(r.refund)} ج.م</span><br>` : ''}
+                    <strong style="color:${net >= 0 ? 'var(--gold)' : 'var(--danger)'};">صافي: ${maskRaw(net)} ج.م</strong>
                 </td>
                 <td>
                     <select class="status-select ${statusClass}" onchange="updateStatus(${r.id}, this.value)">
@@ -1573,10 +1882,10 @@
                     </select>
                 </td>
                 <td class="actions-cell">
-                    <button class="btn-edit" onclick="openEditModal(${r.id})">✏️ تعديل</button>
-                    <button class="btn-wa" ${hasPhone ? `onclick="openWaModal(${r.id})"` : 'disabled title="أضف رقم هاتف أولاً"'}>💬 واتساب</button>
-                    <button class="btn-print" onclick="printReceipt(${r.id})">🖨️ إيصال</button>
-                    <button class="btn-danger" onclick="deleteRecord(${r.id})">حذف</button>
+                    <button type="button" class="btn-edit" onclick="openEditModal(${r.id})">✏️ تعديل</button>
+                    <button type="button" class="btn-wa" ${hasPhone ? `onclick="openWaModal(${r.id})"` : `onclick="alert('برجاء إدخال رقم هاتف صحيح للعميل أولاً (مثل 01xxxxxxxxx).')"`} title="${hasPhone ? 'إرسال رسالة واتساب' : 'أضف رقم هاتف أولاً'}">💬 واتساب</button>
+                    <button type="button" class="btn-print" onclick="printReceipt(${r.id})">🖨️ إيصال</button>
+                    <button type="button" class="btn-danger" onclick="deleteRecord(${r.id})">حذف</button>
                 </td>
             `;
             tbody.appendChild(tr);
@@ -1667,11 +1976,31 @@
         activeWaPhone = '';
     }
 
+    function copyWaMessage() {
+        const text = document.getElementById('waMessageText').value.trim();
+        if (!text) return;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('تم نسخ نص الرسالة!');
+            }).catch(() => {});
+        }
+    }
+
     function sendWaMessage() {
         const text = document.getElementById('waMessageText').value.trim();
-        if (!activeWaPhone || !text) return;
+        if (!activeWaPhone) {
+            alert('رقم الهاتف غير متاح.');
+            return;
+        }
+        if (!text) {
+            alert('اكتب نص الرسالة أولاً.');
+            return;
+        }
         const url = `https://wa.me/${activeWaPhone}?text=${encodeURIComponent(text)}`;
-        window.open(url, '_blank');
+        const opened = window.open(url, '_blank', 'noopener,noreferrer');
+        if (!opened) {
+            window.location.href = url;
+        }
         closeWaModal();
     }
 
@@ -1722,7 +2051,11 @@
     function sendClosingToWa() {
         const txt = document.getElementById('closingReportText').value.trim();
         if (!txt) return;
-        window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`, '_blank');
+        const url = `https://wa.me/?text=${encodeURIComponent(txt)}`;
+        const opened = window.open(url, '_blank', 'noopener,noreferrer');
+        if (!opened) {
+            window.location.href = url;
+        }
     }
 
     /* Receipt Print (Excludes secretNote) */
@@ -1803,9 +2136,11 @@
     }
 
     // Initialize
+    updateHeaderTogglesUI();
     initDateInput();
     refreshUI();
-    pullFromCloud(false);
+    pullFromCloud(false, false);
+    restartAutoSyncLoop();
 </script>
 
 </body>
