@@ -1,0 +1,1812 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المدينة المنورة - محمد أمين | نظام إدارة السوفت وير</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #090b10;
+            --bg-card: #12161f;
+            --bg-input: #1a202c;
+            --gold: #d4af37;
+            --gold-hover: #f0c94d;
+            --gold-dim: rgba(212, 175, 55, 0.15);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border: #262d3d;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --whatsapp: #25d366;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', Tahoma, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(180deg, #12161f 0%, #090b10 100%);
+            border-bottom: 1px solid var(--gold);
+            padding: 16px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 45px;
+            height: 45px;
+            border: 2px solid var(--gold);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: var(--gold);
+            font-size: 18px;
+            background: var(--gold-dim);
+        }
+
+        .brand-text h1 {
+            font-size: 20px;
+            color: var(--gold);
+            font-weight: 800;
+        }
+
+        .brand-text p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .sync-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        .sync-pill.online {
+            border-color: rgba(16, 185, 129, 0.45);
+            color: var(--success);
+        }
+
+        .sync-pill.syncing {
+            border-color: rgba(245, 158, 11, 0.45);
+            color: var(--warning);
+        }
+
+        .sync-pill.offline {
+            border-color: rgba(239, 68, 68, 0.45);
+            color: var(--danger);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            padding: 9px 15px;
+            font-size: 13px;
+            font-weight: 700;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-gold {
+            background-color: var(--gold);
+            color: #090b10;
+        }
+
+        .btn-gold:hover {
+            background-color: var(--gold-hover);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .btn-danger {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 5px 9px;
+            font-size: 12px;
+        }
+
+        .btn-danger:hover {
+            background-color: var(--danger);
+            color: #fff;
+        }
+
+        .btn-edit {
+            background-color: rgba(212, 175, 55, 0.12);
+            color: var(--gold);
+            border: 1px solid rgba(212, 175, 55, 0.35);
+            padding: 5px 9px;
+            font-size: 12px;
+        }
+
+        .btn-edit:hover {
+            background-color: var(--gold);
+            color: #090b10;
+        }
+
+        .btn-wa {
+            background-color: rgba(37, 211, 102, 0.14);
+            color: var(--whatsapp);
+            border: 1px solid rgba(37, 211, 102, 0.45);
+            padding: 5px 9px;
+            font-size: 12px;
+        }
+
+        .btn-wa:hover {
+            background-color: var(--whatsapp);
+            color: #06140c;
+        }
+
+        .btn-wa:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        .btn-settle {
+            background-color: rgba(16, 185, 129, 0.16);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.45);
+            padding: 5px 10px;
+            font-size: 11px;
+        }
+
+        .btn-settle:hover {
+            background-color: var(--success);
+            color: #04130d;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 22px auto;
+            padding: 0 20px;
+        }
+
+        /* Day Bar */
+        .day-bar {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .day-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .day-controls input[type="date"] {
+            width: auto;
+            padding: 7px 12px;
+            font-weight: 700;
+            color: var(--gold);
+            border-color: var(--gold);
+        }
+
+        .day-badge {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .day-badge strong {
+            color: var(--gold);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 100%;
+            background-color: var(--gold);
+        }
+
+        .stat-card.return-card::after {
+            background-color: var(--danger);
+        }
+
+        .stat-card.expense-card::after {
+            background-color: var(--warning);
+        }
+
+        .stat-title {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .stat-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 6px;
+            line-height: 1.5;
+        }
+
+        .stat-card.profit .stat-value {
+            color: var(--gold);
+        }
+
+        .stat-card.return-card .stat-value {
+            color: var(--danger);
+        }
+
+        .stat-card.expense-card .stat-value {
+            color: var(--warning);
+        }
+
+        /* Main Layout */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        @media (max-width: 1020px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .left-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Panel */
+        .panel {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .panel-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 9px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--gold);
+        }
+
+        .row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            background: var(--bg-input);
+            padding: 9px 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            cursor: pointer;
+            color: var(--text-main);
+        }
+
+        .checkbox-item input {
+            width: auto;
+            accent-color: var(--gold);
+        }
+
+        /* Quick Services */
+        .quick-services {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 7px;
+        }
+
+        .chip-btn {
+            background: var(--bg-input);
+            color: var(--gold);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 4px 9px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .chip-btn:hover {
+            background: var(--gold);
+            color: #090b10;
+        }
+
+        /* Expenses List */
+        .expense-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 11px;
+            margin-top: 8px;
+            font-size: 12px;
+        }
+
+        .expense-amount {
+            color: var(--warning);
+            font-weight: 800;
+            margin-left: 8px;
+        }
+
+        /* Merchant Section */
+        .merchant-section {
+            display: none;
+            margin-bottom: 16px;
+        }
+
+        .merchant-section.show {
+            display: block;
+        }
+
+        .merchant-summary {
+            background: rgba(212, 175, 55, 0.07);
+            border: 1px solid rgba(212, 175, 55, 0.35);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            font-size: 12px;
+            color: var(--text-main);
+            line-height: 1.7;
+        }
+
+        /* Table & Filters */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 220px;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: var(--bg-input);
+            color: var(--text-muted);
+            padding: 7px 11px;
+            font-size: 12px;
+        }
+
+        .tab-btn.active {
+            background: var(--gold);
+            color: #090b10;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th {
+            text-align: right;
+            padding: 11px;
+            background-color: var(--bg-input);
+            color: var(--gold);
+            font-weight: 700;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 11px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .ticket-badge {
+            display: inline-block;
+            background: var(--gold-dim);
+            color: var(--gold);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 6px;
+            padding: 2px 7px;
+            font-size: 11px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .tag-merchant {
+            display: inline-block;
+            background: rgba(56, 189, 248, 0.14);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            border-radius: 5px;
+            padding: 1px 6px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-right: 4px;
+        }
+
+        .tag-credit {
+            display: inline-block;
+            background: rgba(245, 158, 11, 0.16);
+            color: var(--warning);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            border-radius: 5px;
+            padding: 1px 6px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-right: 4px;
+        }
+
+        .secret-note {
+            display: inline-block;
+            margin-top: 4px;
+            padding: 2px 7px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.04);
+            border-right: 2px solid var(--gold);
+            font-size: 11px;
+            color: #d1d5db;
+        }
+
+        .status-select {
+            padding: 5px 8px;
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 6px;
+            width: auto;
+        }
+
+        .status-working { color: var(--warning); border-color: var(--warning); }
+        .status-ready { color: #38bdf8; border-color: #38bdf8; }
+        .status-done { color: var(--success); border-color: var(--success); }
+        .status-returned { color: var(--danger); border-color: var(--danger); }
+
+        .actions-cell {
+            display: flex;
+            gap: 5px;
+            white-space: nowrap;
+        }
+
+        .btn-print {
+            background-color: var(--gold-dim);
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            padding: 5px 9px;
+            font-size: 12px;
+        }
+
+        .btn-print:hover {
+            background-color: var(--gold);
+            color: #000;
+        }
+
+        /* Modals */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.78);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .modal-backdrop.show {
+            display: flex;
+        }
+
+        .modal-box {
+            background: var(--bg-card);
+            border: 1px solid var(--gold);
+            border-radius: 14px;
+            width: 100%;
+            max-width: 520px;
+            padding: 22px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h3 {
+            color: var(--gold);
+            font-size: 16px;
+        }
+
+        .modal-textarea {
+            min-height: 185px;
+            resize: vertical;
+            line-height: 1.65;
+            margin-bottom: 14px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* Print Receipt Area */
+        #print-area {
+            display: none;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #print-area, #print-area * {
+                visibility: visible;
+            }
+            #print-area {
+                display: block;
+                position: fixed;
+                top: 0;
+                right: 0;
+                width: 100%;
+                background: #fff;
+                color: #000;
+                padding: 20px;
+            }
+            .receipt-box {
+                border: 2px solid #000;
+                border-radius: 10px;
+                padding: 18px;
+                max-width: 420px;
+                margin: 0 auto;
+                direction: rtl;
+            }
+            .receipt-header {
+                text-align: center;
+                border-bottom: 2px dashed #000;
+                padding-bottom: 10px;
+                margin-bottom: 12px;
+            }
+            .receipt-row {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 8px;
+                font-size: 14px;
+                border-bottom: 1px dotted #ccc;
+                padding-bottom: 4px;
+            }
+            .receipt-footer {
+                text-align: center;
+                margin-top: 14px;
+                padding-top: 10px;
+                border-top: 2px dashed #000;
+                font-weight: bold;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="brand">
+        <div class="brand-logo">MA</div>
+        <div class="brand-text">
+            <h1>المدينة المنورة - محمد أمين</h1>
+            <p>نظام إدارة عمليات السوفت وير والحسابات | تواصل: 01119943360</p>
+        </div>
+    </div>
+    <div class="header-actions">
+        <span class="sync-pill syncing" id="cloudSyncStatus">☁️ جاري المزامنة...</span>
+        <button class="btn-outline" onclick="pullFromCloud(true)">🔄 تحديث من السحابة</button>
+        <button class="btn-gold" onclick="openClosingModal()">📊 تقفيل اليوم</button>
+        <button class="btn-outline" onclick="exportData()">⬇ حفظ نسخة احتياطية</button>
+        <button class="btn-outline" onclick="document.getElementById('importFile').click()">⬆ استعادة نسخة</button>
+        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+    </div>
+</header>
+
+<div class="container">
+    <!-- Day Switcher Bar -->
+    <div class="day-bar">
+        <div class="day-controls">
+            <button class="btn-outline" onclick="changeDay(-1)">◀ أمس</button>
+            <input type="date" id="selectedDate" onchange="onDateChange()">
+            <button class="btn-outline" onclick="changeDay(1)">غداً ▶</button>
+            <button class="btn-gold" onclick="goToday()">اليوم</button>
+        </div>
+        <div class="day-badge">
+            عرض حسابات وشغل يوم: <strong id="activeDayLabel">-</strong>
+        </div>
+    </div>
+
+    <!-- Dashboard Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-title">أجهزة اليوم المختار</div>
+            <div class="stat-value" id="stat-day-total">0</div>
+            <div class="stat-sub">إيرادات اليوم: <span id="stat-day-revenue">0</span> ج.م | إجمالي الأجهزة: <span id="stat-all-total">0</span></div>
+        </div>
+        <div class="stat-card expense-card">
+            <div class="stat-title">تكلفة كريدت + مصاريف اليوم</div>
+            <div class="stat-value" id="stat-day-expenses-total">0</div>
+            <div class="stat-sub">كريدت: <span id="stat-day-cost">0</span> | مصاريف خزنة: <span id="stat-day-petty">0</span> ج.م</div>
+        </div>
+        <div class="stat-card return-card">
+            <div class="stat-title">مرتجع اليوم (ج.م)</div>
+            <div class="stat-value" id="stat-day-refund">0</div>
+            <div class="stat-sub">إجمالي المرتجع: <span id="stat-all-refund">0</span> ج.م</div>
+        </div>
+        <div class="stat-card profit">
+            <div class="stat-title">صافي الربح الحقيقي لليوم</div>
+            <div class="stat-value" id="stat-day-profit">0</div>
+            <div class="stat-sub">إجمالي صافي كل الأيام: <span id="stat-all-profit">0</span> ج.م</div>
+        </div>
+    </div>
+
+    <div class="main-grid">
+        <div class="left-stack">
+            <!-- New Device Form -->
+            <div class="panel">
+                <div class="panel-title">+ استلام جهاز جديد (<span id="formDayLabel">اليوم</span>)</div>
+                <form id="deviceForm" onsubmit="addRecord(event)">
+                    <div class="form-group">
+                        <label>اسم العميل أو المحل / التاجر *</label>
+                        <input type="text" id="clientName" required placeholder="مثال: أحمد محمود أو محل النور">
+                    </div>
+                    <div class="row-2">
+                        <div class="form-group">
+                            <label>نوع الحساب</label>
+                            <select id="clientType">
+                                <option value="cash">نقدي (عميل)</option>
+                                <option value="merchant">تاجر / محل</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>حالة الدفع</label>
+                            <select id="paymentStatus">
+                                <option value="paid">مدفوع</option>
+                                <option value="credit">آجل (حساب مفتوح)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row-2">
+                        <div class="form-group">
+                            <label>رقم الهاتف / واتساب</label>
+                            <input type="text" id="clientPhone" placeholder="01xxxxxxxxx">
+                        </div>
+                        <div class="form-group">
+                            <label>نوع الجهاز / الموديل *</label>
+                            <input type="text" id="deviceModel" required placeholder="مثال: Samsung A13">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>حالة الجهاز الظاهرية</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item"><input type="radio" name="condition" value="سليم" checked> سليم</label>
+                            <label class="checkbox-item"><input type="radio" name="condition" value="كسر بالشاشة"> كسر بالشاشة</label>
+                            <label class="checkbox-item"><input type="radio" name="condition" value="كسر بالضهر"> كسر بالضهر</label>
+                            <label class="checkbox-item"><input type="radio" name="condition" value="فاصل باور"> فاصل باور</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>الخدمة المطلوبة / المشكلة *</label>
+                        <input type="text" id="serviceType" required placeholder="مثال: تخطي حساب FRP / سوفت رسمي">
+                        <div class="quick-services">
+                            <button type="button" class="chip-btn" onclick="applyQuickService('FRP Bypass')">FRP Bypass</button>
+                            <button type="button" class="chip-btn" onclick="applyQuickService('سوفت رسمي')">سوفت رسمي</button>
+                            <button type="button" class="chip-btn" onclick="applyQuickService('تخطي حساب')">تخطي حساب</button>
+                            <button type="button" class="chip-btn" onclick="applyQuickService('فك شفرة')">فك شفرة</button>
+                            <button type="button" class="chip-btn" onclick="applyQuickService('تعريب')">تعريب</button>
+                            <button type="button" class="chip-btn" onclick="applyQuickService('إصلاح IMEI')">إصلاح IMEI</button>
+                        </div>
+                    </div>
+                    <div class="row-2">
+                        <div class="form-group">
+                            <label>السعر (ج.م) *</label>
+                            <input type="number" id="price" required min="0" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>تكلفة كريدت / سيرفر (ج.م)</label>
+                            <input type="number" id="cost" min="0" value="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>ملاحظات فنية سرية / رمز القفل (Pattern / PIN) — لا تُطبع</label>
+                        <input type="text" id="secretNote" placeholder="مثال: PIN 1234 / نقش حرف Z / بوتلودر مقفول">
+                    </div>
+                    <button type="submit" class="btn-gold" style="width: 100%; justify-content: center; margin-top: 6px; padding: 11px;">
+                        حفظ في حسابات اليوم
+                    </button>
+                </form>
+            </div>
+
+            <!-- Daily Petty Cash / Expenses -->
+            <div class="panel">
+                <div class="panel-title">💸 خزنة المصاريف اليومية (<span id="expenseDayLabel">اليوم</span>)</div>
+                <form id="expenseForm" onsubmit="addExpense(event)">
+                    <div class="row-2">
+                        <div class="form-group">
+                            <label>بيان المصروف *</label>
+                            <input type="text" id="expenseTitle" required placeholder="مثال: مواصلات / كريدت">
+                        </div>
+                        <div class="form-group">
+                            <label>المبلغ (ج.م) *</label>
+                            <input type="number" id="expenseAmount" required min="1" placeholder="0">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-outline" style="width: 100%; justify-content: center; border-color: var(--warning); color: var(--warning);">
+                        + إضافة مصروف لليوم
+                    </button>
+                </form>
+                <div id="expensesList"></div>
+            </div>
+        </div>
+
+        <!-- Records Table -->
+        <div class="panel">
+            <div class="toolbar">
+                <div class="search-box">
+                    <input type="text" id="searchInput" onkeyup="renderTable()" placeholder="🔍 ابحث بكود المتابعة (#101)، الاسم، المحل، الموديل، أو الهاتف...">
+                </div>
+                <div class="filter-tabs">
+                    <button class="tab-btn active" onclick="setScope('day', this)">أجهزة اليوم</button>
+                    <button class="tab-btn" onclick="setScope('all', this)">كل الأيام</button>
+                    <button class="tab-btn" onclick="setScope('merchants', this)">حسابات التجار</button>
+                    <button class="tab-btn" onclick="setScope('working', this)">جاري العمل</button>
+                    <button class="tab-btn" onclick="setScope('done', this)">تم التسليم</button>
+                    <button class="tab-btn" onclick="setScope('returned', this)">المرتجع</button>
+                </div>
+            </div>
+
+            <!-- Aggregated Merchant Accounts -->
+            <div class="merchant-section" id="merchantSection">
+                <div class="merchant-summary" id="merchantSummaryBox"></div>
+                <div class="table-wrapper" style="margin-bottom: 18px;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>اسم التاجر / المحل</th>
+                                <th>عدد الأجهزة</th>
+                                <th>إجمالي المستحق</th>
+                                <th>المدفوع</th>
+                                <th>المتبقي آجل</th>
+                                <th>تسوية الحساب</th>
+                            </tr>
+                        </thead>
+                        <tbody id="merchantLedgerBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>الكود والعميل</th>
+                            <th>الجهاز والحالة</th>
+                            <th>الخدمة وملاحظات الفني</th>
+                            <th>اليوم</th>
+                            <th>الحساب والصافي</th>
+                            <th>الحالة</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recordsBody">
+                        <!-- Dynamic Rows -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- WhatsApp Reply Modal -->
+<div class="modal-backdrop" id="waModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>💬 رد جاهز على واتساب</h3>
+            <button class="btn-outline" style="padding: 4px 10px;" onclick="closeWaModal()">✕</button>
+        </div>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">
+            العميل: <strong id="waClientLabel" style="color: var(--text-main);"></strong> | الرقم: <strong id="waPhoneLabel" style="color: var(--whatsapp);"></strong>
+        </p>
+        <textarea id="waMessageText" class="modal-textarea"></textarea>
+        <div class="modal-footer">
+            <button class="btn-outline" onclick="closeWaModal()">إلغاء</button>
+            <button class="btn-gold" onclick="sendWaMessage()">إرسال عبر واتساب ↗</button>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Record Modal -->
+<div class="modal-backdrop" id="editModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>✏️ تعديل السجل <span id="editTicketBadge" style="color: var(--text-main);"></span></h3>
+            <button class="btn-outline" style="padding: 4px 10px;" onclick="closeEditModal()">✕</button>
+        </div>
+        <form id="editForm" onsubmit="saveEditedRecord(event)">
+            <input type="hidden" id="editId">
+            <div class="form-group">
+                <label>اسم العميل أو المحل / التاجر *</label>
+                <input type="text" id="editClientName" required>
+            </div>
+            <div class="row-2">
+                <div class="form-group">
+                    <label>نوع الحساب</label>
+                    <select id="editClientType">
+                        <option value="cash">نقدي (عميل)</option>
+                        <option value="merchant">تاجر / محل</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>حالة الدفع</label>
+                    <select id="editPaymentStatus">
+                        <option value="paid">مدفوع</option>
+                        <option value="credit">آجل (حساب مفتوح)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row-2">
+                <div class="form-group">
+                    <label>رقم الهاتف / واتساب</label>
+                    <input type="text" id="editClientPhone">
+                </div>
+                <div class="form-group">
+                    <label>نوع الجهاز / الموديل *</label>
+                    <input type="text" id="editDeviceModel" required>
+                </div>
+            </div>
+            <div class="row-2">
+                <div class="form-group">
+                    <label>حالة الجهاز الظاهرية</label>
+                    <select id="editCondition">
+                        <option value="سليم">سليم</option>
+                        <option value="كسر بالشاشة">كسر بالشاشة</option>
+                        <option value="كسر بالضهر">كسر بالضهر</option>
+                        <option value="فاصل باور">فاصل باور</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>حالة الطلب</label>
+                    <select id="editStatus">
+                        <option value="working">جاري العمل</option>
+                        <option value="ready">جاهز للاستلام</option>
+                        <option value="done">تم التسليم</option>
+                        <option value="returned">مرتجع</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>الخدمة المطلوبة / المشكلة *</label>
+                <input type="text" id="editServiceType" required>
+            </div>
+            <div class="row-2">
+                <div class="form-group">
+                    <label>السعر (ج.م) *</label>
+                    <input type="number" id="editPrice" required min="0">
+                </div>
+                <div class="form-group">
+                    <label>تكلفة كريدت / سيرفر (ج.م)</label>
+                    <input type="number" id="editCost" min="0">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>مبلغ المرتجع (ج.م)</label>
+                <input type="number" id="editRefund" min="0">
+            </div>
+            <div class="form-group">
+                <label>ملاحظات فنية سرية / رمز القفل (Pattern / PIN)</label>
+                <input type="text" id="editSecretNote">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-outline" onclick="closeEditModal()">إلغاء</button>
+                <button type="submit" class="btn-gold">حفظ التعديلات</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- End of Day Closing Modal -->
+<div class="modal-backdrop" id="closingModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>📊 تقرير تقفيل اليوم</h3>
+            <button class="btn-outline" style="padding: 4px 10px;" onclick="closeClosingModal()">✕</button>
+        </div>
+        <textarea id="closingReportText" class="modal-textarea" readonly></textarea>
+        <div class="modal-footer">
+            <button class="btn-outline" onclick="copyClosingReport()">📋 نسخ التقرير</button>
+            <button class="btn-wa" onclick="sendClosingToWa()">💬 إرسال لواتساب</button>
+            <button class="btn-gold" onclick="closeClosingModal()">إغلاق</button>
+        </div>
+    </div>
+</div>
+
+<!-- Printable Receipt Template -->
+<div id="print-area"></div>
+
+<script>
+    const SUPABASE_URL = 'https://gzxbycwsditjnxjhwouo.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_KtvuB96Z7p2igoqK5fHEsA_cLJXYHC2';
+    const STATE_ROW_ID = 'main_shop_state';
+
+    let activeWaPhone = '';
+    let lastUpdatedAt = 0;
+
+    function setSyncStatus(mode, text) {
+        const el = document.getElementById('cloudSyncStatus');
+        if (!el) return;
+        el.className = `sync-pill ${mode}`;
+        el.innerText = text;
+    }
+
+    function getLocalDateISO(dateObj = new Date()) {
+        const y = dateObj.getFullYear();
+        const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const d = String(dateObj.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    }
+
+    function formatDisplayDate(isoStr) {
+        const todayISO = getLocalDateISO();
+        const [y, m, d] = isoStr.split('-');
+        const formatted = `${parseInt(d)}/${parseInt(m)}/${y}`;
+        return isoStr === todayISO ? `اليوم (${formatted})` : formatted;
+    }
+
+    function calcRecordNet(r) {
+        const price = parseFloat(r.price) || 0;
+        const cost = parseFloat(r.cost) || 0;
+        const refund = parseFloat(r.refund) || 0;
+        return price - cost - refund;
+    }
+
+    function getDayExpensesTotal(dayISO) {
+        return expenses
+            .filter(e => e.dayKey === dayISO)
+            .reduce((s, e) => s + (parseFloat(e.amount) || 0), 0);
+    }
+
+    function calcDayRealProfit(dayISO) {
+        const dayRecords = records.filter(r => r.dayKey === dayISO);
+        const devicesNet = dayRecords.reduce((s, r) => s + calcRecordNet(r), 0);
+        return devicesNet - getDayExpensesTotal(dayISO);
+    }
+
+    function calcAllRealProfit() {
+        const devicesNet = records.reduce((s, r) => s + calcRecordNet(r), 0);
+        const allExpenses = expenses.reduce((s, e) => s + (parseFloat(e.amount) || 0), 0);
+        return devicesNet - allExpenses;
+    }
+
+    function normalizeEgyptPhone(phone) {
+        let cleaned = (phone || '').replace(/\D/g, '');
+        if (!cleaned) return '';
+        if (cleaned.startsWith('01') && cleaned.length === 11) {
+            return '20' + cleaned;
+        }
+        return cleaned;
+    }
+
+    function applyQuickService(serviceName) {
+        const input = document.getElementById('serviceType');
+        const current = input.value.trim();
+        if (!current) {
+            input.value = serviceName;
+        } else if (!current.includes(serviceName)) {
+            input.value = `${current} + ${serviceName}`;
+        }
+        input.focus();
+    }
+
+    let records = JSON.parse(localStorage.getItem('amin_software_db')) || [];
+    let expenses = JSON.parse(localStorage.getItem('amin_software_expenses')) || [];
+    let selectedDateISO = getLocalDateISO();
+    let currentScope = 'day';
+    let nextTicketNo = parseInt(localStorage.getItem('amin_next_ticket'), 10) || 101;
+
+    function normalizeState(rawRecords, rawExpenses, rawTicket) {
+        let maxTicket = 100;
+        (rawRecords || []).forEach(r => {
+            if (typeof r.ticketNo === 'number' && r.ticketNo > maxTicket) {
+                maxTicket = r.ticketNo;
+            }
+        });
+        let ticketCursor = Math.max(maxTicket + 1, parseInt(rawTicket, 10) || 101);
+
+        const cleanRecords = (rawRecords || []).slice().reverse().map((r, idx) => {
+            const ticketNo = r.ticketNo || (101 + idx);
+            if (ticketNo >= ticketCursor) ticketCursor = ticketNo + 1;
+            return {
+                ...r,
+                ticketNo: ticketNo,
+                dayKey: r.dayKey || getLocalDateISO(new Date(r.id || Date.now())),
+                clientType: r.clientType || 'cash',
+                paymentStatus: r.paymentStatus || 'paid',
+                refund: parseFloat(r.refund) || 0,
+                secretNote: r.secretNote || ''
+            };
+        }).reverse();
+
+        return {
+            records: cleanRecords,
+            expenses: Array.isArray(rawExpenses) ? rawExpenses : [],
+            nextTicketNo: ticketCursor
+        };
+    }
+
+    const initialNormalized = normalizeState(records, expenses, nextTicketNo);
+    records = initialNormalized.records;
+    expenses = initialNormalized.expenses;
+    nextTicketNo = initialNormalized.nextTicketNo;
+
+    function writeLocalOnly() {
+        localStorage.setItem('amin_software_db', JSON.stringify(records));
+        localStorage.setItem('amin_software_expenses', JSON.stringify(expenses));
+        localStorage.setItem('amin_next_ticket', String(nextTicketNo));
+    }
+
+    async function pushToCloud() {
+        setSyncStatus('syncing', '☁️ جاري الحفظ...');
+        const stamp = Date.now();
+        lastUpdatedAt = stamp;
+        try {
+            const res = await fetch(`${SUPABASE_URL}/rest/v1/app_state?on_conflict=id`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'apikey': SUPABASE_KEY,
+                    'Prefer': 'resolution=merge-duplicates,return=minimal'
+                },
+                body: JSON.stringify([{
+                    id: STATE_ROW_ID,
+                    payload: {
+                        records: records,
+                        expenses: expenses,
+                        nextTicketNo: nextTicketNo,
+                        clientUpdatedAt: stamp
+                    },
+                    updated_at: new Date(stamp).toISOString()
+                }])
+            });
+
+            if (!res.ok) {
+                throw new Error(`HTTP ${res.status}`);
+            }
+            setSyncStatus('online', '☁️ متزامن مع السحابة');
+        } catch (err) {
+            setSyncStatus('offline', '⚠️ محفوظ محلياً (أوفلاين)');
+        }
+    }
+
+    async function pullFromCloud(showAlertOnSuccess = false) {
+        setSyncStatus('syncing', '☁️ جاري الجلب...');
+        try {
+            const res = await fetch(
+                `${SUPABASE_URL}/rest/v1/app_state?id=eq.${encodeURIComponent(STATE_ROW_ID)}&select=payload,updated_at`,
+                {
+                    headers: {
+                        'apikey': SUPABASE_KEY
+                    }
+                }
+            );
+            if (!res.ok) {
+                throw new Error(`HTTP ${res.status}`);
+            }
+            const rows = await res.json();
+            if (Array.isArray(rows) && rows.length > 0 && rows[0].payload) {
+                const cloudPayload = rows[0].payload;
+                const cloudStamp = cloudPayload.clientUpdatedAt || new Date(rows[0].updated_at || 0).getTime() || 0;
+                if (cloudStamp >= lastUpdatedAt) {
+                    lastUpdatedAt = cloudStamp;
+                    const normalized = normalizeState(cloudPayload.records, cloudPayload.expenses, cloudPayload.nextTicketNo);
+                    records = normalized.records;
+                    expenses = normalized.expenses;
+                    nextTicketNo = normalized.nextTicketNo;
+                    writeLocalOnly();
+                    refreshUI();
+                }
+                setSyncStatus('online', '☁️ متزامن مع السحابة');
+                if (showAlertOnSuccess) {
+                    alert('تم تحديث البيانات من السحابة بنجاح!');
+                }
+            } else {
+                await pushToCloud();
+                if (showAlertOnSuccess) {
+                    alert('تم ربط السحابة وتهيئة الحالة بنجاح!');
+                }
+            }
+        } catch (err) {
+            setSyncStatus('offline', '⚠️ محفوظ محلياً (أوفلاين)');
+            if (showAlertOnSuccess) {
+                alert('تعذر الاتصال بالسحابة حالياً، البيانات المحلية متاحة.');
+            }
+        }
+    }
+
+    function saveToStorage() {
+        writeLocalOnly();
+        refreshUI();
+        pushToCloud();
+    }
+
+    function initDateInput() {
+        const label = formatDisplayDate(selectedDateISO);
+        document.getElementById('selectedDate').value = selectedDateISO;
+        document.getElementById('activeDayLabel').innerText = label;
+        document.getElementById('formDayLabel').innerText = label;
+        document.getElementById('expenseDayLabel').innerText = label;
+    }
+
+    function onDateChange() {
+        const val = document.getElementById('selectedDate').value;
+        if (val) {
+            selectedDateISO = val;
+            initDateInput();
+            refreshUI();
+        }
+    }
+
+    function changeDay(deltaDays) {
+        const [y, m, d] = selectedDateISO.split('-').map(Number);
+        const dt = new Date(y, m - 1, d + deltaDays);
+        selectedDateISO = getLocalDateISO(dt);
+        initDateInput();
+        refreshUI();
+    }
+
+    function goToday() {
+        selectedDateISO = getLocalDateISO();
+        initDateInput();
+        refreshUI();
+    }
+
+    function refreshUI() {
+        updateStats();
+        renderExpenses();
+        renderMerchantSection();
+        renderTable();
+    }
+
+    function addRecord(e) {
+        e.preventDefault();
+        const condition = document.querySelector('input[name="condition"]:checked').value;
+        const price = parseFloat(document.getElementById('price').value) || 0;
+        const cost = parseFloat(document.getElementById('cost').value) || 0;
+        const [y, m, d] = selectedDateISO.split('-');
+        const dateStr = `${parseInt(d)}/${parseInt(m)}/${y}`;
+
+        const newRecord = {
+            id: Date.now(),
+            ticketNo: nextTicketNo++,
+            dayKey: selectedDateISO,
+            clientName: document.getElementById('clientName').value.trim(),
+            clientType: document.getElementById('clientType').value,
+            paymentStatus: document.getElementById('paymentStatus').value,
+            clientPhone: document.getElementById('clientPhone').value.trim(),
+            deviceModel: document.getElementById('deviceModel').value.trim(),
+            condition: condition,
+            serviceType: document.getElementById('serviceType').value.trim(),
+            price: price,
+            cost: cost,
+            refund: 0,
+            secretNote: document.getElementById('secretNote').value.trim(),
+            status: 'working',
+            date: dateStr
+        };
+
+        records.unshift(newRecord);
+        saveToStorage();
+        document.getElementById('deviceForm').reset();
+    }
+
+    function addExpense(e) {
+        e.preventDefault();
+        const title = document.getElementById('expenseTitle').value.trim();
+        const amount = parseFloat(document.getElementById('expenseAmount').value) || 0;
+        if (!title || amount <= 0) return;
+
+        expenses.unshift({
+            id: Date.now(),
+            dayKey: selectedDateISO,
+            title: title,
+            amount: amount
+        });
+        saveToStorage();
+        document.getElementById('expenseForm').reset();
+    }
+
+    function deleteExpense(id) {
+        expenses = expenses.filter(item => item.id !== id);
+        saveToStorage();
+    }
+
+    function renderExpenses() {
+        const container = document.getElementById('expensesList');
+        const dayItems = expenses.filter(item => item.dayKey === selectedDateISO);
+        if (dayItems.length === 0) {
+            container.innerHTML = `<p style="font-size:11px; color:var(--text-muted); margin-top:10px; text-align:center;">لا توجد مصاريف مسجلة لهذا اليوم</p>`;
+            return;
+        }
+        container.innerHTML = dayItems.map(item => `
+            <div class="expense-item">
+                <span>${item.title}</span>
+                <div style="display:flex; align-items:center;">
+                    <span class="expense-amount">${item.amount} ج.م</span>
+                    <button type="button" class="btn-danger" style="padding:2px 7px; font-size:11px;" onclick="deleteExpense(${item.id})">✕</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function updateStatus(id, newStatus) {
+        const item = records.find(r => r.id === id);
+        if (item) {
+            item.status = newStatus;
+            if (newStatus === 'returned' && (!item.refund || item.refund === 0)) {
+                item.refund = item.price || 0;
+            }
+            saveToStorage();
+        }
+    }
+
+    function deleteRecord(id) {
+        if (confirm('هل أنت متأكد من حذف هذا السجل؟')) {
+            records = records.filter(r => r.id !== id);
+            saveToStorage();
+        }
+    }
+
+    function setScope(scope, btn) {
+        currentScope = scope;
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderMerchantSection();
+        renderTable();
+    }
+
+    function settleMerchantBalance(merchantKey) {
+        if (!confirm(`تأكيد تحصيل وتسوية جميع الفواتير الآجلة الخاصة بـ "${merchantKey}"؟`)) return;
+        records.forEach(r => {
+            const nameKey = r.clientName.trim();
+            if (nameKey === merchantKey && (r.clientType === 'merchant' || r.paymentStatus === 'credit')) {
+                r.paymentStatus = 'paid';
+            }
+        });
+        saveToStorage();
+    }
+
+    function renderMerchantSection() {
+        const section = document.getElementById('merchantSection');
+        if (currentScope !== 'merchants') {
+            section.classList.remove('show');
+            return;
+        }
+        section.classList.add('show');
+
+        const merchantRecords = records.filter(r => r.clientType === 'merchant' || r.paymentStatus === 'credit');
+        const grouped = {};
+
+        merchantRecords.forEach(r => {
+            const key = r.clientName.trim() || 'بدون اسم';
+            if (!grouped[key]) {
+                grouped[key] = { name: key, count: 0, total: 0, paid: 0, credit: 0 };
+            }
+            const netCharge = Math.max(0, (parseFloat(r.price) || 0) - (parseFloat(r.refund) || 0));
+            grouped[key].count += 1;
+            grouped[key].total += netCharge;
+            if (r.paymentStatus === 'credit') {
+                grouped[key].credit += netCharge;
+            } else {
+                grouped[key].paid += netCharge;
+            }
+        });
+
+        const list = Object.values(grouped);
+        const totalAll = list.reduce((s, m) => s + m.total, 0);
+        const paidAll = list.reduce((s, m) => s + m.paid, 0);
+        const creditAll = list.reduce((s, m) => s + m.credit, 0);
+
+        document.getElementById('merchantSummaryBox').innerHTML = `
+            <strong>ملخص حسابات التجار والآجل:</strong><br>
+            عدد التجار/المحلات: <strong>${list.length}</strong> |
+            إجمالي المستحق: <strong>${totalAll.toLocaleString()} ج.م</strong> |
+            المدفوع: <strong style="color: var(--success);">${paidAll.toLocaleString()} ج.م</strong> |
+            المتبقي آجل: <strong style="color: var(--warning);">${creditAll.toLocaleString()} ج.م</strong>
+        `;
+
+        const tbody = document.getElementById('merchantLedgerBody');
+        if (list.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:16px;">لا توجد حسابات تجار أو فواتير آجلة</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = list.map(m => `
+            <tr>
+                <td><strong>${m.name}</strong></td>
+                <td>${m.count}</td>
+                <td>${m.total.toLocaleString()} ج.م</td>
+                <td style="color: var(--success); font-weight: 700;">${m.paid.toLocaleString()} ج.م</td>
+                <td style="color: var(--warning); font-weight: 800;">${m.credit.toLocaleString()} ج.م</td>
+                <td>
+                    ${m.credit > 0
+                        ? `<button type="button" class="btn-settle" onclick="settleMerchantBalance('${m.name.replace(/'/g, "\\'")}')">✓ تسوية الحساب</button>`
+                        : `<span style="font-size:11px; color:var(--success);">خالص</span>`}
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function updateStats() {
+        const dayRecords = records.filter(r => r.dayKey === selectedDateISO);
+        const dayRevenue = dayRecords.reduce((sum, r) => sum + (parseFloat(r.price) || 0), 0);
+        const dayCost = dayRecords.reduce((sum, r) => sum + (parseFloat(r.cost) || 0), 0);
+        const dayPetty = getDayExpensesTotal(selectedDateISO);
+        const dayRefund = dayRecords.reduce((sum, r) => sum + (parseFloat(r.refund) || 0), 0);
+        const dayProfit = calcDayRealProfit(selectedDateISO);
+
+        const allTotal = records.length;
+        const allRefund = records.reduce((sum, r) => sum + (parseFloat(r.refund) || 0), 0);
+        const allProfit = calcAllRealProfit();
+
+        document.getElementById('stat-day-total').innerText = dayRecords.length;
+        document.getElementById('stat-day-revenue').innerText = dayRevenue.toLocaleString();
+        document.getElementById('stat-day-expenses-total').innerText = (dayCost + dayPetty).toLocaleString();
+        document.getElementById('stat-day-cost').innerText = dayCost.toLocaleString();
+        document.getElementById('stat-day-petty').innerText = dayPetty.toLocaleString();
+        document.getElementById('stat-day-refund').innerText = dayRefund.toLocaleString();
+        document.getElementById('stat-day-profit').innerText = dayProfit.toLocaleString();
+
+        document.getElementById('stat-all-total').innerText = allTotal;
+        document.getElementById('stat-all-refund').innerText = allRefund.toLocaleString();
+        document.getElementById('stat-all-profit').innerText = allProfit.toLocaleString();
+    }
+
+    function renderTable() {
+        const query = document.getElementById('searchInput').value.toLowerCase().replace(/^#/, '');
+        const tbody = document.getElementById('recordsBody');
+        tbody.innerHTML = '';
+
+        const filtered = records.filter(r => {
+            let matchesScope = true;
+            if (currentScope === 'day') {
+                matchesScope = r.dayKey === selectedDateISO;
+            } else if (currentScope === 'merchants') {
+                matchesScope = r.clientType === 'merchant' || r.paymentStatus === 'credit';
+            } else if (currentScope === 'working') {
+                matchesScope = r.status === 'working';
+            } else if (currentScope === 'done') {
+                matchesScope = r.status === 'done';
+            } else if (currentScope === 'returned') {
+                matchesScope = r.status === 'returned' || (parseFloat(r.refund) || 0) > 0;
+            }
+
+            const matchesQuery =
+                String(r.ticketNo).includes(query) ||
+                r.clientName.toLowerCase().includes(query) ||
+                r.deviceModel.toLowerCase().includes(query) ||
+                r.clientPhone.includes(query) ||
+                (r.secretNote || '').toLowerCase().includes(query);
+            return matchesScope && matchesQuery;
+        });
+
+        if (filtered.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:25px;">لا توجد بيانات مسجلة في هذا العرض</td></tr>`;
+            return;
+        }
+
+        filtered.forEach(r => {
+            const net = calcRecordNet(r);
+            const hasPhone = Boolean(normalizeEgyptPhone(r.clientPhone));
+            const statusClass =
+                r.status === 'working' ? 'status-working' :
+                r.status === 'ready' ? 'status-ready' :
+                r.status === 'returned' ? 'status-returned' : 'status-done';
+
+            const merchantBadge = r.clientType === 'merchant' ? `<span class="tag-merchant">تاجر</span>` : '';
+            const creditBadge = r.paymentStatus === 'credit' ? `<span class="tag-credit">آجل</span>` : '';
+            const noteBadge = r.secretNote ? `<br><span class="secret-note">🔒 ${r.secretNote}</span>` : '';
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>
+                    <span class="ticket-badge">#${r.ticketNo}</span>${merchantBadge}${creditBadge}<br>
+                    <strong>${r.clientName}</strong><br>
+                    <span style="font-size:11px; color:var(--text-muted);">${r.clientPhone || '-'}</span>
+                </td>
+                <td>
+                    <strong>${r.deviceModel}</strong><br>
+                    <span style="font-size:11px; color:var(--gold);">${r.condition}</span>
+                </td>
+                <td>${r.serviceType}${noteBadge}</td>
+                <td style="white-space:nowrap; font-size:12px;">${r.date}</td>
+                <td style="white-space:nowrap;">
+                    <span style="color:var(--text-muted); font-size:11px;">سعر: ${r.price} | تكلفة: ${r.cost}</span><br>
+                    ${(parseFloat(r.refund) || 0) > 0 ? `<span style="color:var(--danger); font-size:11px;">مرتجع: ${r.refund} ج.م</span><br>` : ''}
+                    <strong style="color:${net >= 0 ? 'var(--gold)' : 'var(--danger)'};">صافي: ${net} ج.م</strong>
+                </td>
+                <td>
+                    <select class="status-select ${statusClass}" onchange="updateStatus(${r.id}, this.value)">
+                        <option value="working" ${r.status === 'working' ? 'selected' : ''}>جاري العمل</option>
+                        <option value="ready" ${r.status === 'ready' ? 'selected' : ''}>جاهز للاستلام</option>
+                        <option value="done" ${r.status === 'done' ? 'selected' : ''}>تم التسليم</option>
+                        <option value="returned" ${r.status === 'returned' ? 'selected' : ''}>مرتجع</option>
+                    </select>
+                </td>
+                <td class="actions-cell">
+                    <button class="btn-edit" onclick="openEditModal(${r.id})">✏️ تعديل</button>
+                    <button class="btn-wa" ${hasPhone ? `onclick="openWaModal(${r.id})"` : 'disabled title="أضف رقم هاتف أولاً"'}>💬 واتساب</button>
+                    <button class="btn-print" onclick="printReceipt(${r.id})">🖨️ إيصال</button>
+                    <button class="btn-danger" onclick="deleteRecord(${r.id})">حذف</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    /* Edit Modal */
+    function openEditModal(id) {
+        const r = records.find(item => item.id === id);
+        if (!r) return;
+        document.getElementById('editId').value = r.id;
+        document.getElementById('editTicketBadge').innerText = `#${r.ticketNo}`;
+        document.getElementById('editClientName').value = r.clientName;
+        document.getElementById('editClientType').value = r.clientType || 'cash';
+        document.getElementById('editPaymentStatus').value = r.paymentStatus || 'paid';
+        document.getElementById('editClientPhone').value = r.clientPhone || '';
+        document.getElementById('editDeviceModel').value = r.deviceModel;
+        document.getElementById('editCondition').value = r.condition;
+        document.getElementById('editStatus').value = r.status;
+        document.getElementById('editServiceType').value = r.serviceType;
+        document.getElementById('editPrice').value = r.price || 0;
+        document.getElementById('editCost').value = r.cost || 0;
+        document.getElementById('editRefund').value = r.refund || 0;
+        document.getElementById('editSecretNote').value = r.secretNote || '';
+        document.getElementById('editModal').classList.add('show');
+    }
+
+    function closeEditModal() {
+        document.getElementById('editModal').classList.remove('show');
+    }
+
+    function saveEditedRecord(e) {
+        e.preventDefault();
+        const id = parseInt(document.getElementById('editId').value, 10);
+        const item = records.find(r => r.id === id);
+        if (!item) return;
+
+        item.clientName = document.getElementById('editClientName').value.trim();
+        item.clientType = document.getElementById('editClientType').value;
+        item.paymentStatus = document.getElementById('editPaymentStatus').value;
+        item.clientPhone = document.getElementById('editClientPhone').value.trim();
+        item.deviceModel = document.getElementById('editDeviceModel').value.trim();
+        item.condition = document.getElementById('editCondition').value;
+        item.status = document.getElementById('editStatus').value;
+        item.serviceType = document.getElementById('editServiceType').value.trim();
+        item.price = Math.max(0, parseFloat(document.getElementById('editPrice').value) || 0);
+        item.cost = Math.max(0, parseFloat(document.getElementById('editCost').value) || 0);
+        item.refund = Math.max(0, parseFloat(document.getElementById('editRefund').value) || 0);
+        item.secretNote = document.getElementById('editSecretNote').value.trim();
+
+        saveToStorage();
+        closeEditModal();
+    }
+
+    /* WhatsApp Modal */
+    function buildDefaultWaMessage(r) {
+        const header = `المدينة المنورة - محمد أمين\nالعتبة - 7 شارع العطار\n`;
+        const ticketLine = `كود المتابعة: #${r.ticketNo}\n`;
+        if (r.status === 'ready') {
+            return `أهلاً بك يا ${r.clientName} 👋\nنحيطك علماً بأن جهازك (${r.deviceModel}) جاهز للاستلام.\n${ticketLine}التكلفة: ${r.price} ج.م\n${header}`;
+        }
+        if (r.status === 'done') {
+            return `أهلاً بك يا ${r.clientName} 👋\nتم تسليم جهازك (${r.deviceModel}) بنجاح.\n${ticketLine}نسعد دائماً بخدمتك في:\n${header}`;
+        }
+        if (r.status === 'returned') {
+            return `أهلاً بك يا ${r.clientName} 👋\nبخصوص جهازك (${r.deviceModel})، تم تسجيل مرتجع بقيمة (${r.refund || r.price} ج.م).\n${ticketLine}${header}`;
+        }
+        return `أهلاً بك يا ${r.clientName} 👋\nجهازك (${r.deviceModel}) بخصوص (${r.serviceType}) قيد العمل حالياً.\n${ticketLine}${header}`;
+    }
+
+    function openWaModal(id) {
+        const r = records.find(item => item.id === id);
+        if (!r) return;
+        const intlPhone = normalizeEgyptPhone(r.clientPhone);
+        if (!intlPhone) {
+            alert('برجاء إدخال رقم هاتف صحيح للعميل أولاً.');
+            return;
+        }
+        activeWaPhone = intlPhone;
+        document.getElementById('waClientLabel').innerText = r.clientName;
+        document.getElementById('waPhoneLabel').innerText = r.clientPhone;
+        document.getElementById('waMessageText').value = buildDefaultWaMessage(r);
+        document.getElementById('waModal').classList.add('show');
+    }
+
+    function closeWaModal() {
+        document.getElementById('waModal').classList.remove('show');
+        activeWaPhone = '';
+    }
+
+    function sendWaMessage() {
+        const text = document.getElementById('waMessageText').value.trim();
+        if (!activeWaPhone || !text) return;
+        const url = `https://wa.me/${activeWaPhone}?text=${encodeURIComponent(text)}`;
+        window.open(url, '_blank');
+        closeWaModal();
+    }
+
+    /* End of Day Closing */
+    function generateClosingText() {
+        const dayRecords = records.filter(r => r.dayKey === selectedDateISO);
+        const totalCount = dayRecords.length;
+        const workingCount = dayRecords.filter(r => r.status === 'working').length;
+        const doneCount = dayRecords.filter(r => r.status === 'done').length;
+        const revenue = dayRecords.reduce((s, r) => s + (parseFloat(r.price) || 0), 0);
+        const cost = dayRecords.reduce((s, r) => s + (parseFloat(r.cost) || 0), 0);
+        const petty = getDayExpensesTotal(selectedDateISO);
+        const refund = dayRecords.reduce((s, r) => s + (parseFloat(r.refund) || 0), 0);
+        const netProfit = calcDayRealProfit(selectedDateISO);
+        const creditTotal = dayRecords
+            .filter(r => r.paymentStatus === 'credit')
+            .reduce((s, r) => s + Math.max(0, (parseFloat(r.price) || 0) - (parseFloat(r.refund) || 0)), 0);
+
+        return `تقفيل يوم: ${formatDisplayDate(selectedDateISO)}\n` +
+               `المدينة المنورة - محمد أمين\n` +
+               `------------------------\n` +
+               `عدد الأجهزة: ${totalCount}\n` +
+               `جاري العمل: ${workingCount} | تم التسليم: ${doneCount}\n` +
+               `إجمالي الإيرادات: ${revenue} ج.م\n` +
+               `تكلفة كريدت/سيرفر: ${cost} ج.م\n` +
+               `مصاريف الخزنة: ${petty} ج.م\n` +
+               `المرتجع: ${refund} ج.م\n` +
+               `آجل / حساب تجار: ${creditTotal} ج.م\n` +
+               `صافي الربح الحقيقي: ${netProfit} ج.م`;
+    }
+
+    function openClosingModal() {
+        document.getElementById('closingReportText').value = generateClosingText();
+        document.getElementById('closingModal').classList.add('show');
+    }
+
+    function closeClosingModal() {
+        document.getElementById('closingModal').classList.remove('show');
+    }
+
+    function copyClosingReport() {
+        const txt = document.getElementById('closingReportText').value;
+        navigator.clipboard.writeText(txt).then(() => {
+            alert('تم نسخ تقرير تقفيل اليوم!');
+        });
+    }
+
+    function sendClosingToWa() {
+        const txt = document.getElementById('closingReportText').value.trim();
+        if (!txt) return;
+        window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`, '_blank');
+    }
+
+    /* Receipt Print (Excludes secretNote) */
+    function printReceipt(id) {
+        const r = records.find(item => item.id === id);
+        if (!r) return;
+
+        const printArea = document.getElementById('print-area');
+        printArea.innerHTML = `
+            <div class="receipt-box">
+                <div class="receipt-header">
+                    <h2 style="margin:0; font-size:18px;">المدينة المنورة - محمد أمين</h2>
+                    <p style="margin:4px 0; font-size:12px;">لخدمات السوفت وير والبرمجة | 01119943360</p>
+                    <p style="margin:2px 0; font-size:11px;">العتبة - 7 شارع العطار</p>
+                </div>
+                <div class="receipt-row"><span>كود المتابعة:</span><strong>#${r.ticketNo}</strong></div>
+                <div class="receipt-row"><span>اسم العميل:</span><strong>${r.clientName}</strong></div>
+                <div class="receipt-row"><span>التاريخ:</span><strong>${r.date}</strong></div>
+                <div class="receipt-row"><span>نوع الجهاز:</span><strong>${r.deviceModel}</strong></div>
+                <div class="receipt-row"><span>حالة الجهاز:</span><strong>${r.condition}</strong></div>
+                <div class="receipt-row"><span>الخدمة المطلوبة:</span><strong>${r.serviceType}</strong></div>
+                <div class="receipt-row"><span>التكلفة المتفق عليها:</span><strong>${r.price} ج.م (${r.paymentStatus === 'credit' ? 'آجل' : 'نقدي'})</strong></div>
+                ${(parseFloat(r.refund) || 0) > 0 ? `<div class="receipt-row"><span>مبلغ مرتجع:</span><strong>${r.refund} ج.م</strong></div>` : ''}
+                <p style="font-size:11px; margin-top:10px; line-height:1.5;">
+                    * المركز غير مسؤول عن فقدان البيانات أثناء عمليات السوفت وير أو فك الشفرات.<br>
+                    * الأجهزة الفاصلة باور تُستلم للفحص بدون ضمان التشغيل.
+                </p>
+                <div class="receipt-footer">يُرجى إحضار الكارت عند الاستلام</div>
+            </div>
+        `;
+        window.print();
+    }
+
+    /* Backup & Restore */
+    function exportData() {
+        const payload = {
+            records: records,
+            expenses: expenses,
+            nextTicketNo: nextTicketNo
+        };
+        const dataStr = JSON.stringify(payload, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const today = getLocalDateISO();
+        a.href = url;
+        a.download = `backup_mohamed_amin_${today}.json`;
+        a.click();
+    }
+
+    function importData(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const parsed = JSON.parse(e.target.result);
+                const rawRecords = Array.isArray(parsed) ? parsed : (Array.isArray(parsed.records) ? parsed.records : null);
+                if (!rawRecords) {
+                    alert('ملف النسخة الاحتياطية غير صالح.');
+                    return;
+                }
+                const normalized = normalizeState(
+                    rawRecords,
+                    Array.isArray(parsed.expenses) ? parsed.expenses : expenses,
+                    parsed.nextTicketNo || nextTicketNo
+                );
+                records = normalized.records;
+                expenses = normalized.expenses;
+                nextTicketNo = normalized.nextTicketNo;
+                saveToStorage();
+                alert('تم استعادة النسخة الاحتياطية ومزامنتها بنجاح!');
+            } catch (err) {
+                alert('ملف النسخة الاحتياطية غير صالح.');
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    // Initialize
+    initDateInput();
+    refreshUI();
+    pullFromCloud(false);
+</script>
+
+</body>
+</html>
