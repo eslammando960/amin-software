@@ -301,6 +301,85 @@
             display: flex;
         }
 
+        /* Quick Recognition Bar (Missing / Paid / Unpaid) */
+        .quick-recognition-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .recog-card {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 11px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .recog-card.paid-box {
+            border-color: rgba(16, 185, 129, 0.45);
+            background: rgba(16, 185, 129, 0.07);
+        }
+
+        .recog-card.unpaid-box {
+            border-color: rgba(239, 68, 68, 0.55);
+            background: rgba(239, 68, 68, 0.08);
+        }
+
+        .recog-card.missing-box {
+            border-color: rgba(245, 158, 11, 0.45);
+            background: rgba(245, 158, 11, 0.07);
+        }
+
+        /* Unpaid Reminder Warning Banner */
+        .unpaid-warning-banner {
+            display: none;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.55);
+            color: #fecaca;
+            border-radius: 12px;
+            padding: 11px 16px;
+            margin-bottom: 14px;
+            font-size: 12px;
+            font-weight: 800;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .unpaid-warning-banner.show {
+            display: flex;
+        }
+
+        /* Deficit Source Box */
+        .deficit-result-box {
+            margin-top: 12px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .deficit-result-box.has-deficit {
+            background: rgba(239, 68, 68, 0.12);
+            border-color: rgba(239, 68, 68, 0.55);
+            color: #fecaca;
+        }
+
+        .deficit-result-box.balanced {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.45);
+            color: #a7f3d0;
+        }
+
         /* Quick Profit Plan Card */
         .profit-plan-card {
             background: var(--bg-card);
@@ -517,21 +596,6 @@
             display: none !important;
         }
 
-        /* ADB Box */
-        .adb-cmd-box {
-            background: var(--bg-dark);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 10px 12px;
-            font-family: Consolas, monospace;
-            font-size: 12px;
-            color: #93c5fd;
-            direction: ltr;
-            text-align: left;
-            margin-top: 8px;
-            word-break: break-all;
-        }
-
         /* Day Bar */
         .day-bar {
             background-color: var(--bg-card);
@@ -572,7 +636,7 @@
         /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
             gap: 12px;
             margin-bottom: 20px;
         }
@@ -759,9 +823,11 @@
             background: var(--bg-input);
             border: 1px solid var(--border);
             border-radius: 10px;
-            padding: 8px 11px;
+            padding: 10px 14px;
             margin-top: 8px;
-            font-size: 12px;
+            font-size: 12.5px;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .expense-amount {
@@ -920,14 +986,27 @@
             margin-top: 3px;
         }
 
-        .tag-credit {
+        .tag-unpaid {
             display: inline-block;
-            background: rgba(245, 158, 11, 0.14);
-            color: #fcd34d;
+            background: rgba(239, 68, 68, 0.22);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.65);
             border-radius: 6px;
-            padding: 1px 6px;
+            padding: 1px 7px;
             font-size: 10px;
-            font-weight: 700;
+            font-weight: 800;
+            margin-right: 4px;
+        }
+
+        .tag-paid {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.18);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.55);
+            border-radius: 6px;
+            padding: 1px 7px;
+            font-size: 10px;
+            font-weight: 800;
             margin-right: 4px;
         }
 
@@ -1166,6 +1245,7 @@
     <div class="view-nav">
         <button type="button" class="view-btn active" onclick="switchMainView('operationsView', this)">📱 العمليات والحسابات</button>
         <button type="button" class="view-btn" onclick="switchMainView('toolsView', this)" id="toolsNavBtn">🧰 Tools (البوكسات والأدوات والأكونتات)</button>
+        <button type="button" class="view-btn" onclick="switchMainView('expensesView', this)" id="expensesNavBtn">💸 مصاريف اليوم (العمال)</button>
     </div>
 
     <!-- Save Duration Toast -->
@@ -1191,7 +1271,7 @@
             </div>
             <div class="profit-plan-grid">
                 <div class="plan-box" id="planTargetStatusBox">المتبقي لتحقيق هدف اليوم: <strong>0 ج.م</strong></div>
-                <div class="plan-box" id="planPendingCreditBox">رصيد آجل جاهز للتحصيل: <strong>0 ج.م</strong></div>
+                <div class="plan-box" id="planPendingCreditBox">رصيد لم يتم دفعه: <strong>0 ج.م</strong></div>
                 <div class="plan-box" id="planTopServicesBox">أعلى الخدمات ربحاً: <strong>لا توجد بيانات كافية</strong></div>
             </div>
         </div>
@@ -1218,7 +1298,7 @@
             </div>
         </div>
 
-        <!-- Dashboard Stats -->
+        <!-- Dashboard Stats (Credit & Workers Expenses Separated) -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-title">أجهزة اليوم المختار</div>
@@ -1228,12 +1308,17 @@
             <div class="stat-card drawer-card">
                 <div class="stat-title">حاسبة الدرج (كاش اليوم)</div>
                 <div class="stat-value" id="stat-day-drawer">0</div>
-                <div class="stat-sub">كاش الدرج ناقص مصاريف ومرتجع • آجل: <span id="stat-day-credit">0</span> ج.م</div>
+                <div class="stat-sub">تم الدفع ناقص مصاريف ومرتجع • لم يتم الدفع: <span id="stat-day-credit">0</span> ج.م</div>
             </div>
             <div class="stat-card expense-card">
-                <div class="stat-title">تكلفة كريدت + مصاريف اليوم</div>
-                <div class="stat-value" id="stat-day-expenses-total">0</div>
-                <div class="stat-sub">كريدت: <span id="stat-day-cost">0</span> • خزنة: <span id="stat-day-petty">0</span> ج.م</div>
+                <div class="stat-title">تكلفة الكريدت (اليوم)</div>
+                <div class="stat-value" id="stat-day-cost">0</div>
+                <div class="stat-sub">تكلفة كريدت وسيرفر للأجهزة</div>
+            </div>
+            <div class="stat-card expense-card">
+                <div class="stat-title">مصاريف اليوم (العمال)</div>
+                <div class="stat-value" id="stat-day-petty">0</div>
+                <div class="stat-sub">منفصلة عن الشغل في تبويب العمال</div>
             </div>
             <div class="stat-card return-card">
                 <div class="stat-title">مرتجع اليوم (ج.م)</div>
@@ -1288,10 +1373,10 @@
                         </div>
                         <div class="row-2 express-optional">
                             <div class="form-group">
-                                <label>حالة الدفع</label>
+                                <label>حالة السداد</label>
                                 <select id="paymentStatus" onchange="syncPaymentMethodDefault(); markFormDirty()">
-                                    <option value="paid">مدفوع</option>
-                                    <option value="credit">آجل (حساب مفتوح)</option>
+                                    <option value="paid">تم الدفع</option>
+                                    <option value="credit">لم يتم الدفع</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -1301,7 +1386,7 @@
                                     <option value="فودافون كاش">فودافون كاش</option>
                                     <option value="إنستا باي">إنستا باي</option>
                                     <option value="تحويل بنكي">تحويل بنكي</option>
-                                    <option value="آجل">آجل</option>
+                                    <option value="عند الاستلام / آجل">عند الاستلام / آجل</option>
                                 </select>
                             </div>
                         </div>
@@ -1400,51 +1485,40 @@
                         <button type="button" class="btn-edit" style="justify-content: center;" onclick="calcApplyToPrice()">💰 وضعه في السعر</button>
                     </div>
                 </div>
-
-                <!-- ADB Command Builder -->
-                <div class="panel">
-                    <div class="panel-title">💻 أوامر ADB السريعة</div>
-                    <div class="form-group">
-                        <label>اختر الأمر</label>
-                        <select id="adbCommandSelect" onchange="updateAdbPreview()">
-                            <option value="adb devices -l">فحص الأجهزة المتصلة (adb devices -l)</option>
-                            <option value="adb shell getprop ro.serialno">سحب الرقم التسلسلي (Serial No)</option>
-                            <option value="adb shell getprop ro.product.model">سحب موديل الجهاز (Product Model)</option>
-                            <option value="adb shell getprop ro.build.version.release">سحب إصدار أندرويد (Android Version)</option>
-                            <option value="adb shell getprop ro.boot.flash.locked">فحص حالة البوتلودر (Bootloader Lock)</option>
-                            <option value="adb shell service call iphonesubinfo 1">قراءة بيانات الشريحة / IMEI</option>
-                        </select>
-                    </div>
-                    <div class="adb-cmd-box" id="adbCmdPreview">adb devices -l</div>
-                    <button type="button" class="btn-outline" style="width: 100%; justify-content: center; margin-top: 8px;" onclick="copyAdbCommand()">
-                        📋 نسخ الأمر
-                    </button>
-                </div>
-
-                <!-- Daily Petty Cash / Expenses -->
-                <div class="panel">
-                    <div class="panel-title">💸 مصاريف اليوم (<span id="expenseDayLabel">اليوم</span>)</div>
-                    <form id="expenseForm" onsubmit="addExpense(event)">
-                        <div class="row-2">
-                            <div class="form-group">
-                                <label>البيان *</label>
-                                <input type="text" id="expenseTitle" required placeholder="مثال: مواصلات">
-                            </div>
-                            <div class="form-group">
-                                <label>المبلغ *</label>
-                                <input type="number" id="expenseAmount" required min="1" placeholder="0">
-                            </div>
-                        </div>
-                        <button type="submit" class="btn-outline" style="width: 100%; justify-content: center; border-color: rgba(245, 158, 11, 0.45); color: var(--warning);">
-                            + إضافة مصروف لليوم
-                        </button>
-                    </form>
-                    <div id="expensesList"></div>
-                </div>
             </div>
 
             <!-- Records Table -->
             <div class="panel">
+                <!-- Quick Recognition Strip: Missing / Paid / Unpaid -->
+                <div class="quick-recognition-grid" id="quickRecognitionBar">
+                    <div class="recog-card missing-box" id="recogMissingCard">
+                        <div>
+                            <strong style="color: var(--warning);">🔎 إيه اللي ناقص</strong><br>
+                            <span id="recogMissingText" style="color: var(--text-muted);">جاري الفحص...</span>
+                        </div>
+                        <button type="button" class="btn-outline" onclick="setScope('missing', null)">عرض</button>
+                    </div>
+                    <div class="recog-card paid-box" id="recogPaidCard">
+                        <div>
+                            <strong style="color: var(--success);">✓ إيه اللي اتدفع</strong><br>
+                            <span id="recogPaidText" style="color: var(--text-muted);">0 جهاز (0 ج.م)</span>
+                        </div>
+                        <button type="button" class="btn-settle" onclick="setScope('paid', null)">عرض</button>
+                    </div>
+                    <div class="recog-card unpaid-box" id="recogUnpaidCard">
+                        <div>
+                            <strong style="color: var(--danger);">⚠️ إيه اللي مادفعش</strong><br>
+                            <span id="recogUnpaidText" style="color: #fecaca;">0 جهاز (0 ج.م)</span>
+                        </div>
+                        <button type="button" class="btn-danger" onclick="setScope('unpaid', null)">عرض</button>
+                    </div>
+                </div>
+
+                <div class="unpaid-warning-banner" id="unpaidWarningBanner">
+                    <span id="unpaidWarningText"></span>
+                    <button type="button" class="btn-danger" onclick="focusUnpaidTab()">عرض لم يتم الدفع فقط</button>
+                </div>
+
                 <div class="toolbar">
                     <div class="search-box">
                         <input type="text" id="searchInput" onkeyup="renderTable()" placeholder="🔍 ابحث بالكود (#101)، السيريال / IMEI، الاسم، المحل، المكان الخارجي، الموديل، أو الهاتف...">
@@ -1452,6 +1526,9 @@
                     <div class="filter-tabs">
                         <button type="button" class="tab-btn active" onclick="setScope('day', this)">أجهزة اليوم</button>
                         <button type="button" class="tab-btn" onclick="setScope('all', this)">كل الأيام</button>
+                        <button type="button" class="tab-btn" onclick="setScope('unpaid', this)" id="unpaidTabBtn">لم يتم الدفع</button>
+                        <button type="button" class="tab-btn" onclick="setScope('paid', this)">تم الدفع</button>
+                        <button type="button" class="tab-btn" onclick="setScope('missing', this)" id="missingTabBtn">الناقص</button>
                         <button type="button" class="tab-btn" onclick="setScope('external', this)">شغل خارجي / بره</button>
                         <button type="button" class="tab-btn" onclick="setScope('overdue', this)" id="overdueTabBtn">متأخر (+2 يوم)</button>
                         <button type="button" class="tab-btn" onclick="setScope('warranty', this)">الضمان والمرتجع</button>
@@ -1473,8 +1550,8 @@
                                     <th>اسم التاجر / المحل</th>
                                     <th>الأجهزة</th>
                                     <th>المستحق</th>
-                                    <th>المدفوع</th>
-                                    <th>المتبقي آجل</th>
+                                    <th>تم الدفع</th>
+                                    <th>لم يتم الدفع</th>
                                     <th>تسوية</th>
                                 </tr>
                             </thead>
@@ -1493,8 +1570,8 @@
                                     <th>العميل / المحل</th>
                                     <th>المرات</th>
                                     <th>الإيراد</th>
-                                    <th>المدفوع</th>
-                                    <th>الآجل</th>
+                                    <th>تم الدفع</th>
+                                    <th>لم يتم الدفع</th>
                                     <th>السجلات</th>
                                 </tr>
                             </thead>
@@ -1595,6 +1672,58 @@
             </div>
         </div>
     </div>
+
+    <!-- VIEW 3: DAILY WORKER EXPENSES & DEFICIT TRACKER -->
+    <div id="expensesView" class="view-panel">
+        <div class="main-grid">
+            <div class="left-stack">
+                <div class="panel">
+                    <div class="panel-title">💸 إضافة مصروف عمال (<span id="expenseDayLabel">اليوم</span>)</div>
+                    <form id="expenseForm" onsubmit="addExpense(event)">
+                        <div class="form-group">
+                            <label>تاريخ المصروف *</label>
+                            <input type="date" id="expenseDateInput" required onchange="markFormDirty()">
+                        </div>
+                        <div class="form-group">
+                            <label>اسم العامل / بيان المصروف *</label>
+                            <input type="text" id="expenseTitle" required oninput="markFormDirty()" placeholder="مثال: يومية عامل / سلفة / وجبة / مواصلات عامل">
+                        </div>
+                        <div class="form-group">
+                            <label>المبلغ (ج.م) *</label>
+                            <input type="number" id="expenseAmount" required min="1" oninput="markFormDirty()" placeholder="0">
+                        </div>
+                        <button type="submit" class="btn-gold" style="width: 100%; justify-content: center; padding: 10px;">
+                            + تسجيل مصروف العمال
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Deficit Checker & Source Analyzer -->
+                <div class="panel">
+                    <div class="panel-title">⚖️ كاشف العجز ومصدر العجز</div>
+                    <div class="form-group">
+                        <label>الكاش الفعلي الموجود في يدك / الدرج (ج.م)</label>
+                        <input type="number" id="actualCashForDeficit" oninput="renderDeficitAnalysis()" placeholder="أدخل المبلغ الفعلي لحساب العجز">
+                    </div>
+                    <div class="form-group">
+                        <label>ملاحظة / سبب عجز معروف (اختياري)</label>
+                        <input type="text" id="deficitNoteInput" oninput="saveDeficitNote(this.value)" placeholder="مثال: سلفة عامل أو خطأ باقي">
+                    </div>
+                    <div class="deficit-result-box balanced" id="deficitResultBox">
+                        أدخل الكاش الفعلي لمقارنته بالكاش المفروض ومعرفة مصدر العجز إن وُجد.
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">
+                    <span>💸 مصاريف اليوم (العمال فقط — مستقل عن الشغل)</span>
+                    <span id="workersExpenseSummary" style="font-size: 12px; color: var(--warning);"></span>
+                </div>
+                <div id="expensesList"></div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- WhatsApp Reply Modal -->
@@ -1667,10 +1796,10 @@
             </div>
             <div class="row-2">
                 <div class="form-group">
-                    <label>حالة الدفع</label>
-                    <select id="editPaymentStatus">
-                        <option value="paid">مدفوع</option>
-                        <option value="credit">آجل (حساب مفتوح)</option>
+                    <label>حالة السداد</label>
+                    <select id="editPaymentStatus" onchange="onEditPaymentStatusChange()">
+                        <option value="paid">تم الدفع</option>
+                        <option value="credit">لم يتم الدفع</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -1680,7 +1809,7 @@
                         <option value="فودافون كاش">فودافون كاش</option>
                         <option value="إنستا باي">إنستا باي</option>
                         <option value="تحويل بنكي">تحويل بنكي</option>
-                        <option value="آجل">آجل</option>
+                        <option value="عند الاستلام / آجل">عند الاستلام / آجل</option>
                     </select>
                 </div>
             </div>
@@ -1792,12 +1921,32 @@
     let soundAlertEnabled = localStorage.getItem('amin_sound_alert') !== 'false';
     let expressMode = localStorage.getItem('amin_express_mode') === 'true';
     let dailyProfitTarget = Math.max(0, parseFloat(localStorage.getItem('amin_daily_profit_target') || '500') || 500);
+    let deficitNotesByDay = JSON.parse(localStorage.getItem('amin_deficit_notes') || '{}');
     let autoSyncTimer = null;
     let toastTimer = null;
     let hasUnsavedFormChanges = false;
     let isCloudSyncing = false;
 
-    /* Warn before closing or refreshing page with unsaved input */
+    function isUnpaidStatus(r) {
+        return r.paymentStatus === 'credit' || r.paymentStatus === 'unpaid';
+    }
+
+    function isRecordMissingInfo(r) {
+        const ageInfo = getRecordAgeInfo(r);
+        const noSerial = !(r.serialNumber || '').trim();
+        const noPhone = !(r.clientPhone || '').trim();
+        return noSerial || noPhone || ageInfo.isOverdue;
+    }
+
+    function getMissingReasons(r) {
+        const ageInfo = getRecordAgeInfo(r);
+        const reasons = [];
+        if (!(r.serialNumber || '').trim()) reasons.push('سيريال/IMEI');
+        if (!(r.clientPhone || '').trim()) reasons.push('رقم هاتف');
+        if (ageInfo.isOverdue) reasons.push(`متأخر ${ageInfo.days} يوم`);
+        return reasons;
+    }
+
     function markFormDirty() {
         hasUnsavedFormChanges = true;
     }
@@ -1809,7 +1958,6 @@
         }
     });
 
-    /* Switch Main View (Operations vs Tools) */
     function switchMainView(viewId, btn) {
         document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
@@ -1818,7 +1966,18 @@
         if (btn) btn.classList.add('active');
         if (viewId === 'toolsView') {
             renderToolsTable();
+        } else if (viewId === 'expensesView') {
+            const expDateEl = document.getElementById('expenseDateInput');
+            if (expDateEl && !expDateEl.value) expDateEl.value = selectedDateISO;
+            renderExpenses();
+            renderDeficitAnalysis();
         }
+    }
+
+    function focusUnpaidTab() {
+        switchMainView('operationsView', document.querySelector('.view-btn'));
+        const unpaidBtn = document.getElementById('unpaidTabBtn');
+        setScope('unpaid', unpaidBtn);
     }
 
     function toggleExternalPlaceInput() {
@@ -1830,9 +1989,19 @@
         const payStatus = document.getElementById('paymentStatus').value;
         const payMethod = document.getElementById('paymentMethod');
         if (payStatus === 'credit') {
-            payMethod.value = 'آجل';
-        } else if (payMethod.value === 'آجل') {
+            payMethod.value = 'عند الاستلام / آجل';
+        } else if (payMethod.value === 'عند الاستلام / آجل' || payMethod.value === 'آجل') {
             payMethod.value = 'كاش الدرج';
+        }
+    }
+
+    function onEditPaymentStatusChange() {
+        const st = document.getElementById('editPaymentStatus').value;
+        const methodSel = document.getElementById('editPaymentMethod');
+        if (st === 'paid' && (methodSel.value === 'عند الاستلام / آجل' || methodSel.value === 'آجل')) {
+            methodSel.value = 'كاش الدرج';
+        } else if (st === 'credit') {
+            methodSel.value = 'عند الاستلام / آجل';
         }
     }
 
@@ -1841,7 +2010,6 @@
         document.getElementById('editReturnReasonGroup').style.display = st === 'returned' ? 'block' : 'none';
     }
 
-    /* Built-in Calculator State */
     let calcExpression = '';
     let calcResultValue = '0';
 
@@ -1916,7 +2084,6 @@
         }
     }
 
-    /* Quick Profit Plan */
     function updateDailyProfitTarget(val) {
         dailyProfitTarget = Math.max(0, parseFloat(val) || 0);
         localStorage.setItem('amin_daily_profit_target', String(dailyProfitTarget));
@@ -1948,12 +2115,12 @@
             }
         }
 
-        const totalAllCredit = records
-            .filter(r => r.paymentStatus === 'credit')
+        const totalAllUnpaid = records
+            .filter(r => isUnpaidStatus(r))
             .reduce((s, r) => s + Math.max(0, (parseFloat(r.price) || 0) - (parseFloat(r.refund) || 0)), 0);
         const creditBox = document.getElementById('planPendingCreditBox');
         if (creditBox) {
-            creditBox.innerHTML = `رصيد آجل جاهز للتحصيل: <strong style="color: var(--warning);">${maskNum(totalAllCredit)} ج.م</strong>`;
+            creditBox.innerHTML = `رصيد لم يتم دفعه: <strong style="color: var(--danger);">${maskNum(totalAllUnpaid)} ج.م</strong>`;
         }
 
         const serviceStats = {};
@@ -1979,7 +2146,46 @@
         }
     }
 
-    /* Wallets & Transfers Strip */
+    function renderQuickRecognitionBar() {
+        const missingRecords = records.filter(r => isRecordMissingInfo(r));
+        const paidRecords = records.filter(r => !isUnpaidStatus(r));
+        const unpaidRecords = records.filter(r => isUnpaidStatus(r));
+
+        const paidSum = paidRecords.reduce((s, r) => s + Math.max(0, (parseFloat(r.price) || 0) - (parseFloat(r.refund) || 0)), 0);
+        const unpaidSum = unpaidRecords.reduce((s, r) => s + Math.max(0, (parseFloat(r.price) || 0) - (parseFloat(r.refund) || 0)), 0);
+
+        const missEl = document.getElementById('recogMissingText');
+        const paidEl = document.getElementById('recogPaidText');
+        const unpaidEl = document.getElementById('recogUnpaidText');
+        const missTab = document.getElementById('missingTabBtn');
+
+        if (missEl) missEl.innerText = `${missingRecords.length} جهاز ناقص سيريال/رقم/متابعة`;
+        if (paidEl) paidEl.innerText = `${paidRecords.length} جهاز (${maskNum(paidSum)} ج.م)`;
+        if (unpaidEl) unpaidEl.innerText = `${unpaidRecords.length} جهاز (${maskNum(unpaidSum)} ج.م)`;
+        if (missTab) missTab.innerText = missingRecords.length > 0 ? `الناقص (${missingRecords.length})` : 'الناقص';
+    }
+
+    function renderUnpaidWarningBanner() {
+        const banner = document.getElementById('unpaidWarningBanner');
+        const textEl = document.getElementById('unpaidWarningText');
+        if (!banner || !textEl) return;
+
+        const unpaidRecords = records.filter(r => isUnpaidStatus(r));
+        if (unpaidRecords.length === 0) {
+            banner.classList.remove('show');
+            return;
+        }
+
+        const totalUnpaid = unpaidRecords.reduce(
+            (s, r) => s + Math.max(0, (parseFloat(r.price) || 0) - (parseFloat(r.refund) || 0)),
+            0
+        );
+        textEl.innerHTML =
+            `🚨 <strong>تنبيه تحصيل:</strong> يوجد <strong>${unpaidRecords.length}</strong> جهاز بحالة ` +
+            `<span class="tag-unpaid">لم يتم الدفع</span> بإجمالي <strong>${maskNum(totalUnpaid)} ج.م</strong> — راجعها قبل التسليم أو التقفيل حتى لا تنساها.`;
+        banner.classList.add('show');
+    }
+
     function renderWalletsStrip() {
         const strip = document.getElementById('walletsStrip');
         if (!strip) return;
@@ -1987,13 +2193,14 @@
         const methods = ['كاش الدرج', 'فودافون كاش', 'إنستا باي', 'تحويل بنكي'];
 
         const cardsHtml = methods.map(m => {
-            const daySum = dayRecords
-                .filter(r => (r.paymentMethod || 'كاش الدرج') === m && r.paymentStatus !== 'credit')
+            const rawSum = dayRecords
+                .filter(r => !isUnpaidStatus(r) && (r.paymentMethod || 'كاش الدرج') === m)
                 .reduce((s, r) => s + Math.max(0, (parseFloat(r.price) || 0) - (parseFloat(r.refund) || 0)), 0);
+            const displaySum = m === 'كاش الدرج' ? calcDayDrawerCash(selectedDateISO) : rawSum;
             return `
                 <div class="wallet-card">
                     <span>💳 ${m} (اليوم)</span>
-                    <strong>${maskNum(daySum)} ج.م</strong>
+                    <strong>${maskNum(displaySum)} ج.م</strong>
                 </div>
             `;
         }).join('');
@@ -2011,7 +2218,6 @@
         `;
     }
 
-    /* Instant Online / Offline Indicator */
     function updateNetworkStatusUI() {
         const pill = document.getElementById('netStatusPill');
         if (!pill) return;
@@ -2020,7 +2226,6 @@
         pill.innerText = isOnline ? '🌐 أونلاين' : '📴 أوفلاين';
     }
 
-    /* Express Counter Mode */
     function applyExpressModeUI() {
         const btn = document.getElementById('expressModeBtn');
         const optionals = document.querySelectorAll('.express-optional');
@@ -2052,25 +2257,6 @@
         expressMode = !expressMode;
         localStorage.setItem('amin_express_mode', String(expressMode));
         applyExpressModeUI();
-    }
-
-    /* ADB Command Builder */
-    function updateAdbPreview() {
-        const sel = document.getElementById('adbCommandSelect');
-        const box = document.getElementById('adbCmdPreview');
-        if (sel && box) {
-            box.innerText = sel.value;
-        }
-    }
-
-    function copyAdbCommand() {
-        const box = document.getElementById('adbCmdPreview');
-        if (!box || !box.innerText) return;
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(box.innerText).then(() => {
-                showSaveToast(`📋 تم نسخ أمر ADB: ${box.innerText}`);
-            }).catch(() => {});
-        }
     }
 
     function showSaveToast(message) {
@@ -2140,7 +2326,6 @@
         renderTable();
     }
 
-    /* Duplicate Serial/Phone & Return Risk Detector */
     function checkSmartAlerts() {
         const dupBox = document.getElementById('duplicateAlertBox');
         const riskBox = document.getElementById('riskAlertBox');
@@ -2298,7 +2483,7 @@
         }
         if (autoSyncEnabled) {
             autoSyncTimer = setInterval(() => {
-                if (!document.hidden && navigator.onLine) {
+                if (!document.hidden && navigator.onLine && !hasUnsavedFormChanges) {
                     pullFromCloud(false, true);
                 }
             }, AUTO_SYNC_INTERVAL_MS);
@@ -2344,6 +2529,7 @@
     }
 
     function formatDisplayDate(isoStr) {
+        if (!isoStr || !isoStr.includes('-')) return '-';
         const todayISO = getLocalDateISO();
         const [y, m, d] = isoStr.split('-');
         const formatted = `${parseInt(d)}/${parseInt(m)}/${y}`;
@@ -2366,31 +2552,25 @@
     function calcDayDrawerCash(dayISO) {
         const dayRecords = records.filter(r => r.dayKey === dayISO);
         const paidCashRevenue = dayRecords
-            .filter(r => r.paymentStatus !== 'credit' && (r.paymentMethod || 'كاش الدرج') === 'كاش الدرج')
+            .filter(r => !isUnpaidStatus(r) && (r.paymentMethod || 'كاش الدرج') === 'كاش الدرج')
             .reduce((s, r) => s + (parseFloat(r.price) || 0), 0);
         const dayRefund = dayRecords
             .filter(r => (r.paymentMethod || 'كاش الدرج') === 'كاش الدرج')
             .reduce((s, r) => s + (parseFloat(r.refund) || 0), 0);
         const dayPetty = getDayExpensesTotal(dayISO);
-        return paidCashRevenue - dayRefund - dayPetty;
+        return Math.max(0, paidCashRevenue - dayRefund - dayPetty);
     }
 
     function calcDayCreditTotal(dayISO) {
         return records
-            .filter(r => r.dayKey === dayISO && r.paymentStatus === 'credit')
+            .filter(r => r.dayKey === dayISO && isUnpaidStatus(r))
             .reduce((s, r) => s + Math.max(0, (parseFloat(r.price) || 0) - (parseFloat(r.refund) || 0)), 0);
     }
 
     function calcDayRealProfit(dayISO) {
         const dayRecords = records.filter(r => r.dayKey === dayISO);
         const devicesNet = dayRecords.reduce((s, r) => s + calcRecordNet(r), 0);
-        return devicesNet - getDayExpensesTotal(dayISO);
-    }
-
-    function calcAllRealProfit() {
-        const devicesNet = records.reduce((s, r) => s + calcRecordNet(r), 0);
-        const allExpenses = expenses.reduce((s, e) => s + (parseFloat(e.amount) || 0), 0);
-        return devicesNet - allExpenses;
+        return Math.max(0, devicesNet - getDayExpensesTotal(dayISO));
     }
 
     function normalizeEgyptPhone(phone) {
@@ -2449,26 +2629,38 @@
                 }
             }
             const payStatus = r.paymentStatus || 'paid';
+            const unpaid = payStatus === 'credit' || payStatus === 'unpaid';
+            let payMethod = r.paymentMethod || (unpaid ? 'عند الاستلام / آجل' : 'كاش الدرج');
+            if (!unpaid && (payMethod === 'آجل' || payMethod === 'عند الاستلام / آجل')) {
+                payMethod = 'كاش الدرج';
+            }
             return {
                 ...r,
                 ticketNo: ticketNo,
                 dayKey: dayKey,
                 createdAt: createdAt,
+                updatedAt: r.updatedAt || createdAt,
                 serialNumber: r.serialNumber || '',
                 clientType: r.clientType || 'cash',
                 workLocation: r.workLocation || 'shop',
                 externalPlace: r.externalPlace || '',
                 paymentStatus: payStatus,
-                paymentMethod: r.paymentMethod || (payStatus === 'credit' ? 'آجل' : 'كاش الدرج'),
+                paymentMethod: payMethod,
                 refund: parseFloat(r.refund) || 0,
                 returnReason: r.returnReason || '',
                 secretNote: r.secretNote || ''
             };
         }).reverse();
 
+        const cleanExpenses = (Array.isArray(rawExpenses) ? rawExpenses : []).map(e => ({
+            ...e,
+            dayKey: e.dayKey || getLocalDateISO(new Date(e.id || Date.now())),
+            amount: parseFloat(e.amount) || 0
+        }));
+
         return {
             records: cleanRecords,
-            expenses: Array.isArray(rawExpenses) ? rawExpenses : [],
+            expenses: cleanExpenses,
             toolsList: Array.isArray(rawTools) ? rawTools : [],
             nextTicketNo: ticketCursor
         };
@@ -2546,7 +2738,7 @@
             if (Array.isArray(rows) && rows.length > 0 && rows[0].payload) {
                 const cloudPayload = rows[0].payload;
                 const cloudStamp = cloudPayload.clientUpdatedAt || new Date(rows[0].updated_at || 0).getTime() || 0;
-                if (cloudStamp >= lastUpdatedAt) {
+                if (cloudStamp > lastUpdatedAt) {
                     lastUpdatedAt = cloudStamp;
                     const normalized = normalizeState(
                         cloudPayload.records,
@@ -2596,6 +2788,10 @@
     function initDateInput() {
         const label = formatDisplayDate(selectedDateISO);
         document.getElementById('selectedDate').value = selectedDateISO;
+        const expDateInput = document.getElementById('expenseDateInput');
+        if (expDateInput && document.activeElement !== expDateInput) {
+            expDateInput.value = selectedDateISO;
+        }
         document.getElementById('activeDayLabel').innerText = label;
         document.getElementById('formDayLabel').innerText = label;
         document.getElementById('expenseDayLabel').innerText = label;
@@ -2638,16 +2834,24 @@
         if (tabBtn) {
             tabBtn.innerText = overdueCount > 0 ? `⚠️ متأخر (${overdueCount})` : 'متأخر (+2 يوم)';
         }
+        const unpaidCount = records.filter(r => isUnpaidStatus(r)).length;
+        const unpaidBtn = document.getElementById('unpaidTabBtn');
+        if (unpaidBtn) {
+            unpaidBtn.innerText = unpaidCount > 0 ? `🚨 لم يتم الدفع (${unpaidCount})` : 'لم يتم الدفع';
+        }
     }
 
     function refreshUI() {
         updateNetworkStatusUI();
         updateOverdueTabBadge();
         renderQuickProfitPlan();
+        renderQuickRecognitionBar();
+        renderUnpaidWarningBanner();
         renderWalletsStrip();
         renderWarrantyRadar();
         updateStats();
         renderExpenses();
+        renderDeficitAnalysis();
         renderMerchantSection();
         renderClientsSection();
         renderTable();
@@ -2675,10 +2879,12 @@
         const finalService = rawService || (expressMode ? `سوفت وير (${condition})` : '');
         const payStatus = document.getElementById('paymentStatus').value;
         const payMethod = document.getElementById('paymentMethod').value;
+        const unpaid = payStatus === 'credit' || payStatus === 'unpaid';
 
         const newRecord = {
             id: nowMs,
             createdAt: createdAt,
+            updatedAt: nowMs,
             ticketNo: nextTicketNo++,
             dayKey: selectedDateISO,
             clientName: document.getElementById('clientName').value.trim(),
@@ -2686,7 +2892,7 @@
             workLocation: document.getElementById('workLocation').value,
             externalPlace: document.getElementById('externalPlace').value.trim(),
             paymentStatus: payStatus,
-            paymentMethod: payStatus === 'credit' ? 'آجل' : payMethod,
+            paymentMethod: unpaid ? 'عند الاستلام / آجل' : ((payMethod === 'آجل' || payMethod === 'عند الاستلام / آجل') ? 'كاش الدرج' : payMethod),
             clientPhone: document.getElementById('clientPhone').value.trim(),
             deviceModel: document.getElementById('deviceModel').value.trim(),
             serialNumber: document.getElementById('serialNumber').value.trim(),
@@ -2716,16 +2922,20 @@
         e.preventDefault();
         const title = document.getElementById('expenseTitle').value.trim();
         const amount = parseFloat(document.getElementById('expenseAmount').value) || 0;
+        const expDayKey = document.getElementById('expenseDateInput').value || selectedDateISO;
         if (!title || amount <= 0) return;
 
         expenses.unshift({
             id: Date.now(),
-            dayKey: selectedDateISO,
+            dayKey: expDayKey,
             title: title,
             amount: amount
         });
+        hasUnsavedFormChanges = false;
         saveToStorage();
         document.getElementById('expenseForm').reset();
+        document.getElementById('expenseDateInput').value = selectedDateISO;
+        showSaveToast(`💸 تم تسجيل مصروف عمال بتاريخ ${formatDisplayDate(expDayKey)} (${title}: ${amount} ج.م)`);
     }
 
     function deleteExpense(id) {
@@ -2733,25 +2943,102 @@
         saveToStorage();
     }
 
+    function saveDeficitNote(val) {
+        deficitNotesByDay[selectedDateISO] = val;
+        localStorage.setItem('amin_deficit_notes', JSON.stringify(deficitNotesByDay));
+        renderDeficitAnalysis();
+    }
+
+    function renderDeficitAnalysis() {
+        const noteInput = document.getElementById('deficitNoteInput');
+        const cashInput = document.getElementById('actualCashForDeficit');
+        const box = document.getElementById('deficitResultBox');
+        if (!box) return;
+
+        const savedNote = deficitNotesByDay[selectedDateISO] || '';
+        if (noteInput && document.activeElement !== noteInput) {
+            noteInput.value = savedNote;
+        }
+
+        const expectedCash = calcDayDrawerCash(selectedDateISO);
+        const dayExpenses = getDayExpensesTotal(selectedDateISO);
+        const dayUnpaid = calcDayCreditTotal(selectedDateISO);
+        const dayRefund = records
+            .filter(r => r.dayKey === selectedDateISO)
+            .reduce((s, r) => s + (parseFloat(r.refund) || 0), 0);
+
+        const rawActual = cashInput ? cashInput.value.trim() : '';
+        if (rawActual === '') {
+            box.className = 'deficit-result-box balanced';
+            box.innerHTML =
+                `الكاش المفروض في الدرج اليوم: <strong>${maskNum(expectedCash)} ج.م</strong> • ` +
+                `مصاريف العمال اليوم: <strong>${maskNum(dayExpenses)} ج.م</strong>` +
+                (savedNote ? `<br>ملاحظة العجز: <strong>${savedNote}</strong>` : '');
+            return;
+        }
+
+        const actualCash = parseFloat(rawActual) || 0;
+        const diff = actualCash - expectedCash;
+
+        if (diff < 0) {
+            const deficitAmt = Math.abs(diff);
+            const sources = [];
+            if (savedNote) sources.push(`ملاحظة مسجلة: ${savedNote}`);
+            if (dayExpenses > 0) sources.push(`مصاريف عمال مسجلة اليوم (${maskNum(dayExpenses)} ج.م)`);
+            if (dayUnpaid > 0) sources.push(`أجهزة لم يتم دفعها (${maskNum(dayUnpaid)} ج.م)`);
+            if (dayRefund > 0) sources.push(`مرتجع مخصوم (${maskNum(dayRefund)} ج.م)`);
+            if (sources.length === 0) sources.push('نقص كاش غير مسجل في المصاريف أو مراجعة باقي الفكة');
+
+            box.className = 'deficit-result-box has-deficit';
+            box.innerHTML =
+                `🚨 <strong>يوجد عجز بقيمة: ${maskNum(deficitAmt)} ج.م</strong> (الفعلي: ${maskNum(actualCash)} ج.م مقابل المفروض: ${maskNum(expectedCash)} ج.م)<br>` +
+                `<strong>مصدر العجز المحتمل:</strong> ${sources.join(' • ')}`;
+        } else if (diff > 0) {
+            box.className = 'deficit-result-box balanced';
+            box.innerHTML =
+                `➕ <strong>زيادة في الدرج بقيمة: ${maskNum(diff)} ج.م</strong> (الفعلي: ${maskNum(actualCash)} ج.م مقابل المفروض: ${maskNum(expectedCash)} ج.م)` +
+                (savedNote ? `<br>ملاحظة: <strong>${savedNote}</strong>` : '');
+        } else {
+            box.className = 'deficit-result-box balanced';
+            box.innerHTML =
+                `✅ <strong>لا يوجد عجز — الدرج مطابق (${maskNum(actualCash)} ج.م)</strong>` +
+                (savedNote ? `<br>ملاحظة: <strong>${savedNote}</strong>` : '');
+        }
+    }
+
     function renderExpenses() {
         const container = document.getElementById('expensesList');
+        const summaryEl = document.getElementById('workersExpenseSummary');
+        const navBtn = document.getElementById('expensesNavBtn');
         const dayItems = expenses.filter(item => item.dayKey === selectedDateISO);
+        const dayTotal = getDayExpensesTotal(selectedDateISO);
+
+        if (summaryEl) {
+            summaryEl.innerText = `إجمالي مصاريف العمال (${formatDisplayDate(selectedDateISO)}): ${maskNum(dayTotal)} ج.م`;
+        }
+        if (navBtn) {
+            navBtn.innerText = dayTotal > 0 ? `💸 مصاريف اليوم (${maskNum(dayTotal)} ج.م)` : '💸 مصاريف اليوم (العمال)';
+        }
+
+        if (!container) return;
         if (dayItems.length === 0) {
-            container.innerHTML = `<p style="font-size:11px; color:var(--text-muted); margin-top:10px; text-align:center;">لا توجد مصاريف مسجلة لهذا اليوم</p>`;
+            container.innerHTML = `<p style="font-size:12px; color:var(--text-muted); margin-top:12px; text-align:center;">لا توجد مصاريف عمال مسجلة في هذا التاريخ</p>`;
             return;
         }
         container.innerHTML = dayItems.map(item => `
             <div class="expense-item">
-                <span>${item.title}</span>
+                <div>
+                    <span>👷 <strong>${item.title}</strong></span><br>
+                    <small style="color:var(--text-muted);">📅 التاريخ: ${formatDisplayDate(item.dayKey)}</small>
+                </div>
                 <div style="display:flex; align-items:center;">
                     <span class="expense-amount">${maskNum(item.amount)} ج.م</span>
-                    <button type="button" class="btn-danger" style="padding:2px 7px; font-size:11px;" onclick="deleteExpense(${item.id})">✕</button>
+                    <button type="button" class="btn-danger" style="padding:3px 8px; font-size:11px;" onclick="deleteExpense(${item.id})">✕</button>
                 </div>
             </div>
         `).join('');
     }
 
-    /* Tools Management (Boxes, Dongles, Accounts) */
     function addToolItem(e) {
         e.preventDefault();
         const tool = {
@@ -2818,7 +3105,7 @@
             if (t.expiry) {
                 const diffDays = Math.ceil((new Date(t.expiry) - new Date(todayISO)) / 86400000);
                 if (diffDays < 0) expiryText += ` <span class="tag-overdue">منتهي</span>`;
-                else if (diffDays <= 10) expiryText += ` <span class="tag-credit">باقي ${diffDays} يوم</span>`;
+                else if (diffDays <= 10) expiryText += ` <span class="tag-unpaid">باقي ${diffDays} يوم</span>`;
             }
             return `
                 <tr>
@@ -2830,7 +3117,7 @@
                         <button type="button" class="btn-outline" style="padding:1px 6px; font-size:10px;" onclick="updateToolCredits(${t.id}, 1)">+1</button>
                     </td>
                     <td>${expiryText}</td>
-                    <td><span class="badge ${t.status === 'نشط' ? 'tag-warranty' : 'tag-credit'}">${t.status}</span></td>
+                    <td><span class="badge ${t.status === 'نشط' ? 'tag-warranty' : 'tag-unpaid'}">${t.status}</span></td>
                     <td>${t.notes || '-'}</td>
                     <td><button type="button" class="btn-danger" onclick="deleteToolItem(${t.id})">حذف</button></td>
                 </tr>
@@ -2842,6 +3129,7 @@
         const item = records.find(r => r.id === id);
         if (item) {
             item.status = newStatus;
+            item.updatedAt = Date.now();
             if (newStatus === 'returned') {
                 if (!item.refund || item.refund === 0) {
                     item.refund = item.price || 0;
@@ -2864,20 +3152,33 @@
 
     function setScope(scope, btn) {
         currentScope = scope;
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        if (btn) btn.classList.add('active');
+        document.querySelectorAll('.tab-btn').forEach(b => {
+            b.classList.remove('active');
+            if (btn && b === btn) b.classList.add('active');
+        });
+        if (!btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                if (scope === 'missing' && b.id === 'missingTabBtn') b.classList.add('active');
+                if (scope === 'paid' && b.textContent.includes('تم الدفع')) b.classList.add('active');
+                if (scope === 'unpaid' && b.id === 'unpaidTabBtn') b.classList.add('active');
+            });
+        }
         renderMerchantSection();
         renderClientsSection();
         renderTable();
     }
 
     function settleMerchantBalance(merchantKey) {
-        if (!confirm(`تأكيد تحصيل وتسوية جميع الفواتير الآجلة الخاصة بـ "${merchantKey}"؟`)) return;
+        if (!confirm(`تأكيد تسجيل "تم الدفع" لجميع السجلات غير المدفوعة الخاصة بـ "${merchantKey}"؟`)) return;
+        const now = Date.now();
         records.forEach(r => {
             const nameKey = r.clientName.trim();
-            if (nameKey === merchantKey && (r.clientType === 'merchant' || r.paymentStatus === 'credit')) {
+            if (nameKey === merchantKey && (r.clientType === 'merchant' || isUnpaidStatus(r))) {
                 r.paymentStatus = 'paid';
-                if (r.paymentMethod === 'آجل') r.paymentMethod = 'كاش الدرج';
+                if (r.paymentMethod === 'عند الاستلام / آجل' || r.paymentMethod === 'آجل') {
+                    r.paymentMethod = 'كاش الدرج';
+                }
+                r.updatedAt = now;
             }
         });
         saveToStorage();
@@ -2891,7 +3192,7 @@
         }
         section.classList.add('show');
 
-        const merchantRecords = records.filter(r => r.clientType === 'merchant' || r.paymentStatus === 'credit');
+        const merchantRecords = records.filter(r => r.clientType === 'merchant' || isUnpaidStatus(r));
         const grouped = {};
 
         merchantRecords.forEach(r => {
@@ -2902,7 +3203,7 @@
             const netCharge = Math.max(0, (parseFloat(r.price) || 0) - (parseFloat(r.refund) || 0));
             grouped[key].count += 1;
             grouped[key].total += netCharge;
-            if (r.paymentStatus === 'credit') {
+            if (isUnpaidStatus(r)) {
                 grouped[key].credit += netCharge;
             } else {
                 grouped[key].paid += netCharge;
@@ -2919,14 +3220,14 @@
                 <strong>حسابات التجار والآجل:</strong>
                 عدد الحسابات: <strong>${list.length}</strong> •
                 المستحق: <strong>${maskNum(totalAll)} ج.م</strong> •
-                المدفوع: <strong style="color: var(--success);">${maskNum(paidAll)} ج.م</strong> •
-                المتبقي آجل: <strong style="color: var(--warning);">${maskNum(creditAll)} ج.م</strong>
+                تم الدفع: <strong style="color: var(--success);">${maskNum(paidAll)} ج.م</strong> •
+                لم يتم الدفع: <strong style="color: var(--danger);">${maskNum(creditAll)} ج.م</strong>
             </div>
         `;
 
         const tbody = document.getElementById('merchantLedgerBody');
         if (list.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:16px;">لا توجد حسابات تجار أو فواتير آجلة</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:16px;">لا توجد حسابات تجار أو مبالغ غير مدفوعة</td></tr>`;
             return;
         }
 
@@ -2936,11 +3237,11 @@
                 <td>${m.count}</td>
                 <td>${maskNum(m.total)} ج.م</td>
                 <td style="color: var(--success); font-weight: 700;">${maskNum(m.paid)} ج.م</td>
-                <td style="color: var(--warning); font-weight: 800;">${maskNum(m.credit)} ج.م</td>
+                <td style="color: var(--danger); font-weight: 800;">${maskNum(m.credit)} ج.م</td>
                 <td>
                     ${m.credit > 0
-                        ? `<button type="button" class="btn-settle" onclick="settleMerchantBalance('${m.name.replace(/'/g, "\\'")}')">✓ تسوية</button>`
-                        : `<span style="font-size:11px; color:var(--success);">خالص</span>`}
+                        ? `<button type="button" class="btn-settle" onclick="settleMerchantBalance('${m.name.replace(/'/g, "\\'")}')">✓ تم الدفع</button>`
+                        : `<span style="font-size:11px; color:var(--success);">تم الدفع</span>`}
                 </td>
             </tr>
         `).join('');
@@ -2980,7 +3281,7 @@
             const netCharge = Math.max(0, (parseFloat(r.price) || 0) - (parseFloat(r.refund) || 0));
             grouped[key].count += 1;
             grouped[key].total += netCharge;
-            if (r.paymentStatus === 'credit') {
+            if (isUnpaidStatus(r)) {
                 grouped[key].credit += netCharge;
             } else {
                 grouped[key].paid += netCharge;
@@ -3016,7 +3317,7 @@
                 <td><strong>${c.count}</strong></td>
                 <td>${maskNum(c.total)} ج.م</td>
                 <td style="color: var(--success); font-weight: 700;">${maskNum(c.paid)} ج.م</td>
-                <td style="color: var(--warning); font-weight: 800;">${maskNum(c.credit)} ج.م</td>
+                <td style="color: var(--danger); font-weight: 800;">${maskNum(c.credit)} ج.م</td>
                 <td>
                     <button type="button" class="btn-edit" onclick="filterByClientName('${c.name.replace(/'/g, "\\'")}')">🔍 عرض</button>
                 </td>
@@ -3045,7 +3346,6 @@
         document.getElementById('stat-day-revenue').innerText = maskNum(dayRevenue);
         document.getElementById('stat-day-drawer').innerText = maskNum(dayDrawer);
         document.getElementById('stat-day-credit').innerText = maskNum(dayCredit);
-        document.getElementById('stat-day-expenses-total').innerText = maskNum(dayCost + dayPetty);
         document.getElementById('stat-day-cost').innerText = maskNum(dayCost);
         document.getElementById('stat-day-petty').innerText = maskNum(dayPetty);
         document.getElementById('stat-day-refund').innerText = maskNum(dayRefund);
@@ -3078,6 +3378,12 @@
             let matchesScope = true;
             if (currentScope === 'day') {
                 matchesScope = r.dayKey === selectedDateISO;
+            } else if (currentScope === 'unpaid') {
+                matchesScope = isUnpaidStatus(r);
+            } else if (currentScope === 'paid') {
+                matchesScope = !isUnpaidStatus(r);
+            } else if (currentScope === 'missing') {
+                matchesScope = isRecordMissingInfo(r);
             } else if (currentScope === 'external') {
                 matchesScope = r.workLocation === 'external';
             } else if (currentScope === 'overdue') {
@@ -3085,7 +3391,7 @@
             } else if (currentScope === 'warranty') {
                 matchesScope = ageInfo.isUnderWarranty || ageInfo.isReturnedItem;
             } else if (currentScope === 'merchants') {
-                matchesScope = r.clientType === 'merchant' || r.paymentStatus === 'credit';
+                matchesScope = r.clientType === 'merchant' || isUnpaidStatus(r);
             } else if (currentScope === 'clients') {
                 matchesScope = true;
             } else if (currentScope === 'working') {
@@ -3116,6 +3422,8 @@
         filtered.forEach(r => {
             const net = calcRecordNet(r);
             const ageInfo = getRecordAgeInfo(r);
+            const unpaid = isUnpaidStatus(r);
+            const missReasons = getMissingReasons(r);
             const hasPhone = Boolean(normalizeEgyptPhone(r.clientPhone));
             const statusClass =
                 r.status === 'working' ? 'status-working' :
@@ -3126,7 +3434,12 @@
             const externalBadge = r.workLocation === 'external'
                 ? `<span class="tag-external">🛵 خارجي${r.externalPlace ? ': ' + r.externalPlace : ''}</span>`
                 : '';
-            const creditBadge = r.paymentStatus === 'credit' ? `<span class="tag-credit">آجل</span>` : '';
+            const payBadge = unpaid
+                ? `<span class="tag-unpaid">⚠️ لم يتم الدفع</span>`
+                : `<span class="tag-paid">✓ تم الدفع</span>`;
+            const missingBadge = missReasons.length > 0
+                ? `<br><span class="tag-unpaid">ناقص: ${missReasons.join(' • ')}</span>`
+                : '';
             const serialBadge = r.serialNumber ? `<br><span class="serial-badge">SN: ${r.serialNumber}</span>` : '';
             const returnReasonBadge = r.returnReason ? `<br><span class="tag-return-reason">↩ سبب المرتجع: ${r.returnReason}</span>` : '';
             const overdueBadge = ageInfo.isOverdue ? `<br><span class="tag-overdue">⚠️ متأخر (${ageInfo.days} يوم)</span>` : '';
@@ -3137,14 +3450,15 @@
                 : '';
 
             const tr = document.createElement('tr');
-            if (ageInfo.isOverdue) {
+            if (ageInfo.isOverdue || unpaid) {
                 tr.classList.add('overdue-row');
             }
             tr.innerHTML = `
                 <td>
-                    <span class="ticket-badge">#${r.ticketNo}</span>${merchantBadge}${externalBadge}${creditBadge}<br>
+                    <span class="ticket-badge">#${r.ticketNo}</span>${merchantBadge}${externalBadge}${payBadge}<br>
                     <strong>${r.clientName}</strong><br>
                     <span style="font-size:11px; color:var(--text-muted);">${r.clientPhone || '-'}</span>
+                    ${missingBadge}
                 </td>
                 <td>
                     <strong>${r.deviceModel}</strong><br>
@@ -3163,7 +3477,7 @@
                     <span style="color:var(--text-muted); font-size:11px;">سعر: ${maskRaw(r.price)} • تكلفة: ${maskRaw(r.cost)}</span><br>
                     ${(parseFloat(r.refund) || 0) > 0 ? `<span style="color:var(--danger); font-size:11px;">مرتجع: ${maskRaw(r.refund)} ج.م</span><br>` : ''}
                     <strong style="color:${net >= 0 ? 'var(--gold)' : 'var(--danger)'};">صافي: ${maskRaw(net)} ج.م</strong><br>
-                    <span class="tag-wallet">💳 ${r.paymentMethod || 'كاش الدرج'}</span>
+                    <span class="tag-wallet">💳 ${r.paymentMethod || (unpaid ? 'عند الاستلام / آجل' : 'كاش الدرج')}</span>
                 </td>
                 <td>
                     <select class="status-select ${statusClass}" onchange="updateStatus(${r.id}, this.value)">
@@ -3184,7 +3498,6 @@
         });
     }
 
-    /* Instant WhatsApp Summary Modal */
     function generateInstantWaSummary() {
         const dayRecords = records.filter(r => r.dayKey === selectedDateISO);
         const working = dayRecords.filter(r => r.status === 'working').length;
@@ -3194,8 +3507,9 @@
         const externalCount = dayRecords.filter(r => r.workLocation === 'external').length;
         const drawerCash = calcDayDrawerCash(selectedDateISO);
         const dayProfit = calcDayRealProfit(selectedDateISO);
-        const totalCredit = records
-            .filter(r => r.paymentStatus === 'credit')
+        const dayWorkersExp = getDayExpensesTotal(selectedDateISO);
+        const totalUnpaid = records
+            .filter(r => isUnpaidStatus(r))
             .reduce((s, r) => s + Math.max(0, (parseFloat(r.price) || 0) - (parseFloat(r.refund) || 0)), 0);
 
         return `ملخص حركة العمل — ${formatDisplayDate(selectedDateISO)}\n` +
@@ -3204,8 +3518,9 @@
                `• إجمالي أجهزة اليوم: ${dayRecords.length} (خارجي: ${externalCount})\n` +
                `• جاري العمل: ${working} | جاهز: ${ready} | تم التسليم: ${done} | مرتجع: ${returned}\n` +
                `• كاش الدرج الفعلي: ${drawerCash} ج.م\n` +
+               `• مصاريف العمال اليوم: ${dayWorkersExp} ج.م\n` +
                `• صافي ربح اليوم: ${dayProfit} ج.م\n` +
-               `• إجمالي الآجل المفتوح: ${totalCredit} ج.م`;
+               `• إجمالي لم يتم دفعه: ${totalUnpaid} ج.م`;
     }
 
     function openQuickWaSummaryModal() {
@@ -3228,18 +3543,20 @@
         window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`, '_blank', 'noopener,noreferrer');
     }
 
-    /* Edit Modal */
     function openEditModal(id) {
         const r = records.find(item => item.id === id);
         if (!r) return;
+        const unpaid = isUnpaidStatus(r);
         document.getElementById('editId').value = r.id;
         document.getElementById('editTicketBadge').innerText = `#${r.ticketNo}`;
         document.getElementById('editClientName').value = r.clientName;
         document.getElementById('editClientType').value = r.clientType || 'cash';
         document.getElementById('editWorkLocation').value = r.workLocation || 'shop';
         document.getElementById('editExternalPlace').value = r.externalPlace || '';
-        document.getElementById('editPaymentStatus').value = r.paymentStatus || 'paid';
-        document.getElementById('editPaymentMethod').value = r.paymentMethod || 'كاش الدرج';
+        document.getElementById('editPaymentStatus').value = unpaid ? 'credit' : 'paid';
+        document.getElementById('editPaymentMethod').value = unpaid
+            ? 'عند الاستلام / آجل'
+            : ((r.paymentMethod && r.paymentMethod !== 'آجل' && r.paymentMethod !== 'عند الاستلام / آجل') ? r.paymentMethod : 'كاش الدرج');
         document.getElementById('editClientPhone').value = r.clientPhone || '';
         document.getElementById('editDeviceModel').value = r.deviceModel;
         document.getElementById('editSerialNumber').value = r.serialNumber || '';
@@ -3265,12 +3582,21 @@
         const item = records.find(r => r.id === id);
         if (!item) return;
 
+        const nextPayStatus = document.getElementById('editPaymentStatus').value;
+        const unpaid = nextPayStatus === 'credit' || nextPayStatus === 'unpaid';
+        let nextPayMethod = document.getElementById('editPaymentMethod').value;
+        if (!unpaid && (nextPayMethod === 'عند الاستلام / آجل' || nextPayMethod === 'آجل')) {
+            nextPayMethod = 'كاش الدرج';
+        } else if (unpaid) {
+            nextPayMethod = 'عند الاستلام / آجل';
+        }
+
         item.clientName = document.getElementById('editClientName').value.trim();
         item.clientType = document.getElementById('editClientType').value;
         item.workLocation = document.getElementById('editWorkLocation').value;
         item.externalPlace = document.getElementById('editExternalPlace').value.trim();
-        item.paymentStatus = document.getElementById('editPaymentStatus').value;
-        item.paymentMethod = item.paymentStatus === 'credit' ? 'آجل' : document.getElementById('editPaymentMethod').value;
+        item.paymentStatus = nextPayStatus;
+        item.paymentMethod = nextPayMethod;
         item.clientPhone = document.getElementById('editClientPhone').value.trim();
         item.deviceModel = document.getElementById('editDeviceModel').value.trim();
         item.serialNumber = document.getElementById('editSerialNumber').value.trim();
@@ -3282,20 +3608,21 @@
         item.cost = Math.max(0, parseFloat(document.getElementById('editCost').value) || 0);
         item.refund = Math.max(0, parseFloat(document.getElementById('editRefund').value) || 0);
         item.secretNote = document.getElementById('editSecretNote').value.trim();
+        item.updatedAt = Date.now();
 
         saveToStorage();
         const ageInfo = getRecordAgeInfo(item);
-        showSaveToast(`✅ تم تحديث الجهاز #${item.ticketNo} — ${ageInfo.label}`);
+        showSaveToast(`✅ تم تحديث الجهاز #${item.ticketNo} (${unpaid ? 'لم يتم الدفع' : 'تم الدفع'}) — ${ageInfo.label}`);
         closeEditModal();
     }
 
-    /* WhatsApp Modal */
     function buildDefaultWaMessage(r) {
         const header = `المدينة المنورة - محمد أمين\nالعتبة - 7 شارع العطار\n`;
         const ticketLine = `كود المتابعة: #${r.ticketNo}\n`;
         const serialLine = r.serialNumber ? `الرقم التسلسلي: ${r.serialNumber}\n` : '';
+        const payText = isUnpaidStatus(r) ? 'لم يتم الدفع (عند الاستلام)' : 'تم الدفع';
         if (r.status === 'ready') {
-            return `أهلاً بك يا ${r.clientName} 👋\nنحيطك علماً بأن جهازك (${r.deviceModel}) جاهز للاستلام.\n${ticketLine}${serialLine}التكلفة: ${r.price} ج.م\n${header}`;
+            return `أهلاً بك يا ${r.clientName} 👋\nنحيطك علماً بأن جهازك (${r.deviceModel}) جاهز للاستلام.\n${ticketLine}${serialLine}التكلفة: ${r.price} ج.م (${payText})\n${header}`;
         }
         if (r.status === 'done') {
             return `أهلاً بك يا ${r.clientName} 👋\nتم تسليم جهازك (${r.deviceModel}) بنجاح.\n${ticketLine}${serialLine}نسعد دائماً بخدمتك في:\n${header}`;
@@ -3355,7 +3682,6 @@
         closeWaModal();
     }
 
-    /* End of Day Closing */
     function generateClosingText() {
         const dayRecords = records.filter(r => r.dayKey === selectedDateISO);
         const totalCount = dayRecords.length;
@@ -3368,7 +3694,7 @@
         const refund = dayRecords.reduce((s, r) => s + (parseFloat(r.refund) || 0), 0);
         const drawerCash = calcDayDrawerCash(selectedDateISO);
         const netProfit = calcDayRealProfit(selectedDateISO);
-        const creditTotal = calcDayCreditTotal(selectedDateISO);
+        const unpaidTotal = calcDayCreditTotal(selectedDateISO);
 
         return `تقفيل يوم: ${formatDisplayDate(selectedDateISO)}\n` +
                `المدينة المنورة - محمد أمين\n` +
@@ -3378,9 +3704,9 @@
                `إجمالي الإيرادات: ${revenue} ج.م\n` +
                `كاش الدرج الفعلي: ${drawerCash} ج.م\n` +
                `تكلفة كريدت/سيرفر: ${cost} ج.م\n` +
-               `مصاريف الخزنة: ${petty} ج.م\n` +
+               `مصاريف العمال: ${petty} ج.م\n` +
                `المرتجع: ${refund} ج.م\n` +
-               `آجل / حساب تجار: ${creditTotal} ج.م\n` +
+               `لم يتم الدفع: ${unpaidTotal} ج.م\n` +
                `صافي الربح الحقيقي: ${netProfit} ج.م`;
     }
 
@@ -3410,10 +3736,12 @@
         }
     }
 
-    /* Receipt Print */
     function printReceipt(id) {
         const r = records.find(item => item.id === id);
         if (!r) return;
+
+        const unpaid = isUnpaidStatus(r);
+        const payLabel = unpaid ? 'لم يتم الدفع (عند الاستلام)' : `تم الدفع (${r.paymentMethod || 'كاش الدرج'})`;
 
         const printArea = document.getElementById('print-area');
         printArea.innerHTML = `
@@ -3430,7 +3758,7 @@
                 ${r.serialNumber ? `<div class="receipt-row"><span>الرقم التسلسلي / IMEI:</span><strong style="direction:ltr;">${r.serialNumber}</strong></div>` : ''}
                 <div class="receipt-row"><span>حالة الجهاز:</span><strong>${r.condition}</strong></div>
                 <div class="receipt-row"><span>الخدمة المطلوبة:</span><strong>${r.serviceType}</strong></div>
-                <div class="receipt-row"><span>التكلفة المتفق عليها:</span><strong>${r.price} ج.م (${r.paymentStatus === 'credit' ? 'آجل' : r.paymentMethod || 'نقدي'})</strong></div>
+                <div class="receipt-row"><span>التكلفة المتفق عليها:</span><strong>${r.price} ج.م (${payLabel})</strong></div>
                 ${(parseFloat(r.refund) || 0) > 0 ? `<div class="receipt-row"><span>مبلغ مرتجع:</span><strong>${r.refund} ج.م</strong></div>` : ''}
                 <p style="font-size:11px; margin-top:10px; line-height:1.5;">
                     * المركز غير مسؤول عن فقدان البيانات أثناء عمليات السوفت وير أو فك الشفرات.<br>
@@ -3442,7 +3770,6 @@
         window.print();
     }
 
-    /* Backup & Restore */
     function exportData() {
         const payload = {
             records: records,
@@ -3505,7 +3832,6 @@
     updateNetworkStatusUI();
     updateHeaderTogglesUI();
     applyExpressModeUI();
-    updateAdbPreview();
     initDateInput();
     refreshUI();
     pullFromCloud(false, false);
