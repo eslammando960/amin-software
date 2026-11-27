@@ -614,6 +614,19 @@
             margin-bottom: 4px;
         }
 
+        .serial-badge {
+            display: inline-block;
+            background: rgba(148, 163, 184, 0.12);
+            color: #cbd5e1;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            border-radius: 5px;
+            padding: 1px 6px;
+            font-size: 10px;
+            font-family: monospace;
+            margin-top: 3px;
+            direction: ltr;
+        }
+
         .tag-merchant {
             display: inline-block;
             background: rgba(56, 189, 248, 0.14);
@@ -931,6 +944,10 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label>الرقم التسلسلي / IMEI (اختياري — يظهر في الإيصال والبحث)</label>
+                        <input type="text" id="serialNumber" placeholder="مثال: 356938035643809 أو R58N123ABCD">
+                    </div>
+                    <div class="form-group">
                         <label>حالة الجهاز الظاهرية</label>
                         <div class="checkbox-group">
                             <label class="checkbox-item"><input type="radio" name="condition" value="سليم" checked> سليم</label>
@@ -997,7 +1014,7 @@
         <div class="panel">
             <div class="toolbar">
                 <div class="search-box">
-                    <input type="text" id="searchInput" onkeyup="renderTable()" placeholder="🔍 ابحث بكود المتابعة (#101)، الاسم، المحل، الموديل، أو الهاتف...">
+                    <input type="text" id="searchInput" onkeyup="renderTable()" placeholder="🔍 ابحث بكود المتابعة (#101)، السيريال / IMEI، الاسم، المحل، الموديل، أو الهاتف...">
                 </div>
                 <div class="filter-tabs">
                     <button type="button" class="tab-btn active" onclick="setScope('day', this)">أجهزة اليوم</button>
@@ -1056,7 +1073,7 @@
                     <thead>
                         <tr>
                             <th>الكود والعميل</th>
-                            <th>الجهاز والحالة</th>
+                            <th>الجهاز والسيريال</th>
                             <th>الخدمة وملاحظات الفني</th>
                             <th>المدة واليوم</th>
                             <th>الحساب والصافي</th>
@@ -1130,6 +1147,10 @@
                     <label>نوع الجهاز / الموديل *</label>
                     <input type="text" id="editDeviceModel" required>
                 </div>
+            </div>
+            <div class="form-group">
+                <label>الرقم التسلسلي / IMEI</label>
+                <input type="text" id="editSerialNumber" placeholder="مثال: 356938035643809">
             </div>
             <div class="row-2">
                 <div class="form-group">
@@ -1487,6 +1508,7 @@
                 ticketNo: ticketNo,
                 dayKey: dayKey,
                 createdAt: createdAt,
+                serialNumber: r.serialNumber || '',
                 clientType: r.clientType || 'cash',
                 paymentStatus: r.paymentStatus || 'paid',
                 refund: parseFloat(r.refund) || 0,
@@ -1690,6 +1712,7 @@
             paymentStatus: document.getElementById('paymentStatus').value,
             clientPhone: document.getElementById('clientPhone').value.trim(),
             deviceModel: document.getElementById('deviceModel').value.trim(),
+            serialNumber: document.getElementById('serialNumber').value.trim(),
             condition: condition,
             serviceType: document.getElementById('serviceType').value.trim(),
             price: price,
@@ -1703,7 +1726,8 @@
         records.unshift(newRecord);
         saveToStorage();
         const ageInfo = getRecordAgeInfo(newRecord);
-        showSaveToast(`✅ تم حفظ الجهاز #${newRecord.ticketNo} (${newRecord.deviceModel}) — ${ageInfo.label} (تاريخ الاستلام: ${newRecord.date})`);
+        const serialPart = newRecord.serialNumber ? ` | سيريال: ${newRecord.serialNumber}` : '';
+        showSaveToast(`✅ تم حفظ الجهاز #${newRecord.ticketNo} (${newRecord.deviceModel}${serialPart}) — ${ageInfo.label} (تاريخ الاستلام: ${newRecord.date})`);
         document.getElementById('deviceForm').reset();
     }
 
@@ -1982,6 +2006,7 @@
                 String(r.ticketNo).includes(query) ||
                 r.clientName.toLowerCase().includes(query) ||
                 r.deviceModel.toLowerCase().includes(query) ||
+                (r.serialNumber || '').toLowerCase().includes(query) ||
                 r.clientPhone.includes(query) ||
                 (r.secretNote || '').toLowerCase().includes(query);
             return matchesScope && matchesQuery;
@@ -2003,6 +2028,7 @@
 
             const merchantBadge = r.clientType === 'merchant' ? `<span class="tag-merchant">تاجر</span>` : '';
             const creditBadge = r.paymentStatus === 'credit' ? `<span class="tag-credit">آجل</span>` : '';
+            const serialBadge = r.serialNumber ? `<br><span class="serial-badge">SN: ${r.serialNumber}</span>` : '';
             const overdueBadge = ageInfo.isOverdue ? `<br><span class="tag-overdue">⚠️ متأخر (${ageInfo.days} يوم)</span>` : '';
             const noteBadge = r.secretNote ? `<br><span class="secret-note">${maskSecret(r.secretNote)}</span>` : '';
             const jumpDayBtn = (currentScope !== 'day' && r.dayKey && r.dayKey !== selectedDateISO)
@@ -2022,6 +2048,7 @@
                 <td>
                     <strong>${r.deviceModel}</strong><br>
                     <span style="font-size:11px; color:var(--gold);">${r.condition}</span>
+                    ${serialBadge}
                 </td>
                 <td>${r.serviceType}${noteBadge}</td>
                 <td style="white-space:nowrap; font-size:12px;">
@@ -2065,6 +2092,7 @@
         document.getElementById('editPaymentStatus').value = r.paymentStatus || 'paid';
         document.getElementById('editClientPhone').value = r.clientPhone || '';
         document.getElementById('editDeviceModel').value = r.deviceModel;
+        document.getElementById('editSerialNumber').value = r.serialNumber || '';
         document.getElementById('editCondition').value = r.condition;
         document.getElementById('editStatus').value = r.status;
         document.getElementById('editServiceType').value = r.serviceType;
@@ -2090,6 +2118,7 @@
         item.paymentStatus = document.getElementById('editPaymentStatus').value;
         item.clientPhone = document.getElementById('editClientPhone').value.trim();
         item.deviceModel = document.getElementById('editDeviceModel').value.trim();
+        item.serialNumber = document.getElementById('editSerialNumber').value.trim();
         item.condition = document.getElementById('editCondition').value;
         item.status = document.getElementById('editStatus').value;
         item.serviceType = document.getElementById('editServiceType').value.trim();
@@ -2108,16 +2137,17 @@
     function buildDefaultWaMessage(r) {
         const header = `المدينة المنورة - محمد أمين\nالعتبة - 7 شارع العطار\n`;
         const ticketLine = `كود المتابعة: #${r.ticketNo}\n`;
+        const serialLine = r.serialNumber ? `الرقم التسلسلي: ${r.serialNumber}\n` : '';
         if (r.status === 'ready') {
-            return `أهلاً بك يا ${r.clientName} 👋\nنحيطك علماً بأن جهازك (${r.deviceModel}) جاهز للاستلام.\n${ticketLine}التكلفة: ${r.price} ج.م\n${header}`;
+            return `أهلاً بك يا ${r.clientName} 👋\nنحيطك علماً بأن جهازك (${r.deviceModel}) جاهز للاستلام.\n${ticketLine}${serialLine}التكلفة: ${r.price} ج.م\n${header}`;
         }
         if (r.status === 'done') {
-            return `أهلاً بك يا ${r.clientName} 👋\nتم تسليم جهازك (${r.deviceModel}) بنجاح.\n${ticketLine}نسعد دائماً بخدمتك في:\n${header}`;
+            return `أهلاً بك يا ${r.clientName} 👋\nتم تسليم جهازك (${r.deviceModel}) بنجاح.\n${ticketLine}${serialLine}نسعد دائماً بخدمتك في:\n${header}`;
         }
         if (r.status === 'returned') {
-            return `أهلاً بك يا ${r.clientName} 👋\nبخصوص جهازك (${r.deviceModel})، تم تسجيل مرتجع بقيمة (${r.refund || r.price} ج.م).\n${ticketLine}${header}`;
+            return `أهلاً بك يا ${r.clientName} 👋\nبخصوص جهازك (${r.deviceModel})، تم تسجيل مرتجع بقيمة (${r.refund || r.price} ج.م).\n${ticketLine}${serialLine}${header}`;
         }
-        return `أهلاً بك يا ${r.clientName} 👋\nجهازك (${r.deviceModel}) بخصوص (${r.serviceType}) قيد العمل حالياً.\n${ticketLine}${header}`;
+        return `أهلاً بك يا ${r.clientName} 👋\nجهازك (${r.deviceModel}) بخصوص (${r.serviceType}) قيد العمل حالياً.\n${ticketLine}${serialLine}${header}`;
     }
 
     function openWaModal(id) {
@@ -2222,7 +2252,7 @@
         }
     }
 
-    /* Receipt Print (Excludes secretNote) */
+    /* Receipt Print (Includes serialNumber if set, Excludes secretNote) */
     function printReceipt(id) {
         const r = records.find(item => item.id === id);
         if (!r) return;
@@ -2239,6 +2269,7 @@
                 <div class="receipt-row"><span>اسم العميل:</span><strong>${r.clientName}</strong></div>
                 <div class="receipt-row"><span>التاريخ:</span><strong>${r.date}</strong></div>
                 <div class="receipt-row"><span>نوع الجهاز:</span><strong>${r.deviceModel}</strong></div>
+                ${r.serialNumber ? `<div class="receipt-row"><span>الرقم التسلسلي / IMEI:</span><strong style="direction:ltr;">${r.serialNumber}</strong></div>` : ''}
                 <div class="receipt-row"><span>حالة الجهاز:</span><strong>${r.condition}</strong></div>
                 <div class="receipt-row"><span>الخدمة المطلوبة:</span><strong>${r.serviceType}</strong></div>
                 <div class="receipt-row"><span>التكلفة المتفق عليها:</span><strong>${r.price} ج.م (${r.paymentStatus === 'credit' ? 'آجل' : 'نقدي'})</strong></div>
