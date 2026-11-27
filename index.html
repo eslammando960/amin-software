@@ -7,15 +7,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #090b10;
-            --bg-card: #12161f;
-            --bg-input: #1a202c;
+            --bg-dark: #0b0e14;
+            --bg-card: #131822;
+            --bg-input: #19202d;
             --gold: #d4af37;
-            --gold-hover: #f0c94d;
-            --gold-dim: rgba(212, 175, 55, 0.15);
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-            --border: #262d3d;
+            --gold-hover: #e5c24c;
+            --gold-dim: rgba(212, 175, 55, 0.12);
+            --text-main: #eef2f6;
+            --text-muted: #94a3b8;
+            --border: #232c3d;
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
@@ -33,19 +33,24 @@
             background-color: var(--bg-dark);
             color: var(--text-main);
             min-height: 100vh;
-            padding-bottom: 40px;
+            padding-bottom: 48px;
+            line-height: 1.5;
         }
 
         /* Header */
         header {
-            background: linear-gradient(180deg, #12161f 0%, #090b10 100%);
-            border-bottom: 1px solid var(--gold);
-            padding: 16px 30px;
+            background: rgba(19, 24, 34, 0.92);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 28px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 14px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .brand {
@@ -55,33 +60,33 @@
         }
 
         .brand-logo {
-            width: 45px;
-            height: 45px;
-            border: 2px solid var(--gold);
-            border-radius: 10px;
+            width: 42px;
+            height: 42px;
+            border: 1.5px solid rgba(212, 175, 55, 0.65);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 800;
             color: var(--gold);
-            font-size: 18px;
+            font-size: 16px;
             background: var(--gold-dim);
         }
 
         .brand-text h1 {
-            font-size: 20px;
-            color: var(--gold);
+            font-size: 18px;
+            color: var(--text-main);
             font-weight: 800;
         }
 
         .brand-text p {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-muted);
         }
 
         .status-badges {
             display: inline-flex;
-            gap: 8px;
+            gap: 6px;
             flex-wrap: wrap;
             align-items: center;
         }
@@ -89,8 +94,8 @@
         .sync-pill {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
+            gap: 5px;
+            padding: 5px 11px;
             border-radius: 999px;
             font-size: 11px;
             font-weight: 700;
@@ -101,33 +106,33 @@
         }
 
         .sync-pill.online {
-            border-color: rgba(16, 185, 129, 0.45);
+            border-color: rgba(16, 185, 129, 0.35);
             color: var(--success);
         }
 
         .sync-pill.syncing {
-            border-color: rgba(245, 158, 11, 0.45);
+            border-color: rgba(245, 158, 11, 0.35);
             color: var(--warning);
         }
 
         .sync-pill.offline {
-            border-color: rgba(239, 68, 68, 0.45);
+            border-color: rgba(239, 68, 68, 0.35);
             color: var(--danger);
         }
 
         .sync-pill.pulse-success {
-            transform: scale(1.06);
-            box-shadow: 0 0 14px rgba(16, 185, 129, 0.55);
+            transform: scale(1.05);
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.45);
         }
 
         .sync-pill.pulse-error {
-            transform: scale(1.06);
-            box-shadow: 0 0 14px rgba(239, 68, 68, 0.65);
+            transform: scale(1.05);
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
         }
 
         .header-actions {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             flex-wrap: wrap;
             align-items: center;
         }
@@ -135,19 +140,19 @@
         button {
             cursor: pointer;
             border: none;
-            border-radius: 8px;
-            padding: 9px 14px;
+            border-radius: 10px;
+            padding: 8px 12px;
             font-size: 12px;
             font-weight: 700;
-            transition: 0.2s;
+            transition: all 0.18s ease;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
         }
 
         .btn-gold {
             background-color: var(--gold);
-            color: #090b10;
+            color: #0b0e14;
         }
 
         .btn-gold:hover {
@@ -155,28 +160,28 @@
         }
 
         .btn-outline {
-            background-color: transparent;
+            background-color: var(--bg-input);
             border: 1px solid var(--border);
             color: var(--text-main);
         }
 
         .btn-outline:hover {
-            border-color: var(--gold);
+            border-color: rgba(212, 175, 55, 0.6);
             color: var(--gold);
         }
 
         .btn-outline.active-toggle {
-            border-color: var(--gold);
+            border-color: rgba(212, 175, 55, 0.65);
             color: var(--gold);
             background: var(--gold-dim);
         }
 
         .btn-danger {
-            background-color: rgba(239, 68, 68, 0.15);
-            color: var(--danger);
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            background-color: rgba(239, 68, 68, 0.12);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.28);
             padding: 5px 9px;
-            font-size: 12px;
+            font-size: 11px;
         }
 
         .btn-danger:hover {
@@ -185,24 +190,24 @@
         }
 
         .btn-edit {
-            background-color: rgba(212, 175, 55, 0.12);
+            background-color: var(--gold-dim);
             color: var(--gold);
-            border: 1px solid rgba(212, 175, 55, 0.35);
+            border: 1px solid rgba(212, 175, 55, 0.3);
             padding: 5px 9px;
-            font-size: 12px;
+            font-size: 11px;
         }
 
         .btn-edit:hover {
             background-color: var(--gold);
-            color: #090b10;
+            color: #0b0e14;
         }
 
         .btn-wa {
-            background-color: rgba(37, 211, 102, 0.14);
-            color: var(--whatsapp);
-            border: 1px solid rgba(37, 211, 102, 0.45);
+            background-color: rgba(37, 211, 102, 0.12);
+            color: #6ee7b7;
+            border: 1px solid rgba(37, 211, 102, 0.35);
             padding: 5px 9px;
-            font-size: 12px;
+            font-size: 11px;
         }
 
         .btn-wa:hover {
@@ -210,15 +215,10 @@
             color: #06140c;
         }
 
-        .btn-wa:disabled {
-            opacity: 0.35;
-            cursor: not-allowed;
-        }
-
         .btn-settle {
-            background-color: rgba(16, 185, 129, 0.16);
-            color: var(--success);
-            border: 1px solid rgba(16, 185, 129, 0.45);
+            background-color: rgba(16, 185, 129, 0.14);
+            color: #6ee7b7;
+            border: 1px solid rgba(16, 185, 129, 0.35);
             padding: 5px 10px;
             font-size: 11px;
         }
@@ -230,8 +230,8 @@
 
         .btn-jump-day {
             background-color: rgba(56, 189, 248, 0.12);
-            color: #38bdf8;
-            border: 1px solid rgba(56, 189, 248, 0.35);
+            color: #7dd3fc;
+            border: 1px solid rgba(56, 189, 248, 0.3);
             padding: 2px 7px;
             font-size: 10px;
             margin-top: 4px;
@@ -244,7 +244,7 @@
 
         /* Container */
         .container {
-            max-width: 1400px;
+            max-width: 1380px;
             margin: 22px auto;
             padding: 0 20px;
         }
@@ -253,12 +253,12 @@
         .toast-banner {
             display: none;
             background: rgba(16, 185, 129, 0.12);
-            border: 1px solid rgba(16, 185, 129, 0.5);
+            border: 1px solid rgba(16, 185, 129, 0.4);
             color: var(--text-main);
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 11px 16px;
             margin-bottom: 16px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
             justify-content: space-between;
             align-items: center;
@@ -269,13 +269,156 @@
             display: flex;
         }
 
+        /* Quick Profit Plan Card */
+        .profit-plan-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+        }
+
+        .profit-plan-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .profit-plan-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--gold);
+        }
+
+        .target-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .target-control input {
+            width: 105px;
+            padding: 5px 9px;
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--gold);
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-input);
+            border-radius: 999px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--gold), var(--success));
+            transition: width 0.3s ease;
+        }
+
+        .profit-plan-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 10px;
+            font-size: 12px;
+        }
+
+        .plan-box {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 12px;
+            line-height: 1.6;
+        }
+
+        /* Calculator Widget */
+        .calc-screen {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+            text-align: left;
+            direction: ltr;
+        }
+
+        .calc-expr {
+            font-size: 11px;
+            color: var(--text-muted);
+            min-height: 16px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .calc-val {
+            font-size: 21px;
+            font-weight: 800;
+            color: var(--gold);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .calc-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+
+        .calc-btn {
+            background: var(--bg-input);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 8px 6px;
+            font-size: 13px;
+            font-weight: 800;
+            justify-content: center;
+        }
+
+        .calc-btn:hover {
+            border-color: rgba(212, 175, 55, 0.55);
+            color: var(--gold);
+        }
+
+        .calc-btn.op {
+            color: var(--gold);
+            background: var(--gold-dim);
+        }
+
+        .calc-btn.eq {
+            background: var(--gold);
+            color: #0b0e14;
+            border-color: var(--gold);
+        }
+
+        .calc-btn.eq:hover {
+            background: var(--gold-hover);
+        }
+
+        .calc-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
         /* Radar Banner */
         .radar-strip {
-            background: rgba(212, 175, 55, 0.06);
-            border: 1px solid rgba(212, 175, 55, 0.3);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 12px 18px;
-            margin-bottom: 18px;
+            padding: 11px 16px;
+            margin-bottom: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -284,11 +427,11 @@
             font-size: 12px;
         }
 
-        /* Form Alerts (Duplicate / Risk / Warranty) */
+        /* Form Alerts */
         .smart-alert {
             display: none;
-            border-radius: 8px;
-            padding: 9px 11px;
+            border-radius: 10px;
+            padding: 9px 12px;
             margin-bottom: 10px;
             font-size: 11px;
             line-height: 1.6;
@@ -300,33 +443,26 @@
         }
 
         .smart-alert.warn {
-            background: rgba(245, 158, 11, 0.14);
-            border: 1px solid rgba(245, 158, 11, 0.5);
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.4);
             color: #fde68a;
         }
 
         .smart-alert.danger {
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.55);
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.45);
             color: #fca5a5;
         }
 
-        .smart-alert.info {
-            background: rgba(56, 189, 248, 0.14);
-            border: 1px solid rgba(56, 189, 248, 0.45);
-            color: #bae6fd;
-        }
-
-        /* Express Mode */
         .express-hidden {
             display: none !important;
         }
 
         /* ADB Box */
         .adb-cmd-box {
-            background: #07090d;
+            background: var(--bg-dark);
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 10px;
             padding: 10px 12px;
             font-family: Consolas, monospace;
             font-size: 12px;
@@ -342,8 +478,8 @@
             background-color: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 14px 20px;
-            margin-bottom: 20px;
+            padding: 12px 18px;
+            margin-bottom: 18px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -354,20 +490,19 @@
         .day-controls {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             flex-wrap: wrap;
         }
 
         .day-controls input[type="date"] {
             width: auto;
-            padding: 7px 12px;
+            padding: 6px 10px;
             font-weight: 700;
             color: var(--gold);
-            border-color: var(--gold);
         }
 
         .day-badge {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-muted);
         }
 
@@ -378,50 +513,26 @@
         /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
-            gap: 14px;
-            margin-bottom: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .stat-card {
             background-color: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 4px;
-            height: 100%;
-            background-color: var(--gold);
-        }
-
-        .stat-card.return-card::after {
-            background-color: var(--danger);
-        }
-
-        .stat-card.expense-card::after {
-            background-color: var(--warning);
-        }
-
-        .stat-card.drawer-card::after {
-            background-color: var(--success);
+            border-radius: 14px;
+            padding: 15px 16px;
         }
 
         .stat-title {
             color: var(--text-muted);
             font-size: 12px;
-            margin-bottom: 7px;
+            margin-bottom: 6px;
         }
 
         .stat-value {
-            font-size: 24px;
+            font-size: 23px;
             font-weight: 800;
             color: var(--text-main);
         }
@@ -452,8 +563,8 @@
         /* Main Layout */
         .main-grid {
             display: grid;
-            grid-template-columns: 380px 1fr;
-            gap: 24px;
+            grid-template-columns: 375px 1fr;
+            gap: 20px;
             align-items: start;
         }
 
@@ -466,22 +577,22 @@
         .left-stack {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
         }
 
         /* Panel */
         .panel {
             background-color: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 14px;
+            padding: 18px;
         }
 
         .panel-title {
-            font-size: 15px;
-            font-weight: 700;
+            font-size: 14px;
+            font-weight: 800;
             color: var(--gold);
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             padding-bottom: 10px;
             border-bottom: 1px solid var(--border);
             display: flex;
@@ -492,14 +603,14 @@
         }
 
         .form-group {
-            margin-bottom: 12px;
+            margin-bottom: 11px;
         }
 
         label {
             display: block;
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-muted);
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
 
         input, select, textarea {
@@ -507,14 +618,15 @@
             background-color: var(--bg-input);
             border: 1px solid var(--border);
             color: var(--text-main);
-            padding: 9px 12px;
-            border-radius: 8px;
+            padding: 8px 11px;
+            border-radius: 10px;
             font-size: 13px;
             outline: none;
+            transition: border-color 0.15s;
         }
 
         input:focus, select:focus, textarea:focus {
-            border-color: var(--gold);
+            border-color: rgba(212, 175, 55, 0.7);
         }
 
         .row-2 {
@@ -528,8 +640,8 @@
             gap: 10px;
             flex-wrap: wrap;
             background: var(--bg-input);
-            padding: 9px 10px;
-            border-radius: 8px;
+            padding: 8px 10px;
+            border-radius: 10px;
             border: 1px solid var(--border);
         }
 
@@ -551,23 +663,23 @@
         .quick-services {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
+            gap: 5px;
             margin-top: 7px;
         }
 
         .chip-btn {
             background: var(--bg-input);
             color: var(--gold);
-            border: 1px solid rgba(212, 175, 55, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.25);
             padding: 4px 9px;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 11px;
             font-weight: 700;
         }
 
         .chip-btn:hover {
             background: var(--gold);
-            color: #090b10;
+            color: #0b0e14;
         }
 
         /* Expenses List */
@@ -577,7 +689,7 @@
             align-items: center;
             background: var(--bg-input);
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 10px;
             padding: 8px 11px;
             margin-top: 8px;
             font-size: 12px;
@@ -600,10 +712,10 @@
         }
 
         .merchant-summary {
-            background: rgba(212, 175, 55, 0.07);
-            border: 1px solid rgba(212, 175, 55, 0.35);
-            border-radius: 10px;
-            padding: 12px 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 14px;
             margin-bottom: 12px;
             font-size: 12px;
             color: var(--text-main);
@@ -618,16 +730,13 @@
         /* Table & Filters */
         .toolbar {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 14px;
         }
 
         .search-box {
-            flex: 1;
-            min-width: 220px;
+            width: 100%;
         }
 
         .filter-tabs {
@@ -639,13 +748,15 @@
         .tab-btn {
             background: var(--bg-input);
             color: var(--text-muted);
-            padding: 7px 11px;
+            border: 1px solid transparent;
+            padding: 6px 11px;
             font-size: 12px;
+            border-radius: 9px;
         }
 
         .tab-btn.active {
             background: var(--gold);
-            color: #090b10;
+            color: #0b0e14;
         }
 
         .table-wrapper {
@@ -655,12 +766,12 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 13px;
+            font-size: 12.5px;
         }
 
         th {
             text-align: right;
-            padding: 11px;
+            padding: 10px 11px;
             background-color: var(--bg-input);
             color: var(--gold);
             font-weight: 700;
@@ -675,19 +786,19 @@
         }
 
         tr:hover {
-            background-color: rgba(255, 255, 255, 0.02);
+            background-color: rgba(255, 255, 255, 0.015);
         }
 
         tr.overdue-row {
-            background-color: rgba(239, 68, 68, 0.05);
+            background-color: rgba(239, 68, 68, 0.04);
         }
 
         .ticket-badge {
             display: inline-block;
             background: var(--gold-dim);
             color: var(--gold);
-            border: 1px solid rgba(212, 175, 55, 0.4);
-            border-radius: 6px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 7px;
             padding: 2px 7px;
             font-size: 11px;
             font-weight: 800;
@@ -696,10 +807,10 @@
 
         .serial-badge {
             display: inline-block;
-            background: rgba(148, 163, 184, 0.12);
-            color: #cbd5e1;
-            border: 1px solid rgba(148, 163, 184, 0.3);
-            border-radius: 5px;
+            background: var(--bg-input);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            border-radius: 6px;
             padding: 1px 6px;
             font-size: 10px;
             font-family: monospace;
@@ -709,10 +820,9 @@
 
         .tag-merchant {
             display: inline-block;
-            background: rgba(56, 189, 248, 0.14);
-            color: #38bdf8;
-            border: 1px solid rgba(56, 189, 248, 0.35);
-            border-radius: 5px;
+            background: rgba(56, 189, 248, 0.12);
+            color: #7dd3fc;
+            border-radius: 6px;
             padding: 1px 6px;
             font-size: 10px;
             font-weight: 700;
@@ -721,10 +831,9 @@
 
         .tag-credit {
             display: inline-block;
-            background: rgba(245, 158, 11, 0.16);
-            color: var(--warning);
-            border: 1px solid rgba(245, 158, 11, 0.4);
-            border-radius: 5px;
+            background: rgba(245, 158, 11, 0.14);
+            color: #fcd34d;
+            border-radius: 6px;
             padding: 1px 6px;
             font-size: 10px;
             font-weight: 700;
@@ -734,9 +843,8 @@
         .tag-repeat {
             display: inline-block;
             background: rgba(16, 185, 129, 0.14);
-            color: var(--success);
-            border: 1px solid rgba(16, 185, 129, 0.35);
-            border-radius: 5px;
+            color: #6ee7b7;
+            border-radius: 6px;
             padding: 1px 6px;
             font-size: 10px;
             font-weight: 700;
@@ -745,10 +853,9 @@
 
         .tag-warranty {
             display: inline-block;
-            background: rgba(16, 185, 129, 0.16);
+            background: rgba(16, 185, 129, 0.14);
             color: #6ee7b7;
-            border: 1px solid rgba(16, 185, 129, 0.45);
-            border-radius: 5px;
+            border-radius: 6px;
             padding: 1px 6px;
             font-size: 10px;
             font-weight: 800;
@@ -757,10 +864,9 @@
 
         .tag-overdue {
             display: inline-block;
-            background: rgba(239, 68, 68, 0.18);
+            background: rgba(239, 68, 68, 0.14);
             color: #fca5a5;
-            border: 1px solid rgba(239, 68, 68, 0.5);
-            border-radius: 5px;
+            border-radius: 6px;
             padding: 1px 6px;
             font-size: 10px;
             font-weight: 800;
@@ -778,25 +884,24 @@
             display: inline-block;
             margin-top: 4px;
             padding: 2px 7px;
-            border-radius: 5px;
-            background: rgba(255, 255, 255, 0.04);
-            border-right: 2px solid var(--gold);
+            border-radius: 6px;
+            background: var(--bg-input);
             font-size: 11px;
-            color: #d1d5db;
+            color: var(--text-muted);
         }
 
         .status-select {
             padding: 5px 8px;
             font-size: 12px;
             font-weight: 700;
-            border-radius: 6px;
+            border-radius: 8px;
             width: auto;
         }
 
-        .status-working { color: var(--warning); border-color: var(--warning); }
-        .status-ready { color: #38bdf8; border-color: #38bdf8; }
-        .status-done { color: var(--success); border-color: var(--success); }
-        .status-returned { color: var(--danger); border-color: var(--danger); }
+        .status-working { color: var(--warning); }
+        .status-ready { color: #38bdf8; }
+        .status-done { color: var(--success); }
+        .status-returned { color: var(--danger); }
 
         .actions-cell {
             display: flex;
@@ -805,16 +910,15 @@
         }
 
         .btn-print {
-            background-color: var(--gold-dim);
+            background-color: var(--bg-input);
             color: var(--gold);
-            border: 1px solid var(--gold);
+            border: 1px solid var(--border);
             padding: 5px 9px;
-            font-size: 12px;
+            font-size: 11px;
         }
 
         .btn-print:hover {
-            background-color: var(--gold);
-            color: #000;
+            border-color: var(--gold);
         }
 
         /* Modals */
@@ -822,7 +926,8 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.78);
+            background: rgba(0, 0, 0, 0.72);
+            backdrop-filter: blur(4px);
             z-index: 999;
             align-items: center;
             justify-content: center;
@@ -835,8 +940,8 @@
 
         .modal-box {
             background: var(--bg-card);
-            border: 1px solid var(--gold);
-            border-radius: 14px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
             width: 100%;
             max-width: 520px;
             padding: 22px;
@@ -855,7 +960,7 @@
 
         .modal-header h3 {
             color: var(--gold);
-            font-size: 16px;
+            font-size: 15px;
         }
 
         .modal-textarea {
@@ -868,7 +973,7 @@
         .modal-footer {
             display: flex;
             justify-content: flex-end;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
@@ -934,7 +1039,7 @@
         <div class="brand-logo">MA</div>
         <div class="brand-text">
             <h1>المدينة المنورة - محمد أمين</h1>
-            <p>نظام إدارة عمليات السوفت وير والحسابات | تواصل: 01119943360</p>
+            <p>إدارة السوفت وير والحسابات • 01119943360</p>
         </div>
     </div>
     <div class="header-actions">
@@ -942,13 +1047,13 @@
             <span class="sync-pill online" id="netStatusPill">🌐 أونلاين</span>
             <span class="sync-pill syncing" id="cloudSyncStatus">☁️ جاري المزامنة...</span>
         </div>
-        <button type="button" class="btn-outline active-toggle" id="autoSyncBtn" onclick="toggleAutoSync()">⏱️ مزامنة تلقائية: تشغيل</button>
-        <button type="button" class="btn-outline active-toggle" id="soundAlertBtn" onclick="toggleSoundAlert()">🔔 صوت التنبيه: تشغيل</button>
-        <button type="button" class="btn-outline" id="privacyBtn" onclick="togglePrivacyMode()">🙈 إخفاء الأرقام والرموز</button>
-        <button type="button" class="btn-outline" onclick="pullFromCloud(true)">🔄 تحديث من السحابة</button>
         <button type="button" class="btn-gold" onclick="openClosingModal()">📊 تقفيل اليوم</button>
-        <button type="button" class="btn-outline" onclick="exportData()">⬇ حفظ نسخة احتياطية</button>
-        <button type="button" class="btn-outline" onclick="document.getElementById('importFile').click()">⬆ استعادة نسخة</button>
+        <button type="button" class="btn-outline" onclick="pullFromCloud(true)">🔄 تحديث</button>
+        <button type="button" class="btn-outline" id="privacyBtn" onclick="togglePrivacyMode()">🙈 إخفاء</button>
+        <button type="button" class="btn-outline active-toggle" id="autoSyncBtn" onclick="toggleAutoSync()">⏱️ تلقائي</button>
+        <button type="button" class="btn-outline active-toggle" id="soundAlertBtn" onclick="toggleSoundAlert()">🔔 صوت</button>
+        <button type="button" class="btn-outline" onclick="exportData()">⬇ نسخة</button>
+        <button type="button" class="btn-outline" onclick="document.getElementById('importFile').click()">⬆ استعادة</button>
         <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
     </div>
 </header>
@@ -960,10 +1065,30 @@
         <button type="button" class="btn-outline" style="padding: 3px 9px; font-size: 11px;" onclick="hideSaveToast()">✕</button>
     </div>
 
+    <!-- Quick Profit Plan Card -->
+    <div class="profit-plan-card" id="quickProfitPlan">
+        <div class="profit-plan-top">
+            <div class="profit-plan-title">🚀 خطة الربح السريع وتزويد الدخل</div>
+            <div class="target-control">
+                <span>هدف صافي اليوم:</span>
+                <input type="number" id="dailyProfitTargetInput" min="0" step="50" onchange="updateDailyProfitTarget(this.value)">
+                <strong id="profitTargetPercent" style="color: var(--success);">0%</strong>
+            </div>
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill" id="profitTargetBar"></div>
+        </div>
+        <div class="profit-plan-grid">
+            <div class="plan-box" id="planTargetStatusBox">المتبقي لتحقيق هدف اليوم: <strong>0 ج.م</strong></div>
+            <div class="plan-box" id="planPendingCreditBox">رصيد آجل جاهز للتحصيل: <strong>0 ج.م</strong></div>
+            <div class="plan-box" id="planTopServicesBox">أعلى الخدمات ربحاً: <strong>لا توجد بيانات كافية</strong></div>
+        </div>
+    </div>
+
     <!-- Smart Warranty & Return Radar Strip -->
     <div class="radar-strip" id="warrantyRadarStrip">
         <div id="warrantyRadarSummary">🛡️ رادار الضمان والمرتجع: جاري التحليل...</div>
-        <button type="button" class="btn-outline" onclick="filterWarrantyScope()">عرض الأجهزة تحت الضمان / المرتجع</button>
+        <button type="button" class="btn-outline" onclick="filterWarrantyScope()">عرض الضمان والمرتجع</button>
     </div>
 
     <!-- Day Switcher Bar -->
@@ -975,7 +1100,7 @@
             <button type="button" class="btn-gold" onclick="goToday()">اليوم</button>
         </div>
         <div class="day-badge">
-            عرض حسابات وشغل يوم: <strong id="activeDayLabel">-</strong>
+            حسابات وشغل يوم: <strong id="activeDayLabel">-</strong>
         </div>
     </div>
 
@@ -984,17 +1109,17 @@
         <div class="stat-card">
             <div class="stat-title">أجهزة اليوم المختار</div>
             <div class="stat-value" id="stat-day-total">0</div>
-            <div class="stat-sub">إيرادات اليوم: <span id="stat-day-revenue">0</span> ج.م | إجمالي الأجهزة: <span id="stat-all-total">0</span></div>
+            <div class="stat-sub">إيرادات اليوم: <span id="stat-day-revenue">0</span> ج.م • الكل: <span id="stat-all-total">0</span></div>
         </div>
         <div class="stat-card drawer-card">
             <div class="stat-title">حاسبة الدرج (كاش اليوم)</div>
             <div class="stat-value" id="stat-day-drawer">0</div>
-            <div class="stat-sub">كاش مدفوع ناقص مصاريف ومرتجع | آجل: <span id="stat-day-credit">0</span> ج.م</div>
+            <div class="stat-sub">كاش ناقص مصاريف ومرتجع • آجل: <span id="stat-day-credit">0</span> ج.م</div>
         </div>
         <div class="stat-card expense-card">
             <div class="stat-title">تكلفة كريدت + مصاريف اليوم</div>
             <div class="stat-value" id="stat-day-expenses-total">0</div>
-            <div class="stat-sub">كريدت: <span id="stat-day-cost">0</span> | مصاريف خزنة: <span id="stat-day-petty">0</span> ج.م</div>
+            <div class="stat-sub">كريدت: <span id="stat-day-cost">0</span> • خزنة: <span id="stat-day-petty">0</span> ج.م</div>
         </div>
         <div class="stat-card return-card">
             <div class="stat-title">مرتجع اليوم (ج.م)</div>
@@ -1004,7 +1129,7 @@
         <div class="stat-card profit">
             <div class="stat-title">صافي الربح الحقيقي لليوم</div>
             <div class="stat-value" id="stat-day-profit">0</div>
-            <div class="stat-sub">إجمالي صافي كل الأيام: <span id="stat-all-profit">0</span> ج.م</div>
+            <div class="stat-sub">صافي كل الأيام: <span id="stat-all-profit">0</span> ج.م</div>
         </div>
     </div>
 
@@ -1013,8 +1138,8 @@
             <!-- New Device Form -->
             <div class="panel">
                 <div class="panel-title">
-                    <span>+ استلام جهاز جديد (<span id="formDayLabel">اليوم</span>)</span>
-                    <button type="button" class="btn-outline" id="expressModeBtn" onclick="toggleExpressMode()" style="padding: 4px 9px; font-size: 11px;">⚡ الوردية السريعة</button>
+                    <span>+ استلام جهاز (<span id="formDayLabel">اليوم</span>)</span>
+                    <button type="button" class="btn-outline" id="expressModeBtn" onclick="toggleExpressMode()" style="padding: 4px 9px; font-size: 11px;">⚡ وردية سريعة</button>
                 </div>
 
                 <!-- Duplicate Serial / Phone / Warranty Alert -->
@@ -1054,8 +1179,8 @@
                         </div>
                     </div>
                     <div class="form-group express-optional">
-                        <label>الرقم التسلسلي / IMEI (اختياري — يظهر في الإيصال والبحث)</label>
-                        <input type="text" id="serialNumber" oninput="checkSmartAlerts()" placeholder="مثال: 356938035643809 أو R58N123ABCD">
+                        <label>الرقم التسلسلي / IMEI (اختياري)</label>
+                        <input type="text" id="serialNumber" oninput="checkSmartAlerts()" placeholder="مثال: 356938035643809">
                     </div>
                     <div class="form-group express-optional">
                         <label>حالة الجهاز الظاهرية</label>
@@ -1089,50 +1214,91 @@
                         </div>
                     </div>
                     <div class="form-group express-optional">
-                        <label>ملاحظات فنية سرية / رمز القفل (Pattern / PIN) — لا تُطبع</label>
-                        <input type="text" id="secretNote" placeholder="مثال: PIN 1234 / نقش حرف Z / بوتلودر مقفول">
+                        <label>ملاحظات فنية سرية / رمز القفل — لا تُطبع</label>
+                        <input type="text" id="secretNote" placeholder="PIN 1234 / نقش حرف Z">
                     </div>
-                    <button type="submit" class="btn-gold" style="width: 100%; justify-content: center; margin-top: 6px; padding: 11px;">
+                    <button type="submit" class="btn-gold" style="width: 100%; justify-content: center; margin-top: 4px; padding: 10px;">
                         حفظ في حسابات اليوم
                     </button>
                 </form>
             </div>
 
+            <!-- Built-in Calculator -->
+            <div class="panel">
+                <div class="panel-title">🧮 آلة حاسبة سريعة</div>
+                <div class="calc-screen">
+                    <div class="calc-expr" id="calcExpr">0</div>
+                    <div class="calc-val" id="calcDisplay">0</div>
+                </div>
+                <div class="calc-grid">
+                    <button type="button" class="calc-btn op" onclick="calcClear()">C</button>
+                    <button type="button" class="calc-btn op" onclick="calcBackspace()">⌫</button>
+                    <button type="button" class="calc-btn op" onclick="calcAppend('%')">%</button>
+                    <button type="button" class="calc-btn op" onclick="calcAppend('/')">÷</button>
+
+                    <button type="button" class="calc-btn" onclick="calcAppend('7')">7</button>
+                    <button type="button" class="calc-btn" onclick="calcAppend('8')">8</button>
+                    <button type="button" class="calc-btn" onclick="calcAppend('9')">9</button>
+                    <button type="button" class="calc-btn op" onclick="calcAppend('*')">×</button>
+
+                    <button type="button" class="calc-btn" onclick="calcAppend('4')">4</button>
+                    <button type="button" class="calc-btn" onclick="calcAppend('5')">5</button>
+                    <button type="button" class="calc-btn" onclick="calcAppend('6')">6</button>
+                    <button type="button" class="calc-btn op" onclick="calcAppend('-')">-</button>
+
+                    <button type="button" class="calc-btn" onclick="calcAppend('1')">1</button>
+                    <button type="button" class="calc-btn" onclick="calcAppend('2')">2</button>
+                    <button type="button" class="calc-btn" onclick="calcAppend('3')">3</button>
+                    <button type="button" class="calc-btn op" onclick="calcAppend('+')">+</button>
+
+                    <button type="button" class="calc-btn" onclick="calcAppend('00')" style="grid-column: span 2;">00</button>
+                    <button type="button" class="calc-btn" onclick="calcAppend('0')">0</button>
+                    <button type="button" class="calc-btn" onclick="calcAppend('.')">.</button>
+                </div>
+                <div style="margin-top: 6px;">
+                    <button type="button" class="calc-btn eq" style="width: 100%; padding: 9px;" onclick="calcEvaluate()">=</button>
+                </div>
+                <div class="calc-actions">
+                    <button type="button" class="btn-outline" style="justify-content: center;" onclick="calcCopyResult()">📋 نسخ الناتج</button>
+                    <button type="button" class="btn-edit" style="justify-content: center;" onclick="calcApplyToPrice()">💰 وضعه في السعر</button>
+                </div>
+            </div>
+
             <!-- ADB Command Builder -->
             <div class="panel">
-                <div class="panel-title">💻 قالب أمر سحب معلومات الجهاز (ADB)</div>
+                <div class="panel-title">💻 أوامر ADB السريعة</div>
                 <div class="form-group">
-                    <label>اختر الأمر المطلوب</label>
+                    <label>اختر الأمر</label>
                     <select id="adbCommandSelect" onchange="updateAdbPreview()">
                         <option value="adb devices -l">فحص الأجهزة المتصلة (adb devices -l)</option>
                         <option value="adb shell getprop ro.serialno">سحب الرقم التسلسلي (Serial No)</option>
                         <option value="adb shell getprop ro.product.model">سحب موديل الجهاز (Product Model)</option>
                         <option value="adb shell getprop ro.build.version.release">سحب إصدار أندرويد (Android Version)</option>
                         <option value="adb shell getprop ro.boot.flash.locked">فحص حالة البوتلودر (Bootloader Lock)</option>
-                        <option value="adb shell service call iphonesubinfo 1">قراءة بيانات الشريحة / IMEI (حسب صلاحيات الجهاز)</option>
+                        <option value="adb shell service call iphonesubinfo 1">قراءة بيانات الشريحة / IMEI</option>
                     </select>
                 </div>
                 <div class="adb-cmd-box" id="adbCmdPreview">adb devices -l</div>
-                <button type="button" class="btn-outline" style="width: 100%; justify-content: center; margin-top: 10px;" onclick="copyAdbCommand()">
-                    📋 نسخ أمر ADB
+                <button type="button" class="btn-outline" style="width: 100%; justify-content: center; margin-top: 8px;" onclick="copyAdbCommand()">
+                    📋 نسخ الأمر
                 </button>
             </div>
 
             <!-- Daily Petty Cash / Expenses -->
             <div class="panel">
-                <div class="panel-title">💸 خزنة المصاريف اليومية (<span id="expenseDayLabel">اليوم</span>)</div>
+                <div class="panel-title">💸 مصاريف اليوم (<span id="expenseDayLabel">اليوم</span>)</div>
                 <form id="expenseForm" onsubmit="addExpense(event)">
                     <div class="row-2">
                         <div class="form-group">
-                            <label>بيان المصروف *</label>
-                            <input type="text" id="expenseTitle" required placeholder="مثال: مواصلات / كريدت">
+                            <label>البيان *</label>
+                            <input type="text" id="expenseTitle" required placeholder="مثال: مواصلات">
                         </div>
                         <div class="form-group">
-                            <label>المبلغ (ج.م) *</label>
+                            <label>المبلغ *</label>
                             <input type="number" id="expenseAmount" required min="1" placeholder="0">
                         </div>
                     </div>
-                    <button type="submit" class="btn-outline" style="width: 100%; justify-content: center; border-color: var(--warning); color: var(--warning);">
+                    <button type="submit" class="btn-outline" style="width: 100%; justify-content: center; border-color: rgba(245, 158, 11, 0.45); color: var(--warning);">
                         + إضافة مصروف لليوم
                     </button>
                 </form>
@@ -1144,7 +1310,7 @@
         <div class="panel">
             <div class="toolbar">
                 <div class="search-box">
-                    <input type="text" id="searchInput" onkeyup="renderTable()" placeholder="🔍 ابحث بكود المتابعة (#101)، السيريال / IMEI، الاسم، المحل، الموديل، أو الهاتف...">
+                    <input type="text" id="searchInput" onkeyup="renderTable()" placeholder="🔍 ابحث بالكود (#101)، السيريال / IMEI، الاسم، المحل، الموديل، أو الهاتف...">
                 </div>
                 <div class="filter-tabs">
                     <button type="button" class="tab-btn active" onclick="setScope('day', this)">أجهزة اليوم</button>
@@ -1152,7 +1318,7 @@
                     <button type="button" class="tab-btn" onclick="setScope('overdue', this)" id="overdueTabBtn">متأخر (+2 يوم)</button>
                     <button type="button" class="tab-btn" onclick="setScope('warranty', this)">الضمان والمرتجع</button>
                     <button type="button" class="tab-btn" onclick="setScope('merchants', this)">حسابات التجار</button>
-                    <button type="button" class="tab-btn" onclick="setScope('clients', this)">العملاء والمحلات المتكررة</button>
+                    <button type="button" class="tab-btn" onclick="setScope('clients', this)">العملاء المتكررة</button>
                     <button type="button" class="tab-btn" onclick="setScope('working', this)">جاري العمل</button>
                     <button type="button" class="tab-btn" onclick="setScope('done', this)">تم التسليم</button>
                     <button type="button" class="tab-btn" onclick="setScope('returned', this)">المرتجع</button>
@@ -1162,16 +1328,16 @@
             <!-- Aggregated Merchant Accounts -->
             <div class="merchant-section" id="merchantSection">
                 <div class="merchant-summary" id="merchantSummaryBox"></div>
-                <div class="table-wrapper" style="margin-bottom: 18px;">
+                <div class="table-wrapper" style="margin-bottom: 16px;">
                     <table>
                         <thead>
                             <tr>
                                 <th>اسم التاجر / المحل</th>
-                                <th>عدد الأجهزة</th>
-                                <th>إجمالي المستحق</th>
+                                <th>الأجهزة</th>
+                                <th>المستحق</th>
                                 <th>المدفوع</th>
                                 <th>المتبقي آجل</th>
-                                <th>تسوية الحساب</th>
+                                <th>تسوية</th>
                             </tr>
                         </thead>
                         <tbody id="merchantLedgerBody"></tbody>
@@ -1182,16 +1348,16 @@
             <!-- Aggregated Repeat Clients & Shops -->
             <div class="merchant-section" id="clientsSection">
                 <div class="merchant-summary" id="clientsSummaryBox"></div>
-                <div class="table-wrapper" style="margin-bottom: 18px;">
+                <div class="table-wrapper" style="margin-bottom: 16px;">
                     <table>
                         <thead>
                             <tr>
                                 <th>العميل / المحل</th>
-                                <th>عدد مرات التعامل</th>
-                                <th>إجمالي الإيراد</th>
+                                <th>المرات</th>
+                                <th>الإيراد</th>
                                 <th>المدفوع</th>
-                                <th>الآجل المتبقي</th>
-                                <th>عرض السجلات</th>
+                                <th>الآجل</th>
+                                <th>السجلات</th>
                             </tr>
                         </thead>
                         <tbody id="clientsLedgerBody"></tbody>
@@ -1205,16 +1371,14 @@
                         <tr>
                             <th>الكود والعميل</th>
                             <th>الجهاز والسيريال</th>
-                            <th>الخدمة وملاحظات الفني</th>
+                            <th>الخدمة والملاحظات</th>
                             <th>المدة واليوم</th>
                             <th>الحساب والصافي</th>
                             <th>الحالة</th>
                             <th>إجراءات</th>
                         </tr>
                     </thead>
-                    <tbody id="recordsBody">
-                        <!-- Dynamic Rows -->
-                    </tbody>
+                    <tbody id="recordsBody"></tbody>
                 </table>
             </div>
         </div>
@@ -1225,17 +1389,17 @@
 <div class="modal-backdrop" id="waModal">
     <div class="modal-box">
         <div class="modal-header">
-            <h3>💬 رد جاهز على واتساب</h3>
+            <h3>💬 رسالة واتساب</h3>
             <button type="button" class="btn-outline" style="padding: 4px 10px;" onclick="closeWaModal()">✕</button>
         </div>
         <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">
-            العميل: <strong id="waClientLabel" style="color: var(--text-main);"></strong> | الرقم: <strong id="waPhoneLabel" style="color: var(--whatsapp);"></strong>
+            العميل: <strong id="waClientLabel" style="color: var(--text-main);"></strong> • الرقم: <strong id="waPhoneLabel" style="color: var(--whatsapp);"></strong>
         </p>
         <textarea id="waMessageText" class="modal-textarea"></textarea>
         <div class="modal-footer">
-            <button type="button" class="btn-outline" onclick="copyWaMessage()">📋 نسخ الرسالة</button>
+            <button type="button" class="btn-outline" onclick="copyWaMessage()">📋 نسخ</button>
             <button type="button" class="btn-outline" onclick="closeWaModal()">إلغاء</button>
-            <button type="button" class="btn-gold" onclick="sendWaMessage()">إرسال عبر واتساب ↗</button>
+            <button type="button" class="btn-gold" onclick="sendWaMessage()">إرسال ↗</button>
         </div>
     </div>
 </div>
@@ -1322,7 +1486,7 @@
                 <input type="number" id="editRefund" min="0">
             </div>
             <div class="form-group">
-                <label>ملاحظات فنية سرية / رمز القفل (Pattern / PIN)</label>
+                <label>ملاحظات فنية سرية / رمز القفل</label>
                 <input type="text" id="editSecretNote">
             </div>
             <div class="modal-footer">
@@ -1342,8 +1506,8 @@
         </div>
         <textarea id="closingReportText" class="modal-textarea" readonly></textarea>
         <div class="modal-footer">
-            <button type="button" class="btn-outline" onclick="copyClosingReport()">📋 نسخ التقرير</button>
-            <button type="button" class="btn-wa" onclick="sendClosingToWa()">💬 إرسال لواتساب</button>
+            <button type="button" class="btn-outline" onclick="copyClosingReport()">📋 نسخ</button>
+            <button type="button" class="btn-wa" onclick="sendClosingToWa()">💬 واتساب</button>
             <button type="button" class="btn-gold" onclick="closeClosingModal()">إغلاق</button>
         </div>
     </div>
@@ -1365,8 +1529,146 @@
     let autoSyncEnabled = localStorage.getItem('amin_auto_sync') !== 'false';
     let soundAlertEnabled = localStorage.getItem('amin_sound_alert') !== 'false';
     let expressMode = localStorage.getItem('amin_express_mode') === 'true';
+    let dailyProfitTarget = Math.max(0, parseFloat(localStorage.getItem('amin_daily_profit_target') || '500') || 500);
     let autoSyncTimer = null;
     let toastTimer = null;
+
+    /* Built-in Calculator State */
+    let calcExpression = '';
+    let calcResultValue = '0';
+
+    function syncCalcUI() {
+        const exprEl = document.getElementById('calcExpr');
+        const dispEl = document.getElementById('calcDisplay');
+        if (exprEl) exprEl.innerText = calcExpression || '0';
+        if (dispEl) dispEl.innerText = calcResultValue;
+    }
+
+    function calcClear() {
+        calcExpression = '';
+        calcResultValue = '0';
+        syncCalcUI();
+    }
+
+    function calcBackspace() {
+        calcExpression = calcExpression.slice(0, -1);
+        syncCalcUI();
+    }
+
+    function calcAppend(token) {
+        if (token === '%') {
+            if (!calcExpression) return;
+            calcExpression = `(${calcExpression})/100`;
+            calcEvaluate();
+            return;
+        }
+        calcExpression += token;
+        syncCalcUI();
+    }
+
+    function calcEvaluate() {
+        const expr = calcExpression.trim();
+        if (!expr) return;
+        if (!/^[0-9+\-*/().%\s]+$/.test(expr)) {
+            calcResultValue = 'خطأ';
+            syncCalcUI();
+            return;
+        }
+        try {
+            const val = Function(`"use strict"; return (${expr});`)();
+            if (typeof val === 'number' && Number.isFinite(val)) {
+                const rounded = Math.round((val + Number.EPSILON) * 100) / 100;
+                calcResultValue = String(rounded);
+                calcExpression = `${expr} = ${rounded}`;
+            } else {
+                calcResultValue = '0';
+            }
+        } catch (err) {
+            calcResultValue = 'خطأ';
+        }
+        syncCalcUI();
+    }
+
+    function calcCopyResult() {
+        if (calcResultValue === 'خطأ') return;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(calcResultValue).then(() => {
+                showSaveToast(`📋 تم نسخ ناتج الآلة الحاسبة: ${calcResultValue}`);
+            }).catch(() => {});
+        }
+    }
+
+    function calcApplyToPrice() {
+        const num = parseFloat(calcResultValue);
+        const priceInput = document.getElementById('price');
+        if (!Number.isNaN(num) && Number.isFinite(num) && priceInput) {
+            priceInput.value = Math.max(0, num);
+            showSaveToast(`💰 تم وضع القيمة (${Math.max(0, num)} ج.م) في خانة السعر`);
+        }
+    }
+
+    /* Quick Profit Plan */
+    function updateDailyProfitTarget(val) {
+        dailyProfitTarget = Math.max(0, parseFloat(val) || 0);
+        localStorage.setItem('amin_daily_profit_target', String(dailyProfitTarget));
+        renderQuickProfitPlan();
+    }
+
+    function renderQuickProfitPlan() {
+        const targetInput = document.getElementById('dailyProfitTargetInput');
+        if (targetInput && document.activeElement !== targetInput) {
+            targetInput.value = dailyProfitTarget;
+        }
+
+        const dayProfit = calcDayRealProfit(selectedDateISO);
+        const target = dailyProfitTarget;
+        const pct = target > 0 ? Math.min(100, Math.max(0, Math.round((dayProfit / target) * 100))) : 100;
+        const remaining = target > 0 ? Math.max(0, target - dayProfit) : 0;
+
+        const barEl = document.getElementById('profitTargetBar');
+        const pctEl = document.getElementById('profitTargetPercent');
+        if (barEl) barEl.style.width = `${pct}%`;
+        if (pctEl) pctEl.innerText = `${pct}%`;
+
+        const targetBox = document.getElementById('planTargetStatusBox');
+        if (targetBox) {
+            if (target === 0 || dayProfit >= target) {
+                targetBox.innerHTML = `✅ تم تحقيق هدف اليوم! صافي اليوم: <strong style="color: var(--success);">${maskNum(dayProfit)} ج.م</strong>`;
+            } else {
+                targetBox.innerHTML = `المتبقي لتحقيق هدف اليوم: <strong style="color: var(--gold);">${maskNum(remaining)} ج.م</strong>`;
+            }
+        }
+
+        const totalAllCredit = records
+            .filter(r => r.paymentStatus === 'credit')
+            .reduce((s, r) => s + Math.max(0, (parseFloat(r.price) || 0) - (parseFloat(r.refund) || 0)), 0);
+        const creditBox = document.getElementById('planPendingCreditBox');
+        if (creditBox) {
+            creditBox.innerHTML = `رصيد آجل جاهز للتحصيل: <strong style="color: var(--warning);">${maskNum(totalAllCredit)} ج.م</strong>`;
+        }
+
+        const serviceStats = {};
+        records.forEach(r => {
+            const key = (r.serviceType || '').trim();
+            if (!key) return;
+            if (!serviceStats[key]) serviceStats[key] = { name: key, net: 0, count: 0 };
+            serviceStats[key].net += calcRecordNet(r);
+            serviceStats[key].count += 1;
+        });
+        const topServices = Object.values(serviceStats)
+            .sort((a, b) => b.net - a.net || b.count - a.count)
+            .slice(0, 2);
+
+        const topBox = document.getElementById('planTopServicesBox');
+        if (topBox) {
+            if (topServices.length === 0) {
+                topBox.innerHTML = `أعلى الخدمات ربحاً: <strong>سجّل أجهزة لظهور التحليل</strong>`;
+            } else {
+                const text = topServices.map(s => `${s.name} (${maskNum(s.net)} ج.م)`).join(' • ');
+                topBox.innerHTML = `أعلى الخدمات ربحاً: <strong style="color: var(--gold);">${text}</strong>`;
+            }
+        }
+    }
 
     /* Instant Online / Offline Indicator */
     function updateNetworkStatusUI() {
@@ -1374,7 +1676,7 @@
         if (!pill) return;
         const isOnline = navigator.onLine !== false;
         pill.className = `sync-pill ${isOnline ? 'online' : 'offline'}`;
-        pill.innerText = isOnline ? '🌐 أونلاين' : '📴 أوفلاين (لا يوجد نت)';
+        pill.innerText = isOnline ? '🌐 أونلاين' : '📴 أوفلاين';
     }
 
     /* Express Counter Mode */
@@ -1388,7 +1690,7 @@
 
         if (expressMode) {
             if (btn) {
-                btn.innerText = '⚡ الوردية السريعة: مفعّل';
+                btn.innerText = '⚡ وردية سريعة: مفعّل';
                 btn.classList.add('active-toggle');
             }
             optionals.forEach(el => el.classList.add('express-hidden'));
@@ -1398,7 +1700,7 @@
             }
         } else {
             if (btn) {
-                btn.innerText = '⚡ الوردية السريعة';
+                btn.innerText = '⚡ وردية سريعة';
                 btn.classList.remove('active-toggle');
             }
             optionals.forEach(el => el.classList.remove('express-hidden'));
@@ -1482,9 +1784,9 @@
 
         summaryEl.innerHTML =
             `🛡️ <strong>رادار الضمان والمرتجع:</strong> ` +
-            `أجهزة تحت الضمان (${WARRANTY_DAYS} أيام): <strong style="color: var(--success);">${warrantyCount}</strong> | ` +
-            `المرتجع: <strong style="color: var(--danger);">${returnedCount} (${returnRate}%)</strong> | ` +
-            `معدل النجاح: <strong style="color: var(--gold);">${successRate}%</strong>`;
+            `ضمان (${WARRANTY_DAYS} أيام): <strong style="color: var(--success);">${warrantyCount}</strong> • ` +
+            `مرتجع: <strong style="color: var(--danger);">${returnedCount} (${returnRate}%)</strong> • ` +
+            `النجاح: <strong style="color: var(--gold);">${successRate}%</strong>`;
     }
 
     function filterWarrantyScope() {
@@ -1516,7 +1818,7 @@
             if (matches.length > 0) {
                 const latest = matches[0];
                 const age = getRecordAgeInfo(latest);
-                const wText = age.isUnderWarranty ? ` — ⚠️ تحت الضمان (متبقي ${age.warrantyLeftDays} يوم)` : '';
+                const wText = age.isUnderWarranty ? ` — ⚠️ تحت الضمان (${age.warrantyLeftDays}ي متبقي)` : '';
                 dupMessages.push(`🔁 السيريال مسجل ${matches.length} مرة سابقاً (آخرها #${latest.ticketNo} بتاريخ ${latest.date} - ${latest.serviceType})${wText}`);
             }
         }
@@ -1524,7 +1826,7 @@
             const phoneMatches = records.filter(r => (r.clientPhone || '').replace(/\D/g, '') === phoneVal);
             if (phoneMatches.length > 0) {
                 const latestP = phoneMatches[0];
-                dupMessages.push(`📱 رقم الهاتف مسجل ${phoneMatches.length} مرة سابقاً باسم "${latestP.clientName}" (آخر جهاز: ${latestP.deviceModel} بتاريخ ${latestP.date})`);
+                dupMessages.push(`📱 رقم الهاتف مسجل ${phoneMatches.length} مرة سابقاً باسم "${latestP.clientName}" (${latestP.deviceModel} - ${latestP.date})`);
             }
         }
 
@@ -1544,7 +1846,7 @@
             const sameModel = records.filter(r => (r.deviceModel || '').toLowerCase().includes(modelVal));
             const modelReturns = sameModel.filter(r => getRecordAgeInfo(r).isReturnedItem);
             if (modelReturns.length > 0) {
-                riskMessages.push(`⚡ تنبيه مخاطر الموديل (${modelVal}): سُجل ${modelReturns.length} مرتجع سابق على هذا الموديل من أصل ${sameModel.length} عملية.`);
+                riskMessages.push(`⚡ تنبيه مخاطر الموديل (${modelVal}): سُجل ${modelReturns.length} مرتجع سابق من أصل ${sameModel.length} عملية.`);
             }
         }
         if (serviceVal && serviceVal.length >= 3) {
@@ -1612,9 +1914,7 @@
             gain.connect(ctx.destination);
             osc.start();
             osc.stop(ctx.currentTime + 0.25);
-        } catch (e) {
-            // Audio blocked before user interaction
-        }
+        } catch (e) {}
     }
 
     function notifySyncResult(success, text) {
@@ -1626,19 +1926,19 @@
     function updateHeaderTogglesUI() {
         const privBtn = document.getElementById('privacyBtn');
         if (privBtn) {
-            privBtn.innerText = privacyHidden ? '👁️ إظهار الأرقام والرموز' : '🙈 إخفاء الأرقام والرموز';
+            privBtn.innerText = privacyHidden ? '👁️ إظهار' : '🙈 إخفاء';
             privBtn.classList.toggle('active-toggle', privacyHidden);
         }
 
         const syncBtn = document.getElementById('autoSyncBtn');
         if (syncBtn) {
-            syncBtn.innerText = autoSyncEnabled ? '⏱️ مزامنة تلقائية: تشغيل' : '⏱️ مزامنة تلقائية: إيقاف';
+            syncBtn.innerText = autoSyncEnabled ? '⏱️ تلقائي' : '⏱️ متوقف';
             syncBtn.classList.toggle('active-toggle', autoSyncEnabled);
         }
 
         const sndBtn = document.getElementById('soundAlertBtn');
         if (sndBtn) {
-            sndBtn.innerText = soundAlertEnabled ? '🔔 صوت التنبيه: تشغيل' : '🔕 صوت التنبيه: كتم';
+            sndBtn.innerText = soundAlertEnabled ? '🔔 صوت' : '🔕 مكتوم';
             sndBtn.classList.toggle('active-toggle', soundAlertEnabled);
         }
     }
@@ -1858,7 +2158,7 @@
             }
             notifySyncResult(true, '☁️ متزامن مع السحابة');
         } catch (err) {
-            notifySyncResult(false, '⚠️ محفوظ محلياً (أوفلاين)');
+            notifySyncResult(false, '⚠️ محفوظ محلياً');
         }
     }
 
@@ -1908,9 +2208,9 @@
             }
         } catch (err) {
             if (!silent) {
-                notifySyncResult(false, '⚠️ محفوظ محلياً (أوفلاين)');
+                notifySyncResult(false, '⚠️ محفوظ محلياً');
             } else {
-                setSyncStatus('offline', '⚠️ محفوظ محلياً (أوفلاين)');
+                setSyncStatus('offline', '⚠️ محفوظ محلياً');
             }
             if (showAlertOnSuccess) {
                 alert('تعذر الاتصال بالسحابة حالياً، البيانات المحلية متاحة.');
@@ -1976,6 +2276,7 @@
     function refreshUI() {
         updateNetworkStatusUI();
         updateOverdueTabBadge();
+        renderQuickProfitPlan();
         renderWarrantyRadar();
         updateStats();
         renderExpenses();
@@ -2029,7 +2330,7 @@
         saveToStorage();
         const ageInfo = getRecordAgeInfo(newRecord);
         const serialPart = newRecord.serialNumber ? ` | سيريال: ${newRecord.serialNumber}` : '';
-        showSaveToast(`✅ تم حفظ الجهاز #${newRecord.ticketNo} (${newRecord.deviceModel}${serialPart}) — ${ageInfo.label} (تاريخ الاستلام: ${newRecord.date})`);
+        showSaveToast(`✅ تم حفظ الجهاز #${newRecord.ticketNo} (${newRecord.deviceModel}${serialPart}) — ${ageInfo.label} (${newRecord.date})`);
         document.getElementById('deviceForm').reset();
         applyExpressModeUI();
     }
@@ -2144,10 +2445,10 @@
 
         document.getElementById('merchantSummaryBox').innerHTML = `
             <div>
-                <strong>ملخص حسابات التجار والآجل:</strong><br>
-                عدد التجار/المحلات: <strong>${list.length}</strong> |
-                إجمالي المستحق: <strong>${maskNum(totalAll)} ج.م</strong> |
-                المدفوع: <strong style="color: var(--success);">${maskNum(paidAll)} ج.م</strong> |
+                <strong>حسابات التجار والآجل:</strong>
+                عدد الحسابات: <strong>${list.length}</strong> •
+                المستحق: <strong>${maskNum(totalAll)} ج.م</strong> •
+                المدفوع: <strong style="color: var(--success);">${maskNum(paidAll)} ج.م</strong> •
                 المتبقي آجل: <strong style="color: var(--warning);">${maskNum(creditAll)} ج.م</strong>
             </div>
         `;
@@ -2167,7 +2468,7 @@
                 <td style="color: var(--warning); font-weight: 800;">${maskNum(m.credit)} ج.م</td>
                 <td>
                     ${m.credit > 0
-                        ? `<button type="button" class="btn-settle" onclick="settleMerchantBalance('${m.name.replace(/'/g, "\\'")}')">✓ تسوية الحساب</button>`
+                        ? `<button type="button" class="btn-settle" onclick="settleMerchantBalance('${m.name.replace(/'/g, "\\'")}')">✓ تسوية</button>`
                         : `<span style="font-size:11px; color:var(--success);">خالص</span>`}
                 </td>
             </tr>
@@ -2220,12 +2521,12 @@
 
         document.getElementById('clientsSummaryBox').innerHTML = `
             <div>
-                <strong>تجميع حسب العميل أو المحل:</strong><br>
-                إجمالي العملاء والمحلات: <strong>${sorted.length}</strong> |
-                عملاء ومحلات متكررة (أكثر من جهاز): <strong style="color: var(--success);">${repeatCount}</strong>
+                <strong>العملاء والمحلات:</strong>
+                الإجمالي: <strong>${sorted.length}</strong> •
+                متكرر: <strong style="color: var(--success);">${repeatCount}</strong>
             </div>
             ${document.getElementById('searchInput').value.trim()
-                ? `<button type="button" class="btn-outline" onclick="clearSearchFilter()">✕ مسح تصفية البحث</button>`
+                ? `<button type="button" class="btn-outline" onclick="clearSearchFilter()">✕ مسح البحث</button>`
                 : ''}
         `;
 
@@ -2246,7 +2547,7 @@
                 <td style="color: var(--success); font-weight: 700;">${maskNum(c.paid)} ج.م</td>
                 <td style="color: var(--warning); font-weight: 800;">${maskNum(c.credit)} ج.م</td>
                 <td>
-                    <button type="button" class="btn-edit" onclick="filterByClientName('${c.name.replace(/'/g, "\\'")}')">🔍 عرض أجهزته</button>
+                    <button type="button" class="btn-edit" onclick="filterByClientName('${c.name.replace(/'/g, "\\'")}')">🔍 عرض</button>
                 </td>
             </tr>
         `).join('');
@@ -2335,10 +2636,10 @@
             const creditBadge = r.paymentStatus === 'credit' ? `<span class="tag-credit">آجل</span>` : '';
             const serialBadge = r.serialNumber ? `<br><span class="serial-badge">SN: ${r.serialNumber}</span>` : '';
             const overdueBadge = ageInfo.isOverdue ? `<br><span class="tag-overdue">⚠️ متأخر (${ageInfo.days} يوم)</span>` : '';
-            const warrantyBadge = ageInfo.isUnderWarranty ? `<br><span class="tag-warranty">🛡️ ضمان (${ageInfo.warrantyLeftDays}ي متبقي)</span>` : '';
+            const warrantyBadge = ageInfo.isUnderWarranty ? `<br><span class="tag-warranty">🛡️ ضمان (${ageInfo.warrantyLeftDays}ي)</span>` : '';
             const noteBadge = r.secretNote ? `<br><span class="secret-note">${maskSecret(r.secretNote)}</span>` : '';
             const jumpDayBtn = (currentScope !== 'day' && r.dayKey && r.dayKey !== selectedDateISO)
-                ? `<br><button type="button" class="btn-jump-day" onclick="jumpToRecordDay('${r.dayKey}')">📅 انتقال ليومه</button>`
+                ? `<br><button type="button" class="btn-jump-day" onclick="jumpToRecordDay('${r.dayKey}')">📅 ليومه</button>`
                 : '';
 
             const tr = document.createElement('tr');
@@ -2365,7 +2666,7 @@
                     ${jumpDayBtn}
                 </td>
                 <td style="white-space:nowrap;">
-                    <span style="color:var(--text-muted); font-size:11px;">سعر: ${maskRaw(r.price)} | تكلفة: ${maskRaw(r.cost)}</span><br>
+                    <span style="color:var(--text-muted); font-size:11px;">سعر: ${maskRaw(r.price)} • تكلفة: ${maskRaw(r.cost)}</span><br>
                     ${(parseFloat(r.refund) || 0) > 0 ? `<span style="color:var(--danger); font-size:11px;">مرتجع: ${maskRaw(r.refund)} ج.م</span><br>` : ''}
                     <strong style="color:${net >= 0 ? 'var(--gold)' : 'var(--danger)'};">صافي: ${maskRaw(net)} ج.م</strong>
                 </td>
@@ -2378,9 +2679,9 @@
                     </select>
                 </td>
                 <td class="actions-cell">
-                    <button type="button" class="btn-edit" onclick="openEditModal(${r.id})">✏️ تعديل</button>
-                    <button type="button" class="btn-wa" ${hasPhone ? `onclick="openWaModal(${r.id})"` : `onclick="alert('برجاء إدخال رقم هاتف صحيح للعميل أولاً (مثل 01xxxxxxxxx).')"`} title="${hasPhone ? 'إرسال رسالة واتساب' : 'أضف رقم هاتف أولاً'}">💬 واتساب</button>
-                    <button type="button" class="btn-print" onclick="printReceipt(${r.id})">🖨️ إيصال</button>
+                    <button type="button" class="btn-edit" onclick="openEditModal(${r.id})">✏️</button>
+                    <button type="button" class="btn-wa" ${hasPhone ? `onclick="openWaModal(${r.id})"` : `onclick="alert('برجاء إدخال رقم هاتف صحيح للعميل أولاً.')"`}>💬</button>
+                    <button type="button" class="btn-print" onclick="printReceipt(${r.id})">🖨️</button>
                     <button type="button" class="btn-danger" onclick="deleteRecord(${r.id})">حذف</button>
                 </td>
             `;
@@ -2559,7 +2860,7 @@
         }
     }
 
-    /* Receipt Print (Includes serialNumber if set, Excludes secretNote) */
+    /* Receipt Print */
     function printReceipt(id) {
         const r = records.find(item => item.id === id);
         if (!r) return;
@@ -2643,10 +2944,11 @@
     });
     window.addEventListener('offline', () => {
         updateNetworkStatusUI();
-        setSyncStatus('offline', '⚠️ محفوظ محلياً (أوفلاين)');
+        setSyncStatus('offline', '⚠️ محفوظ محلياً');
     });
 
     // Initialize
+    syncCalcUI();
     updateNetworkStatusUI();
     updateHeaderTogglesUI();
     applyExpressModeUI();
