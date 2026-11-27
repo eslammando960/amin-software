@@ -249,6 +249,38 @@
             padding: 0 20px;
         }
 
+        /* Top View Navigation */
+        .view-nav {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .view-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 9px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .view-btn.active {
+            background: var(--gold);
+            color: #0b0e14;
+            border-color: var(--gold);
+        }
+
+        .view-panel {
+            display: none;
+        }
+
+        .view-panel.active {
+            display: block;
+        }
+
         /* Toast Banner */
         .toast-banner {
             display: none;
@@ -338,6 +370,33 @@
             border-radius: 10px;
             padding: 10px 12px;
             line-height: 1.6;
+        }
+
+        /* Wallets & Transfers Strip */
+        .wallets-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .wallet-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 12px;
+        }
+
+        .wallet-card span {
+            display: block;
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+
+        .wallet-card strong {
+            font-size: 15px;
+            color: var(--gold);
         }
 
         /* Calculator Widget */
@@ -513,7 +572,7 @@
         /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
             gap: 12px;
             margin-bottom: 20px;
         }
@@ -558,6 +617,16 @@
 
         .stat-card.drawer-card .stat-value {
             color: var(--success);
+        }
+
+        .diff-pos {
+            color: var(--success);
+            font-weight: 800;
+        }
+
+        .diff-neg {
+            color: var(--danger);
+            font-weight: 800;
         }
 
         /* Main Layout */
@@ -829,6 +898,28 @@
             margin-right: 4px;
         }
 
+        .tag-external {
+            display: inline-block;
+            background: rgba(168, 85, 247, 0.16);
+            color: #d8b4fe;
+            border-radius: 6px;
+            padding: 1px 6px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-right: 4px;
+        }
+
+        .tag-wallet {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.12);
+            color: #6ee7b7;
+            border-radius: 6px;
+            padding: 1px 6px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-top: 3px;
+        }
+
         .tag-credit {
             display: inline-block;
             background: rgba(245, 158, 11, 0.14);
@@ -871,6 +962,17 @@
             font-size: 10px;
             font-weight: 800;
             margin-top: 4px;
+        }
+
+        .tag-return-reason {
+            display: inline-block;
+            background: rgba(239, 68, 68, 0.14);
+            color: #fca5a5;
+            border-radius: 6px;
+            padding: 1px 6px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-top: 3px;
         }
 
         .age-text {
@@ -964,7 +1066,7 @@
         }
 
         .modal-textarea {
-            min-height: 185px;
+            min-height: 195px;
             resize: vertical;
             line-height: 1.65;
             margin-bottom: 14px;
@@ -1047,6 +1149,7 @@
             <span class="sync-pill online" id="netStatusPill">🌐 أونلاين</span>
             <span class="sync-pill syncing" id="cloudSyncStatus">☁️ جاري المزامنة...</span>
         </div>
+        <button type="button" class="btn-wa" onclick="openQuickWaSummaryModal()">💬 ملخص واتساب</button>
         <button type="button" class="btn-gold" onclick="openClosingModal()">📊 تقفيل اليوم</button>
         <button type="button" class="btn-outline" onclick="pullFromCloud(true)">🔄 تحديث</button>
         <button type="button" class="btn-outline" id="privacyBtn" onclick="togglePrivacyMode()">🙈 إخفاء</button>
@@ -1059,327 +1162,436 @@
 </header>
 
 <div class="container">
+    <!-- Top Section Navigation -->
+    <div class="view-nav">
+        <button type="button" class="view-btn active" onclick="switchMainView('operationsView', this)">📱 العمليات والحسابات</button>
+        <button type="button" class="view-btn" onclick="switchMainView('toolsView', this)" id="toolsNavBtn">🧰 Tools (البوكسات والأدوات والأكونتات)</button>
+    </div>
+
     <!-- Save Duration Toast -->
     <div class="toast-banner" id="saveToast">
         <span id="saveToastText"></span>
         <button type="button" class="btn-outline" style="padding: 3px 9px; font-size: 11px;" onclick="hideSaveToast()">✕</button>
     </div>
 
-    <!-- Quick Profit Plan Card -->
-    <div class="profit-plan-card" id="quickProfitPlan">
-        <div class="profit-plan-top">
-            <div class="profit-plan-title">🚀 خطة الربح السريع وتزويد الدخل</div>
-            <div class="target-control">
-                <span>هدف صافي اليوم:</span>
-                <input type="number" id="dailyProfitTargetInput" min="0" step="50" onchange="updateDailyProfitTarget(this.value)">
-                <strong id="profitTargetPercent" style="color: var(--success);">0%</strong>
+    <!-- VIEW 1: OPERATIONS & ACCOUNTING -->
+    <div id="operationsView" class="view-panel active">
+        <!-- Quick Profit Plan Card -->
+        <div class="profit-plan-card" id="quickProfitPlan">
+            <div class="profit-plan-top">
+                <div class="profit-plan-title">🚀 خطة الربح السريع وتزويد الدخل</div>
+                <div class="target-control">
+                    <span>هدف صافي اليوم:</span>
+                    <input type="number" id="dailyProfitTargetInput" min="0" step="50" onchange="updateDailyProfitTarget(this.value)">
+                    <strong id="profitTargetPercent" style="color: var(--success);">0%</strong>
+                </div>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="profitTargetBar"></div>
+            </div>
+            <div class="profit-plan-grid">
+                <div class="plan-box" id="planTargetStatusBox">المتبقي لتحقيق هدف اليوم: <strong>0 ج.م</strong></div>
+                <div class="plan-box" id="planPendingCreditBox">رصيد آجل جاهز للتحصيل: <strong>0 ج.م</strong></div>
+                <div class="plan-box" id="planTopServicesBox">أعلى الخدمات ربحاً: <strong>لا توجد بيانات كافية</strong></div>
             </div>
         </div>
-        <div class="progress-track">
-            <div class="progress-fill" id="profitTargetBar"></div>
+
+        <!-- Wallets & Transfers Summary Strip -->
+        <div class="wallets-strip" id="walletsStrip"></div>
+
+        <!-- Smart Warranty & Return Radar Strip -->
+        <div class="radar-strip" id="warrantyRadarStrip">
+            <div id="warrantyRadarSummary">🛡️ رادار الضمان والمرتجع: جاري التحليل...</div>
+            <button type="button" class="btn-outline" onclick="filterWarrantyScope()">عرض الضمان والمرتجع</button>
         </div>
-        <div class="profit-plan-grid">
-            <div class="plan-box" id="planTargetStatusBox">المتبقي لتحقيق هدف اليوم: <strong>0 ج.م</strong></div>
-            <div class="plan-box" id="planPendingCreditBox">رصيد آجل جاهز للتحصيل: <strong>0 ج.م</strong></div>
-            <div class="plan-box" id="planTopServicesBox">أعلى الخدمات ربحاً: <strong>لا توجد بيانات كافية</strong></div>
+
+        <!-- Day Switcher Bar -->
+        <div class="day-bar">
+            <div class="day-controls">
+                <button type="button" class="btn-outline" onclick="changeDay(-1)">◀ أمس</button>
+                <input type="date" id="selectedDate" onchange="onDateChange()">
+                <button type="button" class="btn-outline" onclick="changeDay(1)">غداً ▶</button>
+                <button type="button" class="btn-gold" onclick="goToday()">اليوم</button>
+            </div>
+            <div class="day-badge">
+                حسابات وشغل يوم: <strong id="activeDayLabel">-</strong>
+            </div>
+        </div>
+
+        <!-- Dashboard Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-title">أجهزة اليوم المختار</div>
+                <div class="stat-value" id="stat-day-total">0</div>
+                <div class="stat-sub">إيرادات اليوم: <span id="stat-day-revenue">0</span> ج.م • الكل: <span id="stat-all-total">0</span></div>
+            </div>
+            <div class="stat-card drawer-card">
+                <div class="stat-title">حاسبة الدرج (كاش اليوم)</div>
+                <div class="stat-value" id="stat-day-drawer">0</div>
+                <div class="stat-sub">كاش الدرج ناقص مصاريف ومرتجع • آجل: <span id="stat-day-credit">0</span> ج.م</div>
+            </div>
+            <div class="stat-card expense-card">
+                <div class="stat-title">تكلفة كريدت + مصاريف اليوم</div>
+                <div class="stat-value" id="stat-day-expenses-total">0</div>
+                <div class="stat-sub">كريدت: <span id="stat-day-cost">0</span> • خزنة: <span id="stat-day-petty">0</span> ج.م</div>
+            </div>
+            <div class="stat-card return-card">
+                <div class="stat-title">مرتجع اليوم (ج.م)</div>
+                <div class="stat-value" id="stat-day-refund">0</div>
+                <div class="stat-sub">إجمالي المرتجع: <span id="stat-all-refund">0</span> ج.م</div>
+            </div>
+            <div class="stat-card profit">
+                <div class="stat-title">صافي الربح الحقيقي لليوم</div>
+                <div class="stat-value" id="stat-day-profit">0</div>
+                <div class="stat-sub" id="stat-day-diff">مقارنة بأمس: —</div>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <div class="left-stack">
+                <!-- New Device Form -->
+                <div class="panel">
+                    <div class="panel-title">
+                        <span>+ استلام جهاز (<span id="formDayLabel">اليوم</span>)</span>
+                        <button type="button" class="btn-outline" id="expressModeBtn" onclick="toggleExpressMode()" style="padding: 4px 9px; font-size: 11px;">⚡ وردية سريعة</button>
+                    </div>
+
+                    <!-- Duplicate Serial / Phone / Warranty Alert -->
+                    <div class="smart-alert warn" id="duplicateAlertBox"></div>
+                    <!-- Return Risk Detector Alert -->
+                    <div class="smart-alert danger" id="riskAlertBox"></div>
+
+                    <form id="deviceForm" onsubmit="addRecord(event)">
+                        <div class="form-group">
+                            <label>اسم العميل أو المحل / التاجر *</label>
+                            <input type="text" id="clientName" required oninput="checkSmartAlerts(); markFormDirty()" placeholder="مثال: أحمد محمود أو محل النور">
+                        </div>
+                        <div class="row-2 express-optional">
+                            <div class="form-group">
+                                <label>نوع الحساب</label>
+                                <select id="clientType" onchange="markFormDirty()">
+                                    <option value="cash">نقدي (عميل)</option>
+                                    <option value="merchant">تاجر / محل</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>مكان الشغل / المصدر</label>
+                                <select id="workLocation" onchange="toggleExternalPlaceInput(); markFormDirty()">
+                                    <option value="shop">في المركز</option>
+                                    <option value="external">خارجي (شغل بره)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" id="externalPlaceGroup" style="display:none;">
+                            <label>تفاصيل المكان / المحل الخارجي</label>
+                            <input type="text" id="externalPlace" oninput="markFormDirty()" placeholder="مثال: محل السلام / مشوار عميل">
+                        </div>
+                        <div class="row-2 express-optional">
+                            <div class="form-group">
+                                <label>حالة الدفع</label>
+                                <select id="paymentStatus" onchange="syncPaymentMethodDefault(); markFormDirty()">
+                                    <option value="paid">مدفوع</option>
+                                    <option value="credit">آجل (حساب مفتوح)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>وسيلة الدفع / المحفظة</label>
+                                <select id="paymentMethod" onchange="markFormDirty()">
+                                    <option value="كاش الدرج">كاش الدرج</option>
+                                    <option value="فودافون كاش">فودافون كاش</option>
+                                    <option value="إنستا باي">إنستا باي</option>
+                                    <option value="تحويل بنكي">تحويل بنكي</option>
+                                    <option value="آجل">آجل</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row-2">
+                            <div class="form-group express-optional">
+                                <label>رقم الهاتف / واتساب</label>
+                                <input type="text" id="clientPhone" oninput="checkSmartAlerts(); markFormDirty()" placeholder="01xxxxxxxxx">
+                            </div>
+                            <div class="form-group">
+                                <label>نوع الجهاز / الموديل *</label>
+                                <input type="text" id="deviceModel" required oninput="checkSmartAlerts(); markFormDirty()" placeholder="مثال: Samsung A13">
+                            </div>
+                        </div>
+                        <div class="form-group express-optional">
+                            <label>الرقم التسلسلي / IMEI (اختياري)</label>
+                            <input type="text" id="serialNumber" oninput="checkSmartAlerts(); markFormDirty()" placeholder="مثال: 356938035643809">
+                        </div>
+                        <div class="form-group express-optional">
+                            <label>حالة الجهاز الظاهرية</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item"><input type="radio" name="condition" value="سليم" onchange="checkSmartAlerts()" checked> سليم</label>
+                                <label class="checkbox-item"><input type="radio" name="condition" value="كسر بالشاشة" onchange="checkSmartAlerts()"> كسر بالشاشة</label>
+                                <label class="checkbox-item"><input type="radio" name="condition" value="كسر بالضهر" onchange="checkSmartAlerts()"> كسر بالضهر</label>
+                                <label class="checkbox-item"><input type="radio" name="condition" value="فاصل باور" onchange="checkSmartAlerts()"> فاصل باور</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>الخدمة المطلوبة / المشكلة *</label>
+                            <input type="text" id="serviceType" required oninput="checkSmartAlerts(); markFormDirty()" placeholder="مثال: تخطي حساب FRP / سوفت رسمي">
+                            <div class="quick-services">
+                                <button type="button" class="chip-btn" onclick="applyQuickService('FRP Bypass')">FRP Bypass</button>
+                                <button type="button" class="chip-btn" onclick="applyQuickService('سوفت رسمي')">سوفت رسمي</button>
+                                <button type="button" class="chip-btn" onclick="applyQuickService('تخطي حساب')">تخطي حساب</button>
+                                <button type="button" class="chip-btn" onclick="applyQuickService('فك شفرة')">فك شفرة</button>
+                                <button type="button" class="chip-btn" onclick="applyQuickService('تعريب')">تعريب</button>
+                                <button type="button" class="chip-btn" onclick="applyQuickService('إصلاح IMEI')">إصلاح IMEI</button>
+                            </div>
+                        </div>
+                        <div class="row-2">
+                            <div class="form-group">
+                                <label>السعر (ج.م) *</label>
+                                <input type="number" id="price" required min="0" value="0" oninput="markFormDirty()">
+                            </div>
+                            <div class="form-group express-optional">
+                                <label>تكلفة كريدت / سيرفر (ج.م)</label>
+                                <input type="number" id="cost" min="0" value="0" oninput="markFormDirty()">
+                            </div>
+                        </div>
+                        <div class="form-group express-optional">
+                            <label>ملاحظات فنية سرية / رمز القفل — لا تُطبع</label>
+                            <input type="text" id="secretNote" oninput="markFormDirty()" placeholder="PIN 1234 / نقش حرف Z">
+                        </div>
+                        <button type="submit" class="btn-gold" style="width: 100%; justify-content: center; margin-top: 4px; padding: 10px;">
+                            حفظ في حسابات اليوم
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Built-in Calculator -->
+                <div class="panel">
+                    <div class="panel-title">🧮 آلة حاسبة سريعة</div>
+                    <div class="calc-screen">
+                        <div class="calc-expr" id="calcExpr">0</div>
+                        <div class="calc-val" id="calcDisplay">0</div>
+                    </div>
+                    <div class="calc-grid">
+                        <button type="button" class="calc-btn op" onclick="calcClear()">C</button>
+                        <button type="button" class="calc-btn op" onclick="calcBackspace()">⌫</button>
+                        <button type="button" class="calc-btn op" onclick="calcAppend('%')">%</button>
+                        <button type="button" class="calc-btn op" onclick="calcAppend('/')">÷</button>
+
+                        <button type="button" class="calc-btn" onclick="calcAppend('7')">7</button>
+                        <button type="button" class="calc-btn" onclick="calcAppend('8')">8</button>
+                        <button type="button" class="calc-btn" onclick="calcAppend('9')">9</button>
+                        <button type="button" class="calc-btn op" onclick="calcAppend('*')">×</button>
+
+                        <button type="button" class="calc-btn" onclick="calcAppend('4')">4</button>
+                        <button type="button" class="calc-btn" onclick="calcAppend('5')">5</button>
+                        <button type="button" class="calc-btn" onclick="calcAppend('6')">6</button>
+                        <button type="button" class="calc-btn op" onclick="calcAppend('-')">-</button>
+
+                        <button type="button" class="calc-btn" onclick="calcAppend('1')">1</button>
+                        <button type="button" class="calc-btn" onclick="calcAppend('2')">2</button>
+                        <button type="button" class="calc-btn" onclick="calcAppend('3')">3</button>
+                        <button type="button" class="calc-btn op" onclick="calcAppend('+')">+</button>
+
+                        <button type="button" class="calc-btn" onclick="calcAppend('00')" style="grid-column: span 2;">00</button>
+                        <button type="button" class="calc-btn" onclick="calcAppend('0')">0</button>
+                        <button type="button" class="calc-btn" onclick="calcAppend('.')">.</button>
+                    </div>
+                    <div style="margin-top: 6px;">
+                        <button type="button" class="calc-btn eq" style="width: 100%; padding: 9px;" onclick="calcEvaluate()">=</button>
+                    </div>
+                    <div class="calc-actions">
+                        <button type="button" class="btn-outline" style="justify-content: center;" onclick="calcCopyResult()">📋 نسخ الناتج</button>
+                        <button type="button" class="btn-edit" style="justify-content: center;" onclick="calcApplyToPrice()">💰 وضعه في السعر</button>
+                    </div>
+                </div>
+
+                <!-- ADB Command Builder -->
+                <div class="panel">
+                    <div class="panel-title">💻 أوامر ADB السريعة</div>
+                    <div class="form-group">
+                        <label>اختر الأمر</label>
+                        <select id="adbCommandSelect" onchange="updateAdbPreview()">
+                            <option value="adb devices -l">فحص الأجهزة المتصلة (adb devices -l)</option>
+                            <option value="adb shell getprop ro.serialno">سحب الرقم التسلسلي (Serial No)</option>
+                            <option value="adb shell getprop ro.product.model">سحب موديل الجهاز (Product Model)</option>
+                            <option value="adb shell getprop ro.build.version.release">سحب إصدار أندرويد (Android Version)</option>
+                            <option value="adb shell getprop ro.boot.flash.locked">فحص حالة البوتلودر (Bootloader Lock)</option>
+                            <option value="adb shell service call iphonesubinfo 1">قراءة بيانات الشريحة / IMEI</option>
+                        </select>
+                    </div>
+                    <div class="adb-cmd-box" id="adbCmdPreview">adb devices -l</div>
+                    <button type="button" class="btn-outline" style="width: 100%; justify-content: center; margin-top: 8px;" onclick="copyAdbCommand()">
+                        📋 نسخ الأمر
+                    </button>
+                </div>
+
+                <!-- Daily Petty Cash / Expenses -->
+                <div class="panel">
+                    <div class="panel-title">💸 مصاريف اليوم (<span id="expenseDayLabel">اليوم</span>)</div>
+                    <form id="expenseForm" onsubmit="addExpense(event)">
+                        <div class="row-2">
+                            <div class="form-group">
+                                <label>البيان *</label>
+                                <input type="text" id="expenseTitle" required placeholder="مثال: مواصلات">
+                            </div>
+                            <div class="form-group">
+                                <label>المبلغ *</label>
+                                <input type="number" id="expenseAmount" required min="1" placeholder="0">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-outline" style="width: 100%; justify-content: center; border-color: rgba(245, 158, 11, 0.45); color: var(--warning);">
+                            + إضافة مصروف لليوم
+                        </button>
+                    </form>
+                    <div id="expensesList"></div>
+                </div>
+            </div>
+
+            <!-- Records Table -->
+            <div class="panel">
+                <div class="toolbar">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" onkeyup="renderTable()" placeholder="🔍 ابحث بالكود (#101)، السيريال / IMEI، الاسم، المحل، المكان الخارجي، الموديل، أو الهاتف...">
+                    </div>
+                    <div class="filter-tabs">
+                        <button type="button" class="tab-btn active" onclick="setScope('day', this)">أجهزة اليوم</button>
+                        <button type="button" class="tab-btn" onclick="setScope('all', this)">كل الأيام</button>
+                        <button type="button" class="tab-btn" onclick="setScope('external', this)">شغل خارجي / بره</button>
+                        <button type="button" class="tab-btn" onclick="setScope('overdue', this)" id="overdueTabBtn">متأخر (+2 يوم)</button>
+                        <button type="button" class="tab-btn" onclick="setScope('warranty', this)">الضمان والمرتجع</button>
+                        <button type="button" class="tab-btn" onclick="setScope('merchants', this)">حسابات التجار</button>
+                        <button type="button" class="tab-btn" onclick="setScope('clients', this)">العملاء المتكررة</button>
+                        <button type="button" class="tab-btn" onclick="setScope('working', this)">جاري العمل</button>
+                        <button type="button" class="tab-btn" onclick="setScope('done', this)">تم التسليم</button>
+                        <button type="button" class="tab-btn" onclick="setScope('returned', this)">المرتجع</button>
+                    </div>
+                </div>
+
+                <!-- Aggregated Merchant Accounts -->
+                <div class="merchant-section" id="merchantSection">
+                    <div class="merchant-summary" id="merchantSummaryBox"></div>
+                    <div class="table-wrapper" style="margin-bottom: 16px;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>اسم التاجر / المحل</th>
+                                    <th>الأجهزة</th>
+                                    <th>المستحق</th>
+                                    <th>المدفوع</th>
+                                    <th>المتبقي آجل</th>
+                                    <th>تسوية</th>
+                                </tr>
+                            </thead>
+                            <tbody id="merchantLedgerBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Aggregated Repeat Clients & Shops -->
+                <div class="merchant-section" id="clientsSection">
+                    <div class="merchant-summary" id="clientsSummaryBox"></div>
+                    <div class="table-wrapper" style="margin-bottom: 16px;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>العميل / المحل</th>
+                                    <th>المرات</th>
+                                    <th>الإيراد</th>
+                                    <th>المدفوع</th>
+                                    <th>الآجل</th>
+                                    <th>السجلات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="clientsLedgerBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>الكود والعميل</th>
+                                <th>الجهاز والسيريال</th>
+                                <th>الخدمة والملاحظات</th>
+                                <th>المدة واليوم</th>
+                                <th>الحساب والمحفظة</th>
+                                <th>الحالة</th>
+                                <th>إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recordsBody"></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Smart Warranty & Return Radar Strip -->
-    <div class="radar-strip" id="warrantyRadarStrip">
-        <div id="warrantyRadarSummary">🛡️ رادار الضمان والمرتجع: جاري التحليل...</div>
-        <button type="button" class="btn-outline" onclick="filterWarrantyScope()">عرض الضمان والمرتجع</button>
-    </div>
+    <!-- VIEW 2: TOOLS (BOXES, DONGLES, ACCOUNTS & CREDITS) -->
+    <div id="toolsView" class="view-panel">
+        <div class="main-grid">
+            <div class="panel">
+                <div class="panel-title">+ إضافة أداة / بوكس / أكونت</div>
+                <form id="toolForm" onsubmit="addToolItem(event)">
+                    <div class="form-group">
+                        <label>اسم الأداة / البوكس / السيرفر *</label>
+                        <input type="text" id="toolName" required placeholder="مثال: UnlockTool / Chimera / Z3X / DFT Pro">
+                    </div>
+                    <div class="row-2">
+                        <div class="form-group">
+                            <label>النوع</label>
+                            <select id="toolCategory">
+                                <option value="أكونت / تفعيل سنوي">أكونت / تفعيل سنوي</option>
+                                <option value="بوكس / دونجل">بوكس / دونجل</option>
+                                <option value="سيرفر / رصيد كريدت">سيرفر / رصيد كريدت</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>الرصيد / الكريدت المتبقي</label>
+                            <input type="number" id="toolCredits" min="0" step="any" value="0" placeholder="0">
+                        </div>
+                    </div>
+                    <div class="row-2">
+                        <div class="form-group">
+                            <label>تاريخ انتهاء الاشتراك (اختياري)</label>
+                            <input type="date" id="toolExpiry">
+                        </div>
+                        <div class="form-group">
+                            <label>الحالة</label>
+                            <select id="toolStatus">
+                                <option value="نشط">نشط</option>
+                                <option value="قرب الانتهاء">قرب الانتهاء</option>
+                                <option value="منتهي / يحتاج شحن">منتهي / يحتاج شحن</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>ملاحظات / يوزر الأكونت</label>
+                        <input type="text" id="toolNotes" placeholder="مثال: باقي 15 كريدت أو تجديد كل 3 شهور">
+                    </div>
+                    <button type="submit" class="btn-gold" style="width: 100%; justify-content: center; padding: 10px;">
+                        حفظ في قائمة Tools
+                    </button>
+                </form>
+            </div>
 
-    <!-- Day Switcher Bar -->
-    <div class="day-bar">
-        <div class="day-controls">
-            <button type="button" class="btn-outline" onclick="changeDay(-1)">◀ أمس</button>
-            <input type="date" id="selectedDate" onchange="onDateChange()">
-            <button type="button" class="btn-outline" onclick="changeDay(1)">غداً ▶</button>
-            <button type="button" class="btn-gold" onclick="goToday()">اليوم</button>
-        </div>
-        <div class="day-badge">
-            حسابات وشغل يوم: <strong id="activeDayLabel">-</strong>
-        </div>
-    </div>
-
-    <!-- Dashboard Stats -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-title">أجهزة اليوم المختار</div>
-            <div class="stat-value" id="stat-day-total">0</div>
-            <div class="stat-sub">إيرادات اليوم: <span id="stat-day-revenue">0</span> ج.م • الكل: <span id="stat-all-total">0</span></div>
-        </div>
-        <div class="stat-card drawer-card">
-            <div class="stat-title">حاسبة الدرج (كاش اليوم)</div>
-            <div class="stat-value" id="stat-day-drawer">0</div>
-            <div class="stat-sub">كاش ناقص مصاريف ومرتجع • آجل: <span id="stat-day-credit">0</span> ج.م</div>
-        </div>
-        <div class="stat-card expense-card">
-            <div class="stat-title">تكلفة كريدت + مصاريف اليوم</div>
-            <div class="stat-value" id="stat-day-expenses-total">0</div>
-            <div class="stat-sub">كريدت: <span id="stat-day-cost">0</span> • خزنة: <span id="stat-day-petty">0</span> ج.م</div>
-        </div>
-        <div class="stat-card return-card">
-            <div class="stat-title">مرتجع اليوم (ج.م)</div>
-            <div class="stat-value" id="stat-day-refund">0</div>
-            <div class="stat-sub">إجمالي المرتجع: <span id="stat-all-refund">0</span> ج.م</div>
-        </div>
-        <div class="stat-card profit">
-            <div class="stat-title">صافي الربح الحقيقي لليوم</div>
-            <div class="stat-value" id="stat-day-profit">0</div>
-            <div class="stat-sub">صافي كل الأيام: <span id="stat-all-profit">0</span> ج.م</div>
-        </div>
-    </div>
-
-    <div class="main-grid">
-        <div class="left-stack">
-            <!-- New Device Form -->
             <div class="panel">
                 <div class="panel-title">
-                    <span>+ استلام جهاز (<span id="formDayLabel">اليوم</span>)</span>
-                    <button type="button" class="btn-outline" id="expressModeBtn" onclick="toggleExpressMode()" style="padding: 4px 9px; font-size: 11px;">⚡ وردية سريعة</button>
+                    <span>🧰 سجل البوكسات والأدوات والأكونتات (Tools)</span>
+                    <span id="toolsAlertSummary" style="font-size: 12px; color: var(--warning);"></span>
                 </div>
-
-                <!-- Duplicate Serial / Phone / Warranty Alert -->
-                <div class="smart-alert warn" id="duplicateAlertBox"></div>
-                <!-- Return Risk Detector Alert -->
-                <div class="smart-alert danger" id="riskAlertBox"></div>
-
-                <form id="deviceForm" onsubmit="addRecord(event)">
-                    <div class="form-group">
-                        <label>اسم العميل أو المحل / التاجر *</label>
-                        <input type="text" id="clientName" required oninput="checkSmartAlerts()" placeholder="مثال: أحمد محمود أو محل النور">
-                    </div>
-                    <div class="row-2 express-optional">
-                        <div class="form-group">
-                            <label>نوع الحساب</label>
-                            <select id="clientType">
-                                <option value="cash">نقدي (عميل)</option>
-                                <option value="merchant">تاجر / محل</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>حالة الدفع</label>
-                            <select id="paymentStatus">
-                                <option value="paid">مدفوع</option>
-                                <option value="credit">آجل (حساب مفتوح)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row-2">
-                        <div class="form-group express-optional">
-                            <label>رقم الهاتف / واتساب</label>
-                            <input type="text" id="clientPhone" oninput="checkSmartAlerts()" placeholder="01xxxxxxxxx">
-                        </div>
-                        <div class="form-group">
-                            <label>نوع الجهاز / الموديل *</label>
-                            <input type="text" id="deviceModel" required oninput="checkSmartAlerts()" placeholder="مثال: Samsung A13">
-                        </div>
-                    </div>
-                    <div class="form-group express-optional">
-                        <label>الرقم التسلسلي / IMEI (اختياري)</label>
-                        <input type="text" id="serialNumber" oninput="checkSmartAlerts()" placeholder="مثال: 356938035643809">
-                    </div>
-                    <div class="form-group express-optional">
-                        <label>حالة الجهاز الظاهرية</label>
-                        <div class="checkbox-group">
-                            <label class="checkbox-item"><input type="radio" name="condition" value="سليم" onchange="checkSmartAlerts()" checked> سليم</label>
-                            <label class="checkbox-item"><input type="radio" name="condition" value="كسر بالشاشة" onchange="checkSmartAlerts()"> كسر بالشاشة</label>
-                            <label class="checkbox-item"><input type="radio" name="condition" value="كسر بالضهر" onchange="checkSmartAlerts()"> كسر بالضهر</label>
-                            <label class="checkbox-item"><input type="radio" name="condition" value="فاصل باور" onchange="checkSmartAlerts()"> فاصل باور</label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>الخدمة المطلوبة / المشكلة *</label>
-                        <input type="text" id="serviceType" required oninput="checkSmartAlerts()" placeholder="مثال: تخطي حساب FRP / سوفت رسمي">
-                        <div class="quick-services">
-                            <button type="button" class="chip-btn" onclick="applyQuickService('FRP Bypass')">FRP Bypass</button>
-                            <button type="button" class="chip-btn" onclick="applyQuickService('سوفت رسمي')">سوفت رسمي</button>
-                            <button type="button" class="chip-btn" onclick="applyQuickService('تخطي حساب')">تخطي حساب</button>
-                            <button type="button" class="chip-btn" onclick="applyQuickService('فك شفرة')">فك شفرة</button>
-                            <button type="button" class="chip-btn" onclick="applyQuickService('تعريب')">تعريب</button>
-                            <button type="button" class="chip-btn" onclick="applyQuickService('إصلاح IMEI')">إصلاح IMEI</button>
-                        </div>
-                    </div>
-                    <div class="row-2">
-                        <div class="form-group">
-                            <label>السعر (ج.م) *</label>
-                            <input type="number" id="price" required min="0" value="0">
-                        </div>
-                        <div class="form-group express-optional">
-                            <label>تكلفة كريدت / سيرفر (ج.م)</label>
-                            <input type="number" id="cost" min="0" value="0">
-                        </div>
-                    </div>
-                    <div class="form-group express-optional">
-                        <label>ملاحظات فنية سرية / رمز القفل — لا تُطبع</label>
-                        <input type="text" id="secretNote" placeholder="PIN 1234 / نقش حرف Z">
-                    </div>
-                    <button type="submit" class="btn-gold" style="width: 100%; justify-content: center; margin-top: 4px; padding: 10px;">
-                        حفظ في حسابات اليوم
-                    </button>
-                </form>
-            </div>
-
-            <!-- Built-in Calculator -->
-            <div class="panel">
-                <div class="panel-title">🧮 آلة حاسبة سريعة</div>
-                <div class="calc-screen">
-                    <div class="calc-expr" id="calcExpr">0</div>
-                    <div class="calc-val" id="calcDisplay">0</div>
-                </div>
-                <div class="calc-grid">
-                    <button type="button" class="calc-btn op" onclick="calcClear()">C</button>
-                    <button type="button" class="calc-btn op" onclick="calcBackspace()">⌫</button>
-                    <button type="button" class="calc-btn op" onclick="calcAppend('%')">%</button>
-                    <button type="button" class="calc-btn op" onclick="calcAppend('/')">÷</button>
-
-                    <button type="button" class="calc-btn" onclick="calcAppend('7')">7</button>
-                    <button type="button" class="calc-btn" onclick="calcAppend('8')">8</button>
-                    <button type="button" class="calc-btn" onclick="calcAppend('9')">9</button>
-                    <button type="button" class="calc-btn op" onclick="calcAppend('*')">×</button>
-
-                    <button type="button" class="calc-btn" onclick="calcAppend('4')">4</button>
-                    <button type="button" class="calc-btn" onclick="calcAppend('5')">5</button>
-                    <button type="button" class="calc-btn" onclick="calcAppend('6')">6</button>
-                    <button type="button" class="calc-btn op" onclick="calcAppend('-')">-</button>
-
-                    <button type="button" class="calc-btn" onclick="calcAppend('1')">1</button>
-                    <button type="button" class="calc-btn" onclick="calcAppend('2')">2</button>
-                    <button type="button" class="calc-btn" onclick="calcAppend('3')">3</button>
-                    <button type="button" class="calc-btn op" onclick="calcAppend('+')">+</button>
-
-                    <button type="button" class="calc-btn" onclick="calcAppend('00')" style="grid-column: span 2;">00</button>
-                    <button type="button" class="calc-btn" onclick="calcAppend('0')">0</button>
-                    <button type="button" class="calc-btn" onclick="calcAppend('.')">.</button>
-                </div>
-                <div style="margin-top: 6px;">
-                    <button type="button" class="calc-btn eq" style="width: 100%; padding: 9px;" onclick="calcEvaluate()">=</button>
-                </div>
-                <div class="calc-actions">
-                    <button type="button" class="btn-outline" style="justify-content: center;" onclick="calcCopyResult()">📋 نسخ الناتج</button>
-                    <button type="button" class="btn-edit" style="justify-content: center;" onclick="calcApplyToPrice()">💰 وضعه في السعر</button>
-                </div>
-            </div>
-
-            <!-- ADB Command Builder -->
-            <div class="panel">
-                <div class="panel-title">💻 أوامر ADB السريعة</div>
-                <div class="form-group">
-                    <label>اختر الأمر</label>
-                    <select id="adbCommandSelect" onchange="updateAdbPreview()">
-                        <option value="adb devices -l">فحص الأجهزة المتصلة (adb devices -l)</option>
-                        <option value="adb shell getprop ro.serialno">سحب الرقم التسلسلي (Serial No)</option>
-                        <option value="adb shell getprop ro.product.model">سحب موديل الجهاز (Product Model)</option>
-                        <option value="adb shell getprop ro.build.version.release">سحب إصدار أندرويد (Android Version)</option>
-                        <option value="adb shell getprop ro.boot.flash.locked">فحص حالة البوتلودر (Bootloader Lock)</option>
-                        <option value="adb shell service call iphonesubinfo 1">قراءة بيانات الشريحة / IMEI</option>
-                    </select>
-                </div>
-                <div class="adb-cmd-box" id="adbCmdPreview">adb devices -l</div>
-                <button type="button" class="btn-outline" style="width: 100%; justify-content: center; margin-top: 8px;" onclick="copyAdbCommand()">
-                    📋 نسخ الأمر
-                </button>
-            </div>
-
-            <!-- Daily Petty Cash / Expenses -->
-            <div class="panel">
-                <div class="panel-title">💸 مصاريف اليوم (<span id="expenseDayLabel">اليوم</span>)</div>
-                <form id="expenseForm" onsubmit="addExpense(event)">
-                    <div class="row-2">
-                        <div class="form-group">
-                            <label>البيان *</label>
-                            <input type="text" id="expenseTitle" required placeholder="مثال: مواصلات">
-                        </div>
-                        <div class="form-group">
-                            <label>المبلغ *</label>
-                            <input type="number" id="expenseAmount" required min="1" placeholder="0">
-                        </div>
-                    </div>
-                    <button type="submit" class="btn-outline" style="width: 100%; justify-content: center; border-color: rgba(245, 158, 11, 0.45); color: var(--warning);">
-                        + إضافة مصروف لليوم
-                    </button>
-                </form>
-                <div id="expensesList"></div>
-            </div>
-        </div>
-
-        <!-- Records Table -->
-        <div class="panel">
-            <div class="toolbar">
-                <div class="search-box">
-                    <input type="text" id="searchInput" onkeyup="renderTable()" placeholder="🔍 ابحث بالكود (#101)، السيريال / IMEI، الاسم، المحل، الموديل، أو الهاتف...">
-                </div>
-                <div class="filter-tabs">
-                    <button type="button" class="tab-btn active" onclick="setScope('day', this)">أجهزة اليوم</button>
-                    <button type="button" class="tab-btn" onclick="setScope('all', this)">كل الأيام</button>
-                    <button type="button" class="tab-btn" onclick="setScope('overdue', this)" id="overdueTabBtn">متأخر (+2 يوم)</button>
-                    <button type="button" class="tab-btn" onclick="setScope('warranty', this)">الضمان والمرتجع</button>
-                    <button type="button" class="tab-btn" onclick="setScope('merchants', this)">حسابات التجار</button>
-                    <button type="button" class="tab-btn" onclick="setScope('clients', this)">العملاء المتكررة</button>
-                    <button type="button" class="tab-btn" onclick="setScope('working', this)">جاري العمل</button>
-                    <button type="button" class="tab-btn" onclick="setScope('done', this)">تم التسليم</button>
-                    <button type="button" class="tab-btn" onclick="setScope('returned', this)">المرتجع</button>
-                </div>
-            </div>
-
-            <!-- Aggregated Merchant Accounts -->
-            <div class="merchant-section" id="merchantSection">
-                <div class="merchant-summary" id="merchantSummaryBox"></div>
-                <div class="table-wrapper" style="margin-bottom: 16px;">
+                <div class="table-wrapper">
                     <table>
                         <thead>
                             <tr>
-                                <th>اسم التاجر / المحل</th>
-                                <th>الأجهزة</th>
-                                <th>المستحق</th>
-                                <th>المدفوع</th>
-                                <th>المتبقي آجل</th>
-                                <th>تسوية</th>
+                                <th>الأداة / البوكس</th>
+                                <th>النوع</th>
+                                <th>الرصيد / الكريدت</th>
+                                <th>تاريخ الانتهاء</th>
+                                <th>الحالة</th>
+                                <th>ملاحظات</th>
+                                <th>إجراءات</th>
                             </tr>
                         </thead>
-                        <tbody id="merchantLedgerBody"></tbody>
+                        <tbody id="toolsTableBody"></tbody>
                     </table>
                 </div>
-            </div>
-
-            <!-- Aggregated Repeat Clients & Shops -->
-            <div class="merchant-section" id="clientsSection">
-                <div class="merchant-summary" id="clientsSummaryBox"></div>
-                <div class="table-wrapper" style="margin-bottom: 16px;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>العميل / المحل</th>
-                                <th>المرات</th>
-                                <th>الإيراد</th>
-                                <th>المدفوع</th>
-                                <th>الآجل</th>
-                                <th>السجلات</th>
-                            </tr>
-                        </thead>
-                        <tbody id="clientsLedgerBody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>الكود والعميل</th>
-                            <th>الجهاز والسيريال</th>
-                            <th>الخدمة والملاحظات</th>
-                            <th>المدة واليوم</th>
-                            <th>الحساب والصافي</th>
-                            <th>الحالة</th>
-                            <th>إجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody id="recordsBody"></tbody>
-                </table>
             </div>
         </div>
     </div>
@@ -1400,6 +1612,22 @@
             <button type="button" class="btn-outline" onclick="copyWaMessage()">📋 نسخ</button>
             <button type="button" class="btn-outline" onclick="closeWaModal()">إلغاء</button>
             <button type="button" class="btn-gold" onclick="sendWaMessage()">إرسال ↗</button>
+        </div>
+    </div>
+</div>
+
+<!-- Instant WhatsApp Summary Modal -->
+<div class="modal-backdrop" id="waSummaryModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>💬 ملخص سريع جاهز للواتساب</h3>
+            <button type="button" class="btn-outline" style="padding: 4px 10px;" onclick="closeQuickWaSummaryModal()">✕</button>
+        </div>
+        <textarea id="quickWaSummaryText" class="modal-textarea"></textarea>
+        <div class="modal-footer">
+            <button type="button" class="btn-outline" onclick="copyQuickWaSummary()">📋 نسخ الملخص</button>
+            <button type="button" class="btn-wa" onclick="sendQuickWaSummary()">إرسال عبر واتساب ↗</button>
+            <button type="button" class="btn-gold" onclick="closeQuickWaSummaryModal()">إغلاق</button>
         </div>
     </div>
 </div>
@@ -1426,10 +1654,33 @@
                     </select>
                 </div>
                 <div class="form-group">
+                    <label>مكان الشغل</label>
+                    <select id="editWorkLocation">
+                        <option value="shop">في المركز</option>
+                        <option value="external">خارجي (شغل بره)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>تفاصيل المكان الخارجي (إن وجد)</label>
+                <input type="text" id="editExternalPlace" placeholder="اسم المحل أو المشوار">
+            </div>
+            <div class="row-2">
+                <div class="form-group">
                     <label>حالة الدفع</label>
                     <select id="editPaymentStatus">
                         <option value="paid">مدفوع</option>
                         <option value="credit">آجل (حساب مفتوح)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>وسيلة الدفع / المحفظة</label>
+                    <select id="editPaymentMethod">
+                        <option value="كاش الدرج">كاش الدرج</option>
+                        <option value="فودافون كاش">فودافون كاش</option>
+                        <option value="إنستا باي">إنستا باي</option>
+                        <option value="تحويل بنكي">تحويل بنكي</option>
+                        <option value="آجل">آجل</option>
                     </select>
                 </div>
             </div>
@@ -1459,13 +1710,24 @@
                 </div>
                 <div class="form-group">
                     <label>حالة الطلب</label>
-                    <select id="editStatus">
+                    <select id="editStatus" onchange="toggleEditReturnReason()">
                         <option value="working">جاري العمل</option>
                         <option value="ready">جاهز للاستلام</option>
                         <option value="done">تم التسليم</option>
                         <option value="returned">مرتجع</option>
                     </select>
                 </div>
+            </div>
+            <div class="form-group" id="editReturnReasonGroup" style="display:none;">
+                <label>سبب المرتجع</label>
+                <select id="editReturnReason">
+                    <option value="">-- اختر سبب المرتجع --</option>
+                    <option value="عدم اكتمال العملية">عدم اكتمال العملية</option>
+                    <option value="عطل هاردوير">عطل هاردوير</option>
+                    <option value="إلغاء من العميل">إلغاء من العميل</option>
+                    <option value="راجع تحت الضمان">راجع تحت الضمان</option>
+                    <option value="أخرى">أخرى</option>
+                </select>
             </div>
             <div class="form-group">
                 <label>الخدمة المطلوبة / المشكلة *</label>
@@ -1532,6 +1794,52 @@
     let dailyProfitTarget = Math.max(0, parseFloat(localStorage.getItem('amin_daily_profit_target') || '500') || 500);
     let autoSyncTimer = null;
     let toastTimer = null;
+    let hasUnsavedFormChanges = false;
+    let isCloudSyncing = false;
+
+    /* Warn before closing or refreshing page with unsaved input */
+    function markFormDirty() {
+        hasUnsavedFormChanges = true;
+    }
+
+    window.addEventListener('beforeunload', function (e) {
+        if (hasUnsavedFormChanges || isCloudSyncing) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+
+    /* Switch Main View (Operations vs Tools) */
+    function switchMainView(viewId, btn) {
+        document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+        const target = document.getElementById(viewId);
+        if (target) target.classList.add('active');
+        if (btn) btn.classList.add('active');
+        if (viewId === 'toolsView') {
+            renderToolsTable();
+        }
+    }
+
+    function toggleExternalPlaceInput() {
+        const loc = document.getElementById('workLocation').value;
+        document.getElementById('externalPlaceGroup').style.display = loc === 'external' ? 'block' : 'none';
+    }
+
+    function syncPaymentMethodDefault() {
+        const payStatus = document.getElementById('paymentStatus').value;
+        const payMethod = document.getElementById('paymentMethod');
+        if (payStatus === 'credit') {
+            payMethod.value = 'آجل';
+        } else if (payMethod.value === 'آجل') {
+            payMethod.value = 'كاش الدرج';
+        }
+    }
+
+    function toggleEditReturnReason() {
+        const st = document.getElementById('editStatus').value;
+        document.getElementById('editReturnReasonGroup').style.display = st === 'returned' ? 'block' : 'none';
+    }
 
     /* Built-in Calculator State */
     let calcExpression = '';
@@ -1603,6 +1911,7 @@
         const priceInput = document.getElementById('price');
         if (!Number.isNaN(num) && Number.isFinite(num) && priceInput) {
             priceInput.value = Math.max(0, num);
+            markFormDirty();
             showSaveToast(`💰 تم وضع القيمة (${Math.max(0, num)} ج.م) في خانة السعر`);
         }
     }
@@ -1668,6 +1977,38 @@
                 topBox.innerHTML = `أعلى الخدمات ربحاً: <strong style="color: var(--gold);">${text}</strong>`;
             }
         }
+    }
+
+    /* Wallets & Transfers Strip */
+    function renderWalletsStrip() {
+        const strip = document.getElementById('walletsStrip');
+        if (!strip) return;
+        const dayRecords = records.filter(r => r.dayKey === selectedDateISO);
+        const methods = ['كاش الدرج', 'فودافون كاش', 'إنستا باي', 'تحويل بنكي'];
+
+        const cardsHtml = methods.map(m => {
+            const daySum = dayRecords
+                .filter(r => (r.paymentMethod || 'كاش الدرج') === m && r.paymentStatus !== 'credit')
+                .reduce((s, r) => s + Math.max(0, (parseFloat(r.price) || 0) - (parseFloat(r.refund) || 0)), 0);
+            return `
+                <div class="wallet-card">
+                    <span>💳 ${m} (اليوم)</span>
+                    <strong>${maskNum(daySum)} ج.م</strong>
+                </div>
+            `;
+        }).join('');
+
+        const externalDayCount = dayRecords.filter(r => r.workLocation === 'external').length;
+        const externalDayNet = dayRecords
+            .filter(r => r.workLocation === 'external')
+            .reduce((s, r) => s + calcRecordNet(r), 0);
+
+        strip.innerHTML = cardsHtml + `
+            <div class="wallet-card">
+                <span>🛵 شغل خارجي / بره (اليوم)</span>
+                <strong>${externalDayCount} جهاز (${maskNum(externalDayNet)} ج.م)</strong>
+            </div>
+        `;
     }
 
     /* Instant Online / Offline Indicator */
@@ -1996,6 +2337,12 @@
         return `${y}-${m}-${d}`;
     }
 
+    function getShiftDateISO(isoStr, deltaDays) {
+        const [y, m, d] = isoStr.split('-').map(Number);
+        const dt = new Date(y, m - 1, d + deltaDays);
+        return getLocalDateISO(dt);
+    }
+
     function formatDisplayDate(isoStr) {
         const todayISO = getLocalDateISO();
         const [y, m, d] = isoStr.split('-');
@@ -2019,9 +2366,11 @@
     function calcDayDrawerCash(dayISO) {
         const dayRecords = records.filter(r => r.dayKey === dayISO);
         const paidCashRevenue = dayRecords
-            .filter(r => r.paymentStatus !== 'credit')
+            .filter(r => r.paymentStatus !== 'credit' && (r.paymentMethod || 'كاش الدرج') === 'كاش الدرج')
             .reduce((s, r) => s + (parseFloat(r.price) || 0), 0);
-        const dayRefund = dayRecords.reduce((s, r) => s + (parseFloat(r.refund) || 0), 0);
+        const dayRefund = dayRecords
+            .filter(r => (r.paymentMethod || 'كاش الدرج') === 'كاش الدرج')
+            .reduce((s, r) => s + (parseFloat(r.refund) || 0), 0);
         const dayPetty = getDayExpensesTotal(dayISO);
         return paidCashRevenue - dayRefund - dayPetty;
     }
@@ -2068,16 +2417,18 @@
             input.value = `${current} + ${serviceName}`;
         }
         input.focus();
+        markFormDirty();
         checkSmartAlerts();
     }
 
     let records = JSON.parse(localStorage.getItem('amin_software_db')) || [];
     let expenses = JSON.parse(localStorage.getItem('amin_software_expenses')) || [];
+    let toolsList = JSON.parse(localStorage.getItem('amin_tools_db')) || [];
     let selectedDateISO = getLocalDateISO();
     let currentScope = 'day';
     let nextTicketNo = parseInt(localStorage.getItem('amin_next_ticket'), 10) || 101;
 
-    function normalizeState(rawRecords, rawExpenses, rawTicket) {
+    function normalizeState(rawRecords, rawExpenses, rawTicket, rawTools) {
         let maxTicket = 100;
         (rawRecords || []).forEach(r => {
             if (typeof r.ticketNo === 'number' && r.ticketNo > maxTicket) {
@@ -2097,6 +2448,7 @@
                     createdAt = new Date(yy, mm - 1, dd, 12, 0, 0).getTime();
                 }
             }
+            const payStatus = r.paymentStatus || 'paid';
             return {
                 ...r,
                 ticketNo: ticketNo,
@@ -2104,8 +2456,12 @@
                 createdAt: createdAt,
                 serialNumber: r.serialNumber || '',
                 clientType: r.clientType || 'cash',
-                paymentStatus: r.paymentStatus || 'paid',
+                workLocation: r.workLocation || 'shop',
+                externalPlace: r.externalPlace || '',
+                paymentStatus: payStatus,
+                paymentMethod: r.paymentMethod || (payStatus === 'credit' ? 'آجل' : 'كاش الدرج'),
                 refund: parseFloat(r.refund) || 0,
+                returnReason: r.returnReason || '',
                 secretNote: r.secretNote || ''
             };
         }).reverse();
@@ -2113,22 +2469,26 @@
         return {
             records: cleanRecords,
             expenses: Array.isArray(rawExpenses) ? rawExpenses : [],
+            toolsList: Array.isArray(rawTools) ? rawTools : [],
             nextTicketNo: ticketCursor
         };
     }
 
-    const initialNormalized = normalizeState(records, expenses, nextTicketNo);
+    const initialNormalized = normalizeState(records, expenses, nextTicketNo, toolsList);
     records = initialNormalized.records;
     expenses = initialNormalized.expenses;
+    toolsList = initialNormalized.toolsList;
     nextTicketNo = initialNormalized.nextTicketNo;
 
     function writeLocalOnly() {
         localStorage.setItem('amin_software_db', JSON.stringify(records));
         localStorage.setItem('amin_software_expenses', JSON.stringify(expenses));
+        localStorage.setItem('amin_tools_db', JSON.stringify(toolsList));
         localStorage.setItem('amin_next_ticket', String(nextTicketNo));
     }
 
     async function pushToCloud() {
+        isCloudSyncing = true;
         updateNetworkStatusUI();
         setSyncStatus('syncing', '☁️ جاري الحفظ...');
         const stamp = Date.now();
@@ -2146,6 +2506,7 @@
                     payload: {
                         records: records,
                         expenses: expenses,
+                        toolsList: toolsList,
                         nextTicketNo: nextTicketNo,
                         clientUpdatedAt: stamp
                     },
@@ -2159,6 +2520,8 @@
             notifySyncResult(true, '☁️ متزامن مع السحابة');
         } catch (err) {
             notifySyncResult(false, '⚠️ محفوظ محلياً');
+        } finally {
+            isCloudSyncing = false;
         }
     }
 
@@ -2185,9 +2548,15 @@
                 const cloudStamp = cloudPayload.clientUpdatedAt || new Date(rows[0].updated_at || 0).getTime() || 0;
                 if (cloudStamp >= lastUpdatedAt) {
                     lastUpdatedAt = cloudStamp;
-                    const normalized = normalizeState(cloudPayload.records, cloudPayload.expenses, cloudPayload.nextTicketNo);
+                    const normalized = normalizeState(
+                        cloudPayload.records,
+                        cloudPayload.expenses,
+                        cloudPayload.nextTicketNo,
+                        cloudPayload.toolsList || toolsList
+                    );
                     records = normalized.records;
                     expenses = normalized.expenses;
+                    toolsList = normalized.toolsList;
                     nextTicketNo = normalized.nextTicketNo;
                     writeLocalOnly();
                     refreshUI();
@@ -2252,9 +2621,7 @@
     }
 
     function changeDay(deltaDays) {
-        const [y, m, d] = selectedDateISO.split('-').map(Number);
-        const dt = new Date(y, m - 1, d + deltaDays);
-        selectedDateISO = getLocalDateISO(dt);
+        selectedDateISO = getShiftDateISO(selectedDateISO, deltaDays);
         initDateInput();
         refreshUI();
     }
@@ -2277,12 +2644,14 @@
         updateNetworkStatusUI();
         updateOverdueTabBadge();
         renderQuickProfitPlan();
+        renderWalletsStrip();
         renderWarrantyRadar();
         updateStats();
         renderExpenses();
         renderMerchantSection();
         renderClientsSection();
         renderTable();
+        renderToolsTable();
         checkSmartAlerts();
     }
 
@@ -2304,6 +2673,8 @@
 
         const rawService = document.getElementById('serviceType').value.trim();
         const finalService = rawService || (expressMode ? `سوفت وير (${condition})` : '');
+        const payStatus = document.getElementById('paymentStatus').value;
+        const payMethod = document.getElementById('paymentMethod').value;
 
         const newRecord = {
             id: nowMs,
@@ -2312,7 +2683,10 @@
             dayKey: selectedDateISO,
             clientName: document.getElementById('clientName').value.trim(),
             clientType: document.getElementById('clientType').value,
-            paymentStatus: document.getElementById('paymentStatus').value,
+            workLocation: document.getElementById('workLocation').value,
+            externalPlace: document.getElementById('externalPlace').value.trim(),
+            paymentStatus: payStatus,
+            paymentMethod: payStatus === 'credit' ? 'آجل' : payMethod,
             clientPhone: document.getElementById('clientPhone').value.trim(),
             deviceModel: document.getElementById('deviceModel').value.trim(),
             serialNumber: document.getElementById('serialNumber').value.trim(),
@@ -2321,17 +2695,20 @@
             price: price,
             cost: cost,
             refund: 0,
+            returnReason: '',
             secretNote: document.getElementById('secretNote').value.trim(),
             status: 'working',
             date: dateStr
         };
 
         records.unshift(newRecord);
+        hasUnsavedFormChanges = false;
         saveToStorage();
         const ageInfo = getRecordAgeInfo(newRecord);
         const serialPart = newRecord.serialNumber ? ` | سيريال: ${newRecord.serialNumber}` : '';
         showSaveToast(`✅ تم حفظ الجهاز #${newRecord.ticketNo} (${newRecord.deviceModel}${serialPart}) — ${ageInfo.label} (${newRecord.date})`);
         document.getElementById('deviceForm').reset();
+        toggleExternalPlaceInput();
         applyExpressModeUI();
     }
 
@@ -2374,12 +2751,105 @@
         `).join('');
     }
 
+    /* Tools Management (Boxes, Dongles, Accounts) */
+    function addToolItem(e) {
+        e.preventDefault();
+        const tool = {
+            id: Date.now(),
+            name: document.getElementById('toolName').value.trim(),
+            category: document.getElementById('toolCategory').value,
+            credits: parseFloat(document.getElementById('toolCredits').value) || 0,
+            expiry: document.getElementById('toolExpiry').value || '',
+            status: document.getElementById('toolStatus').value,
+            notes: document.getElementById('toolNotes').value.trim()
+        };
+        toolsList.unshift(tool);
+        saveToStorage();
+        document.getElementById('toolForm').reset();
+        showSaveToast(`🧰 تم إضافة الأداة "${tool.name}" إلى قائمة Tools`);
+    }
+
+    function updateToolCredits(id, delta) {
+        const t = toolsList.find(item => item.id === id);
+        if (!t) return;
+        t.credits = Math.max(0, (parseFloat(t.credits) || 0) + delta);
+        saveToStorage();
+    }
+
+    function deleteToolItem(id) {
+        if (!confirm('حذف هذه الأداة من القائمة؟')) return;
+        toolsList = toolsList.filter(item => item.id !== id);
+        saveToStorage();
+    }
+
+    function renderToolsTable() {
+        const tbody = document.getElementById('toolsTableBody');
+        const alertEl = document.getElementById('toolsAlertSummary');
+        const navBtn = document.getElementById('toolsNavBtn');
+        if (!tbody) return;
+
+        const todayISO = getLocalDateISO();
+        let warnCount = 0;
+
+        toolsList.forEach(t => {
+            const isLowCredit = (parseFloat(t.credits) || 0) > 0 && (parseFloat(t.credits) || 0) <= 5;
+            let isNearExpiry = false;
+            if (t.expiry) {
+                const diffDays = Math.ceil((new Date(t.expiry) - new Date(todayISO)) / 86400000);
+                if (diffDays <= 10) isNearExpiry = true;
+            }
+            if (isLowCredit || isNearExpiry || t.status !== 'نشط') warnCount++;
+        });
+
+        if (navBtn) {
+            navBtn.innerText = warnCount > 0 ? `🧰 Tools (⚠️ ${warnCount})` : '🧰 Tools (البوكسات والأدوات والأكونتات)';
+        }
+        if (alertEl) {
+            alertEl.innerText = warnCount > 0 ? `⚠️ يوجد ${warnCount} أداة تحتاج متابعة أو شحن/تجديد` : '✅ جميع الأدوات نشطة';
+        }
+
+        if (toolsList.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:20px;">لا توجد بوكسات أو أدوات مسجلة بعد</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = toolsList.map(t => {
+            let expiryText = t.expiry || 'مفتوح / دونجل';
+            if (t.expiry) {
+                const diffDays = Math.ceil((new Date(t.expiry) - new Date(todayISO)) / 86400000);
+                if (diffDays < 0) expiryText += ` <span class="tag-overdue">منتهي</span>`;
+                else if (diffDays <= 10) expiryText += ` <span class="tag-credit">باقي ${diffDays} يوم</span>`;
+            }
+            return `
+                <tr>
+                    <td><strong>${t.name}</strong></td>
+                    <td>${t.category}</td>
+                    <td>
+                        <strong>${t.credits}</strong>
+                        <button type="button" class="btn-outline" style="padding:1px 6px; font-size:10px; margin-right:4px;" onclick="updateToolCredits(${t.id}, -1)">-1</button>
+                        <button type="button" class="btn-outline" style="padding:1px 6px; font-size:10px;" onclick="updateToolCredits(${t.id}, 1)">+1</button>
+                    </td>
+                    <td>${expiryText}</td>
+                    <td><span class="badge ${t.status === 'نشط' ? 'tag-warranty' : 'tag-credit'}">${t.status}</span></td>
+                    <td>${t.notes || '-'}</td>
+                    <td><button type="button" class="btn-danger" onclick="deleteToolItem(${t.id})">حذف</button></td>
+                </tr>
+            `;
+        }).join('');
+    }
+
     function updateStatus(id, newStatus) {
         const item = records.find(r => r.id === id);
         if (item) {
             item.status = newStatus;
-            if (newStatus === 'returned' && (!item.refund || item.refund === 0)) {
-                item.refund = item.price || 0;
+            if (newStatus === 'returned') {
+                if (!item.refund || item.refund === 0) {
+                    item.refund = item.price || 0;
+                }
+                if (!item.returnReason) {
+                    const reason = prompt('سبب المرتجع (مثال: عدم اكتمال العملية / عطل هاردوير / إلغاء من العميل):', 'عدم اكتمال العملية');
+                    if (reason !== null) item.returnReason = reason.trim();
+                }
             }
             saveToStorage();
         }
@@ -2407,6 +2877,7 @@
             const nameKey = r.clientName.trim();
             if (nameKey === merchantKey && (r.clientType === 'merchant' || r.paymentStatus === 'credit')) {
                 r.paymentStatus = 'paid';
+                if (r.paymentMethod === 'آجل') r.paymentMethod = 'كاش الدرج';
             }
         });
         saveToStorage();
@@ -2563,9 +3034,12 @@
         const dayCredit = calcDayCreditTotal(selectedDateISO);
         const dayProfit = calcDayRealProfit(selectedDateISO);
 
+        const prevISO = getShiftDateISO(selectedDateISO, -1);
+        const prevProfit = calcDayRealProfit(prevISO);
+        const diff = dayProfit - prevProfit;
+
         const allTotal = records.length;
         const allRefund = records.reduce((sum, r) => sum + (parseFloat(r.refund) || 0), 0);
-        const allProfit = calcAllRealProfit();
 
         document.getElementById('stat-day-total').innerText = dayRecords.length;
         document.getElementById('stat-day-revenue').innerText = maskNum(dayRevenue);
@@ -2577,9 +3051,21 @@
         document.getElementById('stat-day-refund').innerText = maskNum(dayRefund);
         document.getElementById('stat-day-profit').innerText = maskNum(dayProfit);
 
+        const diffEl = document.getElementById('stat-day-diff');
+        if (diffEl) {
+            if (privacyHidden) {
+                diffEl.innerHTML = 'مقارنة بأمس: ••••';
+            } else if (diff > 0) {
+                diffEl.innerHTML = `مقارنة بأمس: <span class="diff-pos">▲ +${diff.toLocaleString()} ج.م</span>`;
+            } else if (diff < 0) {
+                diffEl.innerHTML = `مقارنة بأمس: <span class="diff-neg">▼ ${diff.toLocaleString()} ج.م</span>`;
+            } else {
+                diffEl.innerHTML = `مقارنة بأمس: متساوي (0 ج.م)`;
+            }
+        }
+
         document.getElementById('stat-all-total').innerText = allTotal;
         document.getElementById('stat-all-refund').innerText = maskNum(allRefund);
-        document.getElementById('stat-all-profit').innerText = maskNum(allProfit);
     }
 
     function renderTable() {
@@ -2592,6 +3078,8 @@
             let matchesScope = true;
             if (currentScope === 'day') {
                 matchesScope = r.dayKey === selectedDateISO;
+            } else if (currentScope === 'external') {
+                matchesScope = r.workLocation === 'external';
             } else if (currentScope === 'overdue') {
                 matchesScope = ageInfo.isOverdue;
             } else if (currentScope === 'warranty') {
@@ -2613,6 +3101,8 @@
                 r.clientName.toLowerCase().includes(query) ||
                 r.deviceModel.toLowerCase().includes(query) ||
                 (r.serialNumber || '').toLowerCase().includes(query) ||
+                (r.externalPlace || '').toLowerCase().includes(query) ||
+                (r.returnReason || '').toLowerCase().includes(query) ||
                 r.clientPhone.includes(query) ||
                 (r.secretNote || '').toLowerCase().includes(query);
             return matchesScope && matchesQuery;
@@ -2633,8 +3123,12 @@
                 r.status === 'returned' ? 'status-returned' : 'status-done';
 
             const merchantBadge = r.clientType === 'merchant' ? `<span class="tag-merchant">تاجر</span>` : '';
+            const externalBadge = r.workLocation === 'external'
+                ? `<span class="tag-external">🛵 خارجي${r.externalPlace ? ': ' + r.externalPlace : ''}</span>`
+                : '';
             const creditBadge = r.paymentStatus === 'credit' ? `<span class="tag-credit">آجل</span>` : '';
             const serialBadge = r.serialNumber ? `<br><span class="serial-badge">SN: ${r.serialNumber}</span>` : '';
+            const returnReasonBadge = r.returnReason ? `<br><span class="tag-return-reason">↩ سبب المرتجع: ${r.returnReason}</span>` : '';
             const overdueBadge = ageInfo.isOverdue ? `<br><span class="tag-overdue">⚠️ متأخر (${ageInfo.days} يوم)</span>` : '';
             const warrantyBadge = ageInfo.isUnderWarranty ? `<br><span class="tag-warranty">🛡️ ضمان (${ageInfo.warrantyLeftDays}ي)</span>` : '';
             const noteBadge = r.secretNote ? `<br><span class="secret-note">${maskSecret(r.secretNote)}</span>` : '';
@@ -2648,7 +3142,7 @@
             }
             tr.innerHTML = `
                 <td>
-                    <span class="ticket-badge">#${r.ticketNo}</span>${merchantBadge}${creditBadge}<br>
+                    <span class="ticket-badge">#${r.ticketNo}</span>${merchantBadge}${externalBadge}${creditBadge}<br>
                     <strong>${r.clientName}</strong><br>
                     <span style="font-size:11px; color:var(--text-muted);">${r.clientPhone || '-'}</span>
                 </td>
@@ -2657,7 +3151,7 @@
                     <span style="font-size:11px; color:var(--gold);">${r.condition}</span>
                     ${serialBadge}
                 </td>
-                <td>${r.serviceType}${noteBadge}</td>
+                <td>${r.serviceType}${returnReasonBadge}${noteBadge}</td>
                 <td style="white-space:nowrap; font-size:12px;">
                     ${r.date}<br>
                     <span class="age-text">⏱️ ${ageInfo.label}</span>
@@ -2668,7 +3162,8 @@
                 <td style="white-space:nowrap;">
                     <span style="color:var(--text-muted); font-size:11px;">سعر: ${maskRaw(r.price)} • تكلفة: ${maskRaw(r.cost)}</span><br>
                     ${(parseFloat(r.refund) || 0) > 0 ? `<span style="color:var(--danger); font-size:11px;">مرتجع: ${maskRaw(r.refund)} ج.م</span><br>` : ''}
-                    <strong style="color:${net >= 0 ? 'var(--gold)' : 'var(--danger)'};">صافي: ${maskRaw(net)} ج.م</strong>
+                    <strong style="color:${net >= 0 ? 'var(--gold)' : 'var(--danger)'};">صافي: ${maskRaw(net)} ج.م</strong><br>
+                    <span class="tag-wallet">💳 ${r.paymentMethod || 'كاش الدرج'}</span>
                 </td>
                 <td>
                     <select class="status-select ${statusClass}" onchange="updateStatus(${r.id}, this.value)">
@@ -2689,6 +3184,50 @@
         });
     }
 
+    /* Instant WhatsApp Summary Modal */
+    function generateInstantWaSummary() {
+        const dayRecords = records.filter(r => r.dayKey === selectedDateISO);
+        const working = dayRecords.filter(r => r.status === 'working').length;
+        const ready = dayRecords.filter(r => r.status === 'ready').length;
+        const done = dayRecords.filter(r => r.status === 'done').length;
+        const returned = dayRecords.filter(r => r.status === 'returned').length;
+        const externalCount = dayRecords.filter(r => r.workLocation === 'external').length;
+        const drawerCash = calcDayDrawerCash(selectedDateISO);
+        const dayProfit = calcDayRealProfit(selectedDateISO);
+        const totalCredit = records
+            .filter(r => r.paymentStatus === 'credit')
+            .reduce((s, r) => s + Math.max(0, (parseFloat(r.price) || 0) - (parseFloat(r.refund) || 0)), 0);
+
+        return `ملخص حركة العمل — ${formatDisplayDate(selectedDateISO)}\n` +
+               `المدينة المنورة - محمد أمين\n` +
+               `------------------------\n` +
+               `• إجمالي أجهزة اليوم: ${dayRecords.length} (خارجي: ${externalCount})\n` +
+               `• جاري العمل: ${working} | جاهز: ${ready} | تم التسليم: ${done} | مرتجع: ${returned}\n` +
+               `• كاش الدرج الفعلي: ${drawerCash} ج.م\n` +
+               `• صافي ربح اليوم: ${dayProfit} ج.م\n` +
+               `• إجمالي الآجل المفتوح: ${totalCredit} ج.م`;
+    }
+
+    function openQuickWaSummaryModal() {
+        document.getElementById('quickWaSummaryText').value = generateInstantWaSummary();
+        document.getElementById('waSummaryModal').classList.add('show');
+    }
+
+    function closeQuickWaSummaryModal() {
+        document.getElementById('waSummaryModal').classList.remove('show');
+    }
+
+    function copyQuickWaSummary() {
+        const txt = document.getElementById('quickWaSummaryText').value;
+        navigator.clipboard.writeText(txt).then(() => alert('تم نسخ الملخص!'));
+    }
+
+    function sendQuickWaSummary() {
+        const txt = document.getElementById('quickWaSummaryText').value.trim();
+        if (!txt) return;
+        window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`, '_blank', 'noopener,noreferrer');
+    }
+
     /* Edit Modal */
     function openEditModal(id) {
         const r = records.find(item => item.id === id);
@@ -2697,17 +3236,22 @@
         document.getElementById('editTicketBadge').innerText = `#${r.ticketNo}`;
         document.getElementById('editClientName').value = r.clientName;
         document.getElementById('editClientType').value = r.clientType || 'cash';
+        document.getElementById('editWorkLocation').value = r.workLocation || 'shop';
+        document.getElementById('editExternalPlace').value = r.externalPlace || '';
         document.getElementById('editPaymentStatus').value = r.paymentStatus || 'paid';
+        document.getElementById('editPaymentMethod').value = r.paymentMethod || 'كاش الدرج';
         document.getElementById('editClientPhone').value = r.clientPhone || '';
         document.getElementById('editDeviceModel').value = r.deviceModel;
         document.getElementById('editSerialNumber').value = r.serialNumber || '';
         document.getElementById('editCondition').value = r.condition;
         document.getElementById('editStatus').value = r.status;
+        document.getElementById('editReturnReason').value = r.returnReason || '';
         document.getElementById('editServiceType').value = r.serviceType;
         document.getElementById('editPrice').value = r.price || 0;
         document.getElementById('editCost').value = r.cost || 0;
         document.getElementById('editRefund').value = r.refund || 0;
         document.getElementById('editSecretNote').value = r.secretNote || '';
+        toggleEditReturnReason();
         document.getElementById('editModal').classList.add('show');
     }
 
@@ -2723,12 +3267,16 @@
 
         item.clientName = document.getElementById('editClientName').value.trim();
         item.clientType = document.getElementById('editClientType').value;
+        item.workLocation = document.getElementById('editWorkLocation').value;
+        item.externalPlace = document.getElementById('editExternalPlace').value.trim();
         item.paymentStatus = document.getElementById('editPaymentStatus').value;
+        item.paymentMethod = item.paymentStatus === 'credit' ? 'آجل' : document.getElementById('editPaymentMethod').value;
         item.clientPhone = document.getElementById('editClientPhone').value.trim();
         item.deviceModel = document.getElementById('editDeviceModel').value.trim();
         item.serialNumber = document.getElementById('editSerialNumber').value.trim();
         item.condition = document.getElementById('editCondition').value;
         item.status = document.getElementById('editStatus').value;
+        item.returnReason = item.status === 'returned' ? document.getElementById('editReturnReason').value : '';
         item.serviceType = document.getElementById('editServiceType').value.trim();
         item.price = Math.max(0, parseFloat(document.getElementById('editPrice').value) || 0);
         item.cost = Math.max(0, parseFloat(document.getElementById('editCost').value) || 0);
@@ -2753,7 +3301,8 @@
             return `أهلاً بك يا ${r.clientName} 👋\nتم تسليم جهازك (${r.deviceModel}) بنجاح.\n${ticketLine}${serialLine}نسعد دائماً بخدمتك في:\n${header}`;
         }
         if (r.status === 'returned') {
-            return `أهلاً بك يا ${r.clientName} 👋\nبخصوص جهازك (${r.deviceModel})، تم تسجيل مرتجع بقيمة (${r.refund || r.price} ج.م).\n${ticketLine}${serialLine}${header}`;
+            const reasonLine = r.returnReason ? `السبب: ${r.returnReason}\n` : '';
+            return `أهلاً بك يا ${r.clientName} 👋\nبخصوص جهازك (${r.deviceModel})، تم تسجيل مرتجع بقيمة (${r.refund || r.price} ج.م).\n${reasonLine}${ticketLine}${serialLine}${header}`;
         }
         return `أهلاً بك يا ${r.clientName} 👋\nجهازك (${r.deviceModel}) بخصوص (${r.serviceType}) قيد العمل حالياً.\n${ticketLine}${serialLine}${header}`;
     }
@@ -2810,6 +3359,7 @@
     function generateClosingText() {
         const dayRecords = records.filter(r => r.dayKey === selectedDateISO);
         const totalCount = dayRecords.length;
+        const externalCount = dayRecords.filter(r => r.workLocation === 'external').length;
         const workingCount = dayRecords.filter(r => r.status === 'working').length;
         const doneCount = dayRecords.filter(r => r.status === 'done').length;
         const revenue = dayRecords.reduce((s, r) => s + (parseFloat(r.price) || 0), 0);
@@ -2823,7 +3373,7 @@
         return `تقفيل يوم: ${formatDisplayDate(selectedDateISO)}\n` +
                `المدينة المنورة - محمد أمين\n` +
                `------------------------\n` +
-               `عدد الأجهزة: ${totalCount}\n` +
+               `عدد الأجهزة: ${totalCount} (منها خارجي: ${externalCount})\n` +
                `جاري العمل: ${workingCount} | تم التسليم: ${doneCount}\n` +
                `إجمالي الإيرادات: ${revenue} ج.م\n` +
                `كاش الدرج الفعلي: ${drawerCash} ج.م\n` +
@@ -2880,7 +3430,7 @@
                 ${r.serialNumber ? `<div class="receipt-row"><span>الرقم التسلسلي / IMEI:</span><strong style="direction:ltr;">${r.serialNumber}</strong></div>` : ''}
                 <div class="receipt-row"><span>حالة الجهاز:</span><strong>${r.condition}</strong></div>
                 <div class="receipt-row"><span>الخدمة المطلوبة:</span><strong>${r.serviceType}</strong></div>
-                <div class="receipt-row"><span>التكلفة المتفق عليها:</span><strong>${r.price} ج.م (${r.paymentStatus === 'credit' ? 'آجل' : 'نقدي'})</strong></div>
+                <div class="receipt-row"><span>التكلفة المتفق عليها:</span><strong>${r.price} ج.م (${r.paymentStatus === 'credit' ? 'آجل' : r.paymentMethod || 'نقدي'})</strong></div>
                 ${(parseFloat(r.refund) || 0) > 0 ? `<div class="receipt-row"><span>مبلغ مرتجع:</span><strong>${r.refund} ج.م</strong></div>` : ''}
                 <p style="font-size:11px; margin-top:10px; line-height:1.5;">
                     * المركز غير مسؤول عن فقدان البيانات أثناء عمليات السوفت وير أو فك الشفرات.<br>
@@ -2897,6 +3447,7 @@
         const payload = {
             records: records,
             expenses: expenses,
+            toolsList: toolsList,
             nextTicketNo: nextTicketNo
         };
         const dataStr = JSON.stringify(payload, null, 2);
@@ -2924,10 +3475,12 @@
                 const normalized = normalizeState(
                     rawRecords,
                     Array.isArray(parsed.expenses) ? parsed.expenses : expenses,
-                    parsed.nextTicketNo || nextTicketNo
+                    parsed.nextTicketNo || nextTicketNo,
+                    Array.isArray(parsed.toolsList) ? parsed.toolsList : toolsList
                 );
                 records = normalized.records;
                 expenses = normalized.expenses;
+                toolsList = normalized.toolsList;
                 nextTicketNo = normalized.nextTicketNo;
                 saveToStorage();
                 alert('تم استعادة النسخة الاحتياطية ومزامنتها بنجاح!');
