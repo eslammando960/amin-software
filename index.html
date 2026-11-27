@@ -242,6 +242,26 @@
             padding: 0 20px;
         }
 
+        /* Toast Banner */
+        .toast-banner {
+            display: none;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.5);
+            color: var(--text-main);
+            border-radius: 10px;
+            padding: 11px 16px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            font-weight: 700;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast-banner.show {
+            display: flex;
+        }
+
         /* Day Bar */
         .day-bar {
             background-color: var(--bg-card);
@@ -283,8 +303,8 @@
         /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+            gap: 14px;
             margin-bottom: 24px;
         }
 
@@ -292,7 +312,7 @@
             background-color: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 18px;
+            padding: 16px;
             position: relative;
             overflow: hidden;
         }
@@ -315,14 +335,18 @@
             background-color: var(--warning);
         }
 
+        .stat-card.drawer-card::after {
+            background-color: var(--success);
+        }
+
         .stat-title {
             color: var(--text-muted);
-            font-size: 13px;
-            margin-bottom: 8px;
+            font-size: 12px;
+            margin-bottom: 7px;
         }
 
         .stat-value {
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 800;
             color: var(--text-main);
         }
@@ -344,6 +368,10 @@
 
         .stat-card.expense-card .stat-value {
             color: var(--warning);
+        }
+
+        .stat-card.drawer-card .stat-value {
+            color: var(--success);
         }
 
         /* Main Layout */
@@ -570,6 +598,10 @@
             background-color: rgba(255, 255, 255, 0.02);
         }
 
+        tr.overdue-row {
+            background-color: rgba(239, 68, 68, 0.05);
+        }
+
         .ticket-badge {
             display: inline-block;
             background: var(--gold-dim);
@@ -616,6 +648,25 @@
             font-size: 10px;
             font-weight: 700;
             margin-right: 4px;
+        }
+
+        .tag-overdue {
+            display: inline-block;
+            background: rgba(239, 68, 68, 0.18);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            border-radius: 5px;
+            padding: 1px 6px;
+            font-size: 10px;
+            font-weight: 800;
+            margin-top: 4px;
+        }
+
+        .age-text {
+            display: inline-block;
+            margin-top: 3px;
+            font-size: 11px;
+            color: var(--text-muted);
         }
 
         .secret-note {
@@ -795,6 +846,12 @@
 </header>
 
 <div class="container">
+    <!-- Save Duration Toast -->
+    <div class="toast-banner" id="saveToast">
+        <span id="saveToastText"></span>
+        <button type="button" class="btn-outline" style="padding: 3px 9px; font-size: 11px;" onclick="hideSaveToast()">✕</button>
+    </div>
+
     <!-- Day Switcher Bar -->
     <div class="day-bar">
         <div class="day-controls">
@@ -814,6 +871,11 @@
             <div class="stat-title">أجهزة اليوم المختار</div>
             <div class="stat-value" id="stat-day-total">0</div>
             <div class="stat-sub">إيرادات اليوم: <span id="stat-day-revenue">0</span> ج.م | إجمالي الأجهزة: <span id="stat-all-total">0</span></div>
+        </div>
+        <div class="stat-card drawer-card">
+            <div class="stat-title">حاسبة الدرج (كاش اليوم)</div>
+            <div class="stat-value" id="stat-day-drawer">0</div>
+            <div class="stat-sub">كاش مدفوع ناقص مصاريف ومرتجع | آجل: <span id="stat-day-credit">0</span> ج.م</div>
         </div>
         <div class="stat-card expense-card">
             <div class="stat-title">تكلفة كريدت + مصاريف اليوم</div>
@@ -940,6 +1002,7 @@
                 <div class="filter-tabs">
                     <button type="button" class="tab-btn active" onclick="setScope('day', this)">أجهزة اليوم</button>
                     <button type="button" class="tab-btn" onclick="setScope('all', this)">كل الأيام</button>
+                    <button type="button" class="tab-btn" onclick="setScope('overdue', this)" id="overdueTabBtn">متأخر (+2 يوم)</button>
                     <button type="button" class="tab-btn" onclick="setScope('merchants', this)">حسابات التجار</button>
                     <button type="button" class="tab-btn" onclick="setScope('clients', this)">العملاء والمحلات المتكررة</button>
                     <button type="button" class="tab-btn" onclick="setScope('working', this)">جاري العمل</button>
@@ -995,7 +1058,7 @@
                             <th>الكود والعميل</th>
                             <th>الجهاز والحالة</th>
                             <th>الخدمة وملاحظات الفني</th>
-                            <th>اليوم</th>
+                            <th>المدة واليوم</th>
                             <th>الحساب والصافي</th>
                             <th>الحالة</th>
                             <th>إجراءات</th>
@@ -1149,6 +1212,43 @@
     let autoSyncEnabled = localStorage.getItem('amin_auto_sync') !== 'false';
     let soundAlertEnabled = localStorage.getItem('amin_sound_alert') !== 'false';
     let autoSyncTimer = null;
+    let toastTimer = null;
+
+    function showSaveToast(message) {
+        const banner = document.getElementById('saveToast');
+        const textEl = document.getElementById('saveToastText');
+        if (!banner || !textEl) return;
+        textEl.innerText = message;
+        banner.classList.add('show');
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+            banner.classList.remove('show');
+        }, 7000);
+    }
+
+    function hideSaveToast() {
+        const banner = document.getElementById('saveToast');
+        if (banner) banner.classList.remove('show');
+    }
+
+    function getRecordAgeInfo(r) {
+        const createdMs = r.createdAt || r.id || Date.now();
+        const diffMs = Math.max(0, Date.now() - createdMs);
+        const totalHours = Math.floor(diffMs / (1000 * 60 * 60));
+        const days = Math.floor(totalHours / 24);
+        const remHours = totalHours % 24;
+
+        let label = 'أقل من ساعة';
+        if (days > 0) {
+            label = remHours > 0 ? `بقاله ${days} يوم و${remHours} ساعة` : `بقاله ${days} يوم`;
+        } else if (totalHours > 0) {
+            label = `بقاله ${totalHours} ساعة`;
+        }
+
+        const isActiveWork = r.status === 'working' || r.status === 'ready';
+        const isOverdue = isActiveWork && days >= 2;
+        return { days, totalHours, label, isOverdue };
+    }
 
     function maskNum(val) {
         if (privacyHidden) return '••••';
@@ -1302,6 +1402,22 @@
             .reduce((s, e) => s + (parseFloat(e.amount) || 0), 0);
     }
 
+    function calcDayDrawerCash(dayISO) {
+        const dayRecords = records.filter(r => r.dayKey === dayISO);
+        const paidCashRevenue = dayRecords
+            .filter(r => r.paymentStatus !== 'credit')
+            .reduce((s, r) => s + (parseFloat(r.price) || 0), 0);
+        const dayRefund = dayRecords.reduce((s, r) => s + (parseFloat(r.refund) || 0), 0);
+        const dayPetty = getDayExpensesTotal(dayISO);
+        return paidCashRevenue - dayRefund - dayPetty;
+    }
+
+    function calcDayCreditTotal(dayISO) {
+        return records
+            .filter(r => r.dayKey === dayISO && r.paymentStatus === 'credit')
+            .reduce((s, r) => s + Math.max(0, (parseFloat(r.price) || 0) - (parseFloat(r.refund) || 0)), 0);
+    }
+
     function calcDayRealProfit(dayISO) {
         const dayRecords = records.filter(r => r.dayKey === dayISO);
         const devicesNet = dayRecords.reduce((s, r) => s + calcRecordNet(r), 0);
@@ -1358,10 +1474,19 @@
         const cleanRecords = (rawRecords || []).slice().reverse().map((r, idx) => {
             const ticketNo = r.ticketNo || (101 + idx);
             if (ticketNo >= ticketCursor) ticketCursor = ticketNo + 1;
+            const dayKey = r.dayKey || getLocalDateISO(new Date(r.id || Date.now()));
+            let createdAt = r.createdAt || r.id || Date.now();
+            if (!r.createdAt && r.dayKey) {
+                const [yy, mm, dd] = r.dayKey.split('-').map(Number);
+                if (yy && mm && dd) {
+                    createdAt = new Date(yy, mm - 1, dd, 12, 0, 0).getTime();
+                }
+            }
             return {
                 ...r,
                 ticketNo: ticketNo,
-                dayKey: r.dayKey || getLocalDateISO(new Date(r.id || Date.now())),
+                dayKey: dayKey,
+                createdAt: createdAt,
                 clientType: r.clientType || 'cash',
                 paymentStatus: r.paymentStatus || 'paid',
                 refund: parseFloat(r.refund) || 0,
@@ -1522,7 +1647,16 @@
         refreshUI();
     }
 
+    function updateOverdueTabBadge() {
+        const overdueCount = records.filter(r => getRecordAgeInfo(r).isOverdue).length;
+        const tabBtn = document.getElementById('overdueTabBtn');
+        if (tabBtn) {
+            tabBtn.innerText = overdueCount > 0 ? `⚠️ متأخر (${overdueCount})` : 'متأخر (+2 يوم)';
+        }
+    }
+
     function refreshUI() {
+        updateOverdueTabBadge();
         updateStats();
         renderExpenses();
         renderMerchantSection();
@@ -1538,8 +1672,17 @@
         const [y, m, d] = selectedDateISO.split('-');
         const dateStr = `${parseInt(d)}/${parseInt(m)}/${y}`;
 
+        const nowMs = Date.now();
+        const todayISO = getLocalDateISO();
+        let createdAt = nowMs;
+        if (selectedDateISO !== todayISO) {
+            const [yy, mm, dd] = selectedDateISO.split('-').map(Number);
+            createdAt = new Date(yy, mm - 1, dd, 12, 0, 0).getTime();
+        }
+
         const newRecord = {
-            id: Date.now(),
+            id: nowMs,
+            createdAt: createdAt,
             ticketNo: nextTicketNo++,
             dayKey: selectedDateISO,
             clientName: document.getElementById('clientName').value.trim(),
@@ -1559,6 +1702,8 @@
 
         records.unshift(newRecord);
         saveToStorage();
+        const ageInfo = getRecordAgeInfo(newRecord);
+        showSaveToast(`✅ تم حفظ الجهاز #${newRecord.ticketNo} (${newRecord.deviceModel}) — ${ageInfo.label} (تاريخ الاستلام: ${newRecord.date})`);
         document.getElementById('deviceForm').reset();
     }
 
@@ -1786,6 +1931,8 @@
         const dayCost = dayRecords.reduce((sum, r) => sum + (parseFloat(r.cost) || 0), 0);
         const dayPetty = getDayExpensesTotal(selectedDateISO);
         const dayRefund = dayRecords.reduce((sum, r) => sum + (parseFloat(r.refund) || 0), 0);
+        const dayDrawer = calcDayDrawerCash(selectedDateISO);
+        const dayCredit = calcDayCreditTotal(selectedDateISO);
         const dayProfit = calcDayRealProfit(selectedDateISO);
 
         const allTotal = records.length;
@@ -1794,6 +1941,8 @@
 
         document.getElementById('stat-day-total').innerText = dayRecords.length;
         document.getElementById('stat-day-revenue').innerText = maskNum(dayRevenue);
+        document.getElementById('stat-day-drawer').innerText = maskNum(dayDrawer);
+        document.getElementById('stat-day-credit').innerText = maskNum(dayCredit);
         document.getElementById('stat-day-expenses-total').innerText = maskNum(dayCost + dayPetty);
         document.getElementById('stat-day-cost').innerText = maskNum(dayCost);
         document.getElementById('stat-day-petty').innerText = maskNum(dayPetty);
@@ -1811,9 +1960,12 @@
         tbody.innerHTML = '';
 
         const filtered = records.filter(r => {
+            const ageInfo = getRecordAgeInfo(r);
             let matchesScope = true;
             if (currentScope === 'day') {
                 matchesScope = r.dayKey === selectedDateISO;
+            } else if (currentScope === 'overdue') {
+                matchesScope = ageInfo.isOverdue;
             } else if (currentScope === 'merchants') {
                 matchesScope = r.clientType === 'merchant' || r.paymentStatus === 'credit';
             } else if (currentScope === 'clients') {
@@ -1842,6 +1994,7 @@
 
         filtered.forEach(r => {
             const net = calcRecordNet(r);
+            const ageInfo = getRecordAgeInfo(r);
             const hasPhone = Boolean(normalizeEgyptPhone(r.clientPhone));
             const statusClass =
                 r.status === 'working' ? 'status-working' :
@@ -1850,12 +2003,16 @@
 
             const merchantBadge = r.clientType === 'merchant' ? `<span class="tag-merchant">تاجر</span>` : '';
             const creditBadge = r.paymentStatus === 'credit' ? `<span class="tag-credit">آجل</span>` : '';
+            const overdueBadge = ageInfo.isOverdue ? `<br><span class="tag-overdue">⚠️ متأخر (${ageInfo.days} يوم)</span>` : '';
             const noteBadge = r.secretNote ? `<br><span class="secret-note">${maskSecret(r.secretNote)}</span>` : '';
-            const jumpDayBtn = (currentScope === 'all' && r.dayKey && r.dayKey !== selectedDateISO)
+            const jumpDayBtn = (currentScope !== 'day' && r.dayKey && r.dayKey !== selectedDateISO)
                 ? `<br><button type="button" class="btn-jump-day" onclick="jumpToRecordDay('${r.dayKey}')">📅 انتقال ليومه</button>`
                 : '';
 
             const tr = document.createElement('tr');
+            if (ageInfo.isOverdue) {
+                tr.classList.add('overdue-row');
+            }
             tr.innerHTML = `
                 <td>
                     <span class="ticket-badge">#${r.ticketNo}</span>${merchantBadge}${creditBadge}<br>
@@ -1867,7 +2024,12 @@
                     <span style="font-size:11px; color:var(--gold);">${r.condition}</span>
                 </td>
                 <td>${r.serviceType}${noteBadge}</td>
-                <td style="white-space:nowrap; font-size:12px;">${r.date}${jumpDayBtn}</td>
+                <td style="white-space:nowrap; font-size:12px;">
+                    ${r.date}<br>
+                    <span class="age-text">⏱️ ${ageInfo.label}</span>
+                    ${overdueBadge}
+                    ${jumpDayBtn}
+                </td>
                 <td style="white-space:nowrap;">
                     <span style="color:var(--text-muted); font-size:11px;">سعر: ${maskRaw(r.price)} | تكلفة: ${maskRaw(r.cost)}</span><br>
                     ${(parseFloat(r.refund) || 0) > 0 ? `<span style="color:var(--danger); font-size:11px;">مرتجع: ${maskRaw(r.refund)} ج.م</span><br>` : ''}
@@ -1937,6 +2099,8 @@
         item.secretNote = document.getElementById('editSecretNote').value.trim();
 
         saveToStorage();
+        const ageInfo = getRecordAgeInfo(item);
+        showSaveToast(`✅ تم تحديث الجهاز #${item.ticketNo} — ${ageInfo.label}`);
         closeEditModal();
     }
 
@@ -2014,10 +2178,9 @@
         const cost = dayRecords.reduce((s, r) => s + (parseFloat(r.cost) || 0), 0);
         const petty = getDayExpensesTotal(selectedDateISO);
         const refund = dayRecords.reduce((s, r) => s + (parseFloat(r.refund) || 0), 0);
+        const drawerCash = calcDayDrawerCash(selectedDateISO);
         const netProfit = calcDayRealProfit(selectedDateISO);
-        const creditTotal = dayRecords
-            .filter(r => r.paymentStatus === 'credit')
-            .reduce((s, r) => s + Math.max(0, (parseFloat(r.price) || 0) - (parseFloat(r.refund) || 0)), 0);
+        const creditTotal = calcDayCreditTotal(selectedDateISO);
 
         return `تقفيل يوم: ${formatDisplayDate(selectedDateISO)}\n` +
                `المدينة المنورة - محمد أمين\n` +
@@ -2025,6 +2188,7 @@
                `عدد الأجهزة: ${totalCount}\n` +
                `جاري العمل: ${workingCount} | تم التسليم: ${doneCount}\n` +
                `إجمالي الإيرادات: ${revenue} ج.م\n` +
+               `كاش الدرج الفعلي: ${drawerCash} ج.م\n` +
                `تكلفة كريدت/سيرفر: ${cost} ج.م\n` +
                `مصاريف الخزنة: ${petty} ج.م\n` +
                `المرتجع: ${refund} ج.م\n` +
